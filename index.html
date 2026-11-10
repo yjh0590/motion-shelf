@@ -4544,6 +4544,545 @@ const D = [
 .m-grain span{position:relative}
 @keyframes m-grain{25%{transform:translate(-3%,2%)}50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-2%)}}` },
 
+  { name: '메시 그라디언트',
+    kw: 'mesh gradient · multi radial · drifting colors',
+    prompt: `분홍·파랑·민트·보라 색 덩어리 네 개를 radial-gradient로 겹쳐 메시 그라디언트 배경을 만들고, 덩어리들이 서로 다른 방향으로 10초 동안 천천히 흘러갔다 돌아오게 해줘. 순수 CSS로.`,
+    cat: '배경', desc: '색 덩어리들이 제각각 흘러 다니는 메시 그라디언트.',
+    html: `<div class="m-bg-mesh" aria-hidden="true"></div>`,
+    css: `.m-bg-mesh{position:absolute;inset:0;background:radial-gradient(circle,#ff9ecd 0,transparent 55%),radial-gradient(circle,#7cc4ff 0,transparent 55%),radial-gradient(circle,#8fe3d0 0,transparent 55%),radial-gradient(circle,#b39cff 0,transparent 55%),#14101f;background-size:120% 120%,120% 120%,120% 120%,120% 120%;background-position:0 0,100% 0,0 100%,100% 100%;background-repeat:no-repeat;animation:m-bg-mesh 10s ease-in-out infinite alternate}
+@keyframes m-bg-mesh{to{background-position:100% 100%,0 100%,100% 0,0 0}}` },
+
+  { name: '그라디언트 흐름',
+    kw: 'animated gradient · background-position · 400% size',
+    prompt: `네 가지 색의 대각선 그라디언트를 4배 크기로 깔고 배경 위치를 옮겨 색이 천천히 흘러가는 배경을 만들어줘. 12초 왕복, 가속 후 감속, 순수 CSS로.`,
+    cat: '배경', desc: '큰 그라디언트를 천천히 밀어 색이 흐르게 합니다. 가장 흔한 움직이는 배경.',
+    html: `<div class="m-bg-flow" aria-hidden="true"></div>`,
+    css: `.m-bg-flow{position:absolute;inset:0;background:linear-gradient(-45deg,#ff9ecd,#b39cff,#7cc4ff,#8fe3d0) 0 50%/400% 400%;animation:m-bg-flow 12s ease-in-out infinite alternate}
+@keyframes m-bg-flow{to{background-position:100% 50%}}` },
+
+  { name: '원뿔 회전',
+    kw: 'conic gradient rotation · @property angle · color wheel',
+    prompt: `색상환 같은 conic-gradient 배경의 시작 각도를 @property로 등록한 변수로 돌려, 색이 가운데를 축으로 8초에 한 바퀴 빙글 돌게 해줘. 가장자리는 어둡게 감싸고, 순수 CSS로.`,
+    cat: '배경', desc: '색상환이 천천히 돕니다. 각도 변수를 @property로 등록해 애니메이션합니다.',
+    html: `<div class="m-bg-conic" aria-hidden="true"></div>`,
+    css: `@property --m-bg-a{syntax:"<angle>";inherits:false;initial-value:0deg}
+.m-bg-conic{position:absolute;inset:0;background:radial-gradient(circle,transparent 20%,#14101f 75%),conic-gradient(from var(--m-bg-a),#ff9ecd,#ffd479,#8fe3d0,#7cc4ff,#b39cff,#ff9ecd);animation:m-bg-conic 8s linear infinite}
+@keyframes m-bg-conic{to{--m-bg-a:360deg}}` },
+
+  { name: '떠다니는 블롭',
+    kw: 'floating blobs · blurred orbs · ambient background',
+    prompt: `크게 블러 처리한 분홍·파랑·민트 원 세 개가 어두운 배경 위를 각자 다른 경로로 8~12초에 걸쳐 둥둥 떠다니게 해줘. 블러는 고정하고 움직임은 transform만, 순수 CSS로.`,
+    cat: '배경', desc: '흐린 빛 덩어리들이 천천히 떠다닙니다. 히어로 배경에.',
+    html: `<div class="m-bg-blobs" aria-hidden="true"><i></i><i></i><i></i></div>`,
+    css: `.m-bg-blobs{position:absolute;inset:0;overflow:hidden;background:#14101f}
+.m-bg-blobs i{position:absolute;width:140px;height:140px;border-radius:50%;filter:blur(36px);opacity:.75}
+.m-bg-blobs i:nth-child(1){left:-20px;top:-30px;background:#ff9ecd;animation:m-bg-b1 9s ease-in-out infinite alternate}
+.m-bg-blobs i:nth-child(2){right:-30px;top:20px;background:#7cc4ff;animation:m-bg-b2 12s ease-in-out infinite alternate}
+.m-bg-blobs i:nth-child(3){left:30%;bottom:-50px;background:#8fe3d0;animation:m-bg-b3 10s ease-in-out infinite alternate}
+@keyframes m-bg-b1{to{transform:translate(120px,60px) scale(1.2)}}
+@keyframes m-bg-b2{to{transform:translate(-110px,50px) scale(.8)}}
+@keyframes m-bg-b3{to{transform:translate(60px,-80px) scale(1.15)}}` },
+
+  { name: '별빛',
+    kw: 'twinkling stars · night sky · radial-gradient dots',
+    prompt: `밤하늘 배경에 크기가 다른 별 두 겹을 radial-gradient 점으로 반복해 깔고, 두 겹이 서로 다른 속도(3초, 4.5초)로 반짝이게 해줘. 이미지 없이 순수 CSS로.`,
+    cat: '배경', desc: '두 겹의 별이 엇갈려 반짝입니다. 이미지 없이 그라디언트 점으로만.',
+    html: `<div class="m-bg-stars" aria-hidden="true"></div>`,
+    css: `.m-bg-stars{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 120%,#2a2251,#0b0814 70%)}
+.m-bg-stars::before,.m-bg-stars::after{content:"";position:absolute;inset:0}
+.m-bg-stars::before{background:radial-gradient(1px 1px at 20px 30px,#fff,transparent),radial-gradient(1px 1px at 80px 70px,#fff,transparent),radial-gradient(1.5px 1.5px at 50px 110px,#fff,transparent);background-size:120px 130px;animation:m-bg-tw 3s ease-in-out infinite alternate}
+.m-bg-stars::after{background:radial-gradient(1.5px 1.5px at 30px 60px,#ffd479,transparent),radial-gradient(1px 1px at 120px 20px,#fff,transparent),radial-gradient(2px 2px at 140px 120px,#b39cff,transparent);background-size:170px 150px;animation:m-bg-tw 4.5s ease-in-out infinite alternate-reverse}
+@keyframes m-bg-tw{from{opacity:.25}}` },
+
+  { name: '별똥별',
+    kw: 'shooting stars · meteor streak · diagonal fall',
+    prompt: `밤하늘에 꼬리 달린 별똥별 세 개가 오른쪽 위에서 왼쪽 아래로 비스듬히 휙 지나가게 해줘. 하나당 0.9초, 서로 다른 시차로 4~6초마다, 꼬리는 그라디언트로 흐려지게, 순수 CSS로.`,
+    cat: '배경', desc: '꼬리 긴 별똥별이 이따금 지나갑니다.',
+    html: `<div class="m-bg-meteor" aria-hidden="true"><i style="--d:0s;--t:10%;--l:70%"></i><i style="--d:1.8s;--t:-5%;--l:95%"></i><i style="--d:3.4s;--t:30%;--l:110%"></i></div>`,
+    css: `.m-bg-meteor{position:absolute;inset:0;overflow:hidden;background:radial-gradient(1px 1px at 30px 40px,#fff,transparent) 0 0/90px 80px,linear-gradient(#0b0814,#231a45)}
+.m-bg-meteor i{position:absolute;top:var(--t);left:var(--l);width:90px;height:2px;border-radius:2px;background:linear-gradient(90deg,#fff,transparent);opacity:0;transform:rotate(-35deg);transform-origin:0 50%;animation:m-bg-meteor 5s linear infinite;animation-delay:var(--d)}
+@keyframes m-bg-meteor{0%{opacity:0;transform:rotate(-35deg) translateX(0)}2%{opacity:1}18%{opacity:0;transform:rotate(-35deg) translateX(-260px)}100%{opacity:0;transform:rotate(-35deg) translateX(-260px)}}` },
+
+  { name: '눈',
+    kw: 'snowfall · layered parallax snow · background-position',
+    prompt: `눈송이를 radial-gradient 점으로 두 겹 깔고, 큰 눈은 6초, 작은 눈은 10초에 한 칸씩 아래로 내리며 살짝 옆으로 흘러 깊이감이 나게 해줘. 요소를 늘리지 않고 배경 위치만 움직여서 순수 CSS로.`,
+    cat: '배경', desc: '앞뒤 두 겹의 눈이 다른 속도로 내립니다. 요소 하나로 가볍게.',
+    html: `<div class="m-bg-snow" aria-hidden="true"></div>`,
+    css: `.m-bg-snow{position:absolute;inset:0;background:linear-gradient(#1b2340,#3a4a72)}
+.m-bg-snow::before,.m-bg-snow::after{content:"";position:absolute;inset:0}
+.m-bg-snow::before{background:radial-gradient(3px 3px at 20px 30px,#fff,transparent),radial-gradient(2.5px 2.5px at 90px 80px,#fff,transparent),radial-gradient(3px 3px at 150px 10px,#fff,transparent);background-size:180px 120px;animation:m-bg-snow1 6s linear infinite}
+.m-bg-snow::after{background:radial-gradient(1.5px 1.5px at 40px 20px,#fff9,transparent),radial-gradient(1.5px 1.5px at 100px 60px,#fff9,transparent),radial-gradient(1px 1px at 10px 90px,#fff9,transparent);background-size:120px 100px;animation:m-bg-snow2 10s linear infinite}
+@keyframes m-bg-snow1{to{background-position:30px 120px}}
+@keyframes m-bg-snow2{to{background-position:-20px 100px}}` },
+
+  { name: '비',
+    kw: 'rain · slanted streaks · mask stripes',
+    prompt: `비스듬히 떨어지는 빗줄기 배경을 만들어줘. 위에서 아래로 짙어지는 짧은 선을 마스크 세로줄로 잘라 빗줄기를 만들고, 앞뒤 두 겹을 0.5초·0.8초로 다르게 떨어뜨려, 전체는 10도 기울게. 순수 CSS로.`,
+    cat: '배경', desc: '앞뒤 두 겹의 빗줄기가 비스듬히 쏟아집니다.',
+    html: `<div class="m-bg-rain" aria-hidden="true"></div>`,
+    css: `.m-bg-rain{position:absolute;inset:0;overflow:hidden;background:linear-gradient(#141b2c,#25314d)}
+.m-bg-rain::before,.m-bg-rain::after{content:"";position:absolute;inset:-30%;transform:rotate(12deg)}
+.m-bg-rain::before{background:linear-gradient(transparent 55%,rgba(170,200,240,.55)) 0 0/100% 46px;-webkit-mask:linear-gradient(90deg,#000 1px,transparent 1px) 0 0/19px 100%;mask:linear-gradient(90deg,#000 1px,transparent 1px) 0 0/19px 100%;animation:m-bg-rain .5s linear infinite}
+.m-bg-rain::after{background:linear-gradient(transparent 70%,rgba(170,200,240,.3)) 0 0/100% 34px;-webkit-mask:linear-gradient(90deg,#000 1px,transparent 1px) 7px 0/13px 100%;mask:linear-gradient(90deg,#000 1px,transparent 1px) 7px 0/13px 100%;animation:m-bg-rain2 .8s linear infinite}
+@keyframes m-bg-rain{to{background-position:0 46px}}
+@keyframes m-bg-rain2{to{background-position:0 34px}}` },
+
+  { name: '버블',
+    kw: 'rising bubbles · underwater · sway',
+    prompt: `물속 배경에서 크기가 다른 거품 여섯 개가 아래에서 위로 4~8초에 걸쳐 올라가며 좌우로 살짝 흔들리고 위에서 사라지게 해줘. 거품은 반투명 테두리와 하이라이트, 순수 CSS로.`,
+    cat: '배경', desc: '물속 거품이 흔들리며 떠오릅니다.',
+    html: `<div class="m-bg-bubbles" aria-hidden="true"><i style="--x:10%;--s:14px;--t:6s;--d:0s"></i><i style="--x:25%;--s:24px;--t:8s;--d:-3s"></i><i style="--x:45%;--s:10px;--t:5s;--d:-1s"></i><i style="--x:62%;--s:20px;--t:7s;--d:-5s"></i><i style="--x:78%;--s:12px;--t:4.5s;--d:-2s"></i><i style="--x:90%;--s:28px;--t:9s;--d:-6s"></i></div>`,
+    css: `.m-bg-bubbles{position:absolute;inset:0;overflow:hidden;background:linear-gradient(#1b6d8a,#0d2c4a)}
+.m-bg-bubbles i{position:absolute;left:var(--x);bottom:calc(var(--s) * -1);width:var(--s);height:var(--s);border:1px solid rgba(255,255,255,.55);border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.6) 0 15%,rgba(255,255,255,.08) 16%);animation:m-bg-rise var(--t) ease-in infinite,m-bg-wob 1.4s ease-in-out infinite alternate;animation-delay:var(--d),0s}
+@keyframes m-bg-rise{to{bottom:110%;opacity:.3}}
+@keyframes m-bg-wob{to{transform:translateX(10px)}}` },
+
+  { name: '반딧불',
+    kw: 'fireflies · glowing particles · random drift',
+    prompt: `어두운 숲 배경 위로 노란 빛 점 여덟 개가 각자 다른 방향으로 천천히 떠돌며 반딧불처럼 깜빡이게 해줘. 떠도는 건 6~10초 왕복, 깜빡임 2초, 은은한 빛 번짐, 순수 CSS로(방향은 CSS 변수로).`,
+    cat: '배경', desc: '빛 점들이 반딧불처럼 떠돌며 깜빡입니다.',
+    html: `<div class="m-bg-fly" aria-hidden="true"><i style="--l:15%;--t:30%;--x:40px;--y:-30px;--d:7s"></i><i style="--l:35%;--t:70%;--x:-30px;--y:-40px;--d:9s"></i><i style="--l:55%;--t:40%;--x:50px;--y:30px;--d:6s"></i><i style="--l:75%;--t:20%;--x:-40px;--y:40px;--d:8s"></i><i style="--l:85%;--t:65%;--x:-50px;--y:-20px;--d:10s"></i><i style="--l:25%;--t:50%;--x:30px;--y:40px;--d:8.5s"></i><i style="--l:65%;--t:80%;--x:20px;--y:-50px;--d:7.5s"></i><i style="--l:45%;--t:15%;--x:-20px;--y:35px;--d:9.5s"></i></div>`,
+    css: `.m-bg-fly{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at 50% 110%,#1d3a2a,#0b120e 70%)}
+.m-bg-fly i{position:absolute;left:var(--l);top:var(--t);width:5px;height:5px;border-radius:50%;background:#fff3a0;box-shadow:0 0 8px 3px rgba(255,212,121,.6);animation:m-bg-drift var(--d) ease-in-out infinite alternate,m-bg-blink 2s ease-in-out infinite alternate;animation-delay:0s,calc(var(--d) * -.3)}
+@keyframes m-bg-drift{to{transform:translate(var(--x),var(--y))}}
+@keyframes m-bg-blink{from{opacity:.15}}` },
+
+  { name: '파도',
+    kw: 'layered waves · SVG wave · horizontal scroll',
+    prompt: `화면 아래에 SVG 물결 모양 세 겹을 깔고 겹마다 다른 속도(7초·11초·15초)와 방향으로 옆으로 흘러 출렁이는 바다처럼 보이게 해줘. 물결 모양은 data URI SVG를 가로 반복, 순수 CSS로.`,
+    cat: '배경', desc: '물결 세 겹이 다른 속도로 흘러 바다가 출렁입니다.',
+    html: `<div class="m-bg-waves" aria-hidden="true"><i></i><i></i><i></i></div>`,
+    css: `.m-bg-waves{position:absolute;inset:0;overflow:hidden;background:linear-gradient(#ffb38a,#ff9ecd 60%)}
+.m-bg-waves i{position:absolute;left:0;right:0;bottom:0;height:70px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 40' preserveAspectRatio='none'%3E%3Cpath d='M0 20Q50 0 100 20T200 20V40H0z' fill='%23fff'/%3E%3C/svg%3E") 0 100%/200px 100% repeat-x}
+.m-bg-waves i:nth-child(1){bottom:24px;opacity:.25;animation:m-bg-wave 7s linear infinite}
+.m-bg-waves i:nth-child(2){bottom:10px;opacity:.4;animation:m-bg-wave 11s linear infinite reverse}
+.m-bg-waves i:nth-child(3){height:50px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 40' preserveAspectRatio='none'%3E%3Cpath d='M0 20Q50 0 100 20T200 20V40H0z' fill='%233b2f5c'/%3E%3C/svg%3E");animation:m-bg-wave 15s linear infinite}
+@keyframes m-bg-wave{to{background-position:200px 100%}}` },
+
+  { name: '물결 원',
+    kw: 'water ripples · raindrop rings · pond',
+    prompt: `어두운 수면 위 세 곳에서 동그란 물결이 시차를 두고 퍼지며 사라지게 해줘(빗방울 떨어진 연못). 원은 납작한 타원, 2.4초 감속, 테두리만, 순수 CSS로.`,
+    cat: '배경', desc: '빗방울이 떨어진 연못처럼 물결이 퍼집니다.',
+    html: `<div class="m-bg-pond" aria-hidden="true"><i style="--l:25%;--t:40%;--d:0s"></i><i style="--l:65%;--t:60%;--d:-.8s"></i><i style="--l:45%;--t:25%;--d:-1.6s"></i></div>`,
+    css: `.m-bg-pond{position:absolute;inset:0;overflow:hidden;background:linear-gradient(#123049,#081a2a)}
+.m-bg-pond i{position:absolute;left:var(--l);top:var(--t);width:120px;height:40px;margin:-20px 0 0 -60px}
+.m-bg-pond i::before,.m-bg-pond i::after{content:"";position:absolute;inset:0;border:1.5px solid rgba(160,210,255,.7);border-radius:50%;animation:m-bg-ripple 2.4s ease-out infinite;animation-delay:var(--d)}
+.m-bg-pond i::after{animation-delay:calc(var(--d) - .5s)}
+@keyframes m-bg-ripple{from{transform:scale(.05);opacity:1}to{transform:scale(1);opacity:0}}` },
+
+  { name: '신스웨이브 격자',
+    kw: 'synthwave grid · retro sun · perspective floor',
+    prompt: `80년대 레트로 느낌으로, 하늘엔 가로 줄로 잘린 노을 해를 두고 바닥엔 원근감 있게 눕힌 분홍 격자가 이쪽으로 끝없이 다가오게 해줘. 격자는 rotateX(60deg)로 눕히고 배경 위치를 1초마다 한 칸씩, 순수 CSS로.`,
+    cat: '배경', desc: '레트로 노을과 다가오는 네온 격자. 게임·음악 사이트에.',
+    html: `<div class="m-bg-synth" aria-hidden="true"></div>`,
+    css: `.m-bg-synth{position:absolute;inset:0;overflow:hidden;background:linear-gradient(#1a0b2e 0,#4b1d5c 50%,#14101f 50%)}
+.m-bg-synth::before{content:"";position:absolute;left:50%;top:14%;width:100px;height:100px;margin-left:-50px;border-radius:50%;background:linear-gradient(#ffd479,#ff4d8d);-webkit-mask:linear-gradient(#000 50%,transparent 50%) 0 0/100% 100%,repeating-linear-gradient(#000 0 6px,transparent 6px 10px) 0 50px/100% 50px no-repeat;mask:linear-gradient(#000 50%,transparent 50%) 0 0/100% 100%,repeating-linear-gradient(#000 0 6px,transparent 6px 10px) 0 50px/100% 50px no-repeat}
+.m-bg-synth::after{content:"";position:absolute;left:-50%;right:-50%;bottom:0;height:52%;background:linear-gradient(#ff4d8d 1.5px,transparent 1.5px) 0 0/40px 20px,linear-gradient(90deg,#ff4d8d 1.5px,transparent 1.5px) 0 0/40px 20px;transform:perspective(160px) rotateX(60deg);transform-origin:50% 100%;animation:m-bg-synth 1s linear infinite}
+@keyframes m-bg-synth{to{background-position:0 20px,0 20px}}` },
+
+  { name: '도트 파동',
+    kw: 'dot grid pulse · radial mask wave · @property length',
+    prompt: `흐린 점 격자 배경 위로, 가운데서 시작한 밝은 고리 모양 파동이 바깥으로 퍼져 지나가는 자리의 점들만 빛나게 해줘. 고리 반지름은 @property로 등록한 길이 변수를 0에서 300px까지 3초 등속, mask로 순수 CSS만.`,
+    cat: '배경', desc: '점 격자 위로 빛의 파동이 퍼져 나갑니다.',
+    html: `<div class="m-bg-dots" aria-hidden="true"></div>`,
+    css: `@property --m-bg-r{syntax:"<length>";inherits:false;initial-value:0px}
+.m-bg-dots{position:absolute;inset:0;background:radial-gradient(#ffffff26 1.5px,transparent 2px) 0 0/16px 16px,#14101f}
+.m-bg-dots::after{content:"";position:absolute;inset:0;background:radial-gradient(#8fe3d0 2px,transparent 2.5px) 0 0/16px 16px;-webkit-mask:radial-gradient(circle,transparent calc(var(--m-bg-r) - 40px),#000 var(--m-bg-r),transparent calc(var(--m-bg-r) + 40px));mask:radial-gradient(circle,transparent calc(var(--m-bg-r) - 40px),#000 var(--m-bg-r),transparent calc(var(--m-bg-r) + 40px));animation:m-bg-dots 3s linear infinite}
+@keyframes m-bg-dots{to{--m-bg-r:300px}}` },
+
+  { name: '격자 스포트라이트',
+    kw: 'grid spotlight · cursor reveal grid · mask follow',
+    prompt: `거의 안 보이는 격자선 배경 위로, 마우스 주변 반지름 120px만 밝은 격자가 드러나게 해줘. 밝은 격자 층을 하나 더 깔고 커서 중심 radial mask로 잘라서, 위치만 바닐라 JS로 CSS 변수에.`,
+    cat: '배경', desc: '커서 근처만 격자가 밝아집니다. 미리보기 위에서 움직여 보세요.',
+    html: `<div class="m-bg-gridspot" aria-hidden="true"></div>`,
+    css: `.m-bg-gridspot{position:absolute;inset:0;background:linear-gradient(#ffffff0d 1px,transparent 1px) 0 0/24px 24px,linear-gradient(90deg,#ffffff0d 1px,transparent 1px) 0 0/24px 24px,#14101f}
+.m-bg-gridspot::after{content:"";position:absolute;inset:0;background:linear-gradient(#b39cff 1px,transparent 1px) 0 0/24px 24px,linear-gradient(90deg,#b39cff 1px,transparent 1px) 0 0/24px 24px;-webkit-mask:radial-gradient(120px circle at var(--x,50%) var(--y,50%),#000,transparent);mask:radial-gradient(120px circle at var(--x,50%) var(--y,50%),#000,transparent)}`,
+    js: root => {
+      const g = root.querySelector('.m-bg-gridspot');
+      root.addEventListener('mousemove', e => {
+        const r = g.getBoundingClientRect();
+        g.style.setProperty('--x', e.clientX - r.left + 'px');
+        g.style.setProperty('--y', e.clientY - r.top + 'px');
+      });
+    } },
+
+  { name: '줄무늬 흐름',
+    kw: 'moving stripes · diagonal pattern · seamless tile',
+    prompt: `두 가지 보라 톤의 사선 줄무늬 배경이 오른쪽 아래로 끊김 없이 계속 흘러가게 해줘. 반복 무늬 한 칸 크기만큼 배경 위치를 옮겨 이음새가 안 보이게, 2초 등속, 순수 CSS로.`,
+    cat: '배경', desc: '사선 줄무늬가 끊김 없이 흐릅니다. 공사 중·진행 중 배경에.',
+    html: `<div class="m-bg-stripes" aria-hidden="true"></div>`,
+    css: `.m-bg-stripes{position:absolute;inset:0;background:repeating-linear-gradient(45deg,#241d33 0 14px,#2e2642 14px 28px) 0 0/39.6px 39.6px;animation:m-bg-stripes 2s linear infinite}
+@keyframes m-bg-stripes{to{background-position:39.6px 0}}` },
+
+  { name: '체커 스크롤',
+    kw: 'checkerboard · conic-gradient pattern · diagonal scroll',
+    prompt: `conic-gradient로 만든 체커보드 무늬가 대각선 방향으로 천천히 흘러가는 배경을 만들어줘. 한 칸 40px, 4초 등속으로 한 칸씩, 가장자리는 어둡게 감싸서 순수 CSS로.`,
+    cat: '배경', desc: 'conic-gradient 한 줄로 만든 체커가 흘러갑니다.',
+    html: `<div class="m-bg-checker" aria-hidden="true"></div>`,
+    css: `.m-bg-checker{position:absolute;inset:0;background:radial-gradient(circle,transparent 30%,#14101f 85%),conic-gradient(#2e2642 25%,#1d1729 0 50%,#2e2642 0 75%,#1d1729 0) 0 0/40px 40px;animation:m-bg-checker 4s linear infinite}
+@keyframes m-bg-checker{to{background-position:0 0,40px 40px}}` },
+
+  { name: 'CRT 스캔라인',
+    kw: 'CRT scanlines · retro monitor · flicker roll',
+    prompt: `옛날 브라운관 화면처럼 가로 주사선을 촘촘히 깔고, 화면 전체가 미세하게 깜빡이며, 밝은 띠 하나가 위에서 아래로 4초마다 굴러 내려가게 해줘. 가장자리는 둥글게 어둡게, 순수 CSS로.`,
+    cat: '배경', desc: '브라운관 모니터의 주사선과 굴러가는 띠.',
+    html: `<div class="m-bg-crt" aria-hidden="true"><b>PRESS START</b></div>`,
+    css: `.m-bg-crt{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse,#173d2e,#05100b 80%);color:#8fe3d0;font:800 18px ui-monospace,monospace;letter-spacing:.2em;text-shadow:0 0 6px #8fe3d0;animation:m-bg-flick .15s steps(2) infinite}
+.m-bg-crt::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(transparent 0 2px,rgba(0,0,0,.35) 2px 3px)}
+.m-bg-crt::after{content:"";position:absolute;left:0;right:0;top:-30%;height:30%;background:linear-gradient(transparent,rgba(143,227,208,.12),transparent);animation:m-bg-roll 4s linear infinite}
+@keyframes m-bg-flick{50%{opacity:.94}}
+@keyframes m-bg-roll{to{top:100%}}` },
+
+  { name: '동심원 파동',
+    kw: 'concentric rings · repeating-radial-gradient · hypnotic pulse',
+    prompt: `가운데에서 가는 고리들이 끝없이 바깥으로 퍼져 나가는 배경을 만들어줘. repeating-radial-gradient의 고리 위치를 @property 길이 변수로 24px만큼 1.5초 등속으로 밀어 이음새 없이 반복, 바깥으로 갈수록 흐려지게, 순수 CSS로.`,
+    cat: '배경', desc: '고리들이 쉬지 않고 퍼져 나갑니다. 요소 하나와 그라디언트만.',
+    html: `<div class="m-bg-rings" aria-hidden="true"></div>`,
+    css: `@property --m-bg-o{syntax:"<length>";inherits:false;initial-value:0px}
+.m-bg-rings{position:absolute;inset:0;background:radial-gradient(circle,transparent 20%,#14101f 80%),repeating-radial-gradient(circle,#b39cff66 calc(var(--m-bg-o) - 24px),#b39cff66 calc(var(--m-bg-o) - 22px),transparent calc(var(--m-bg-o) - 22px),transparent var(--m-bg-o)),#14101f;animation:m-bg-rings 1.5s linear infinite}
+@keyframes m-bg-rings{to{--m-bg-o:24px}}` },
+
+  { name: '햇살 빔',
+    kw: 'sunburst rays · rotating conic · retro rays',
+    prompt: `가운데에서 사방으로 뻗는 햇살 줄무늬를 repeating-conic-gradient로 만들고 40초에 한 바퀴 아주 천천히 돌게 해줘. 가운데는 따뜻하게 빛나고 바깥은 어둡게, 순수 CSS로.`,
+    cat: '배경', desc: '햇살 줄무늬가 천천히 돕니다. 이벤트·당첨 화면에.',
+    html: `<div class="m-bg-rays" aria-hidden="true"></div>`,
+    css: `.m-bg-rays{position:absolute;inset:0;overflow:hidden;background:radial-gradient(circle,#ffd479 0 8%,#ff9e6b 20%,#3a1d3e 75%)}
+.m-bg-rays::before{content:"";position:absolute;inset:-60%;background:repeating-conic-gradient(rgba(255,255,255,.14) 0 6deg,transparent 6deg 18deg);animation:m-bg-rays 40s linear infinite}
+@keyframes m-bg-rays{to{transform:rotate(360deg)}}` },
+
+  { name: '오로라 커튼',
+    kw: 'aurora curtains · northern lights · vertical bands',
+    prompt: `밤하늘에 초록·보라 빛의 세로 커튼 세 장이 블러 처리된 채 겹쳐 있고, 각각 다른 속도로 좌우로 흔들리며 위아래로 늘었다 줄어 오로라처럼 일렁이게 해줘. 겹치는 부분은 screen 블렌드로 밝게, 순수 CSS로.`,
+    cat: '배경', desc: '북극광처럼 빛의 커튼이 일렁입니다. 기존 오로라(색 덩어리)와 다른 커튼형.',
+    html: `<div class="m-bg-curtain" aria-hidden="true"><i></i><i></i><i></i></div>`,
+    css: `.m-bg-curtain{position:absolute;inset:0;overflow:hidden;background:linear-gradient(#050816,#10142e)}
+.m-bg-curtain i{position:absolute;top:-10%;width:40%;height:90%;border-radius:50%;filter:blur(22px);mix-blend-mode:screen;transform-origin:50% 0}
+.m-bg-curtain i:nth-child(1){left:5%;background:linear-gradient(#2fd39a,transparent);animation:m-bg-cur 7s ease-in-out infinite alternate}
+.m-bg-curtain i:nth-child(2){left:35%;background:linear-gradient(#b39cff,transparent);animation:m-bg-cur 9s ease-in-out infinite alternate-reverse}
+.m-bg-curtain i:nth-child(3){left:60%;background:linear-gradient(#8fe3d0,transparent);animation:m-bg-cur 11s ease-in-out infinite alternate}
+@keyframes m-bg-cur{0%{transform:translateX(-20px) skewX(-15deg) scaleY(.8)}100%{transform:translateX(30px) skewX(15deg) scaleY(1.15)}}` },
+
+  { name: '플라즈마',
+    kw: 'plasma · hue rotate · swirling gradient',
+    prompt: `여러 색 radial-gradient를 겹친 두 층이 서로 반대로 천천히 돌고, 전체 색상도 hue-rotate로 15초에 한 바퀴 돌아 용암 같은 플라즈마 배경이 되게 해줘. 블러로 경계를 녹이고, 순수 CSS로.`,
+    cat: '배경', desc: '색이 녹아 섞이며 계속 변하는 플라즈마.',
+    html: `<div class="m-bg-plasma" aria-hidden="true"></div>`,
+    css: `.m-bg-plasma{position:absolute;inset:0;overflow:hidden;background:#14101f;animation:m-bg-hue 15s linear infinite}
+.m-bg-plasma::before,.m-bg-plasma::after{content:"";position:absolute;inset:-50%;filter:blur(30px)}
+.m-bg-plasma::before{background:radial-gradient(circle at 30% 30%,#ff4d8d,transparent 35%),radial-gradient(circle at 70% 60%,#6c4bd8,transparent 35%);animation:m-bg-spin 12s linear infinite}
+.m-bg-plasma::after{background:radial-gradient(circle at 60% 30%,#2fd39a,transparent 30%),radial-gradient(circle at 35% 70%,#ffd479,transparent 30%);mix-blend-mode:screen;animation:m-bg-spin 16s linear infinite reverse}
+@keyframes m-bg-spin{to{transform:rotate(360deg)}}
+@keyframes m-bg-hue{to{filter:hue-rotate(360deg)}}` },
+
+  { name: '라바 램프',
+    kw: 'lava lamp · gooey blobs · SVG goo filter',
+    prompt: `라바 램프처럼 주황·분홍 덩어리 네 개가 각자 다른 속도로 천천히 오르내리다 서로 닿으면 끈적하게 합쳐졌다 떨어지게 해줘. SVG 블러 + 색 행렬 필터로 끈적함을 만들고, 움직임은 CSS로.`,
+    cat: '배경', desc: '덩어리가 붙었다 떨어지는 라바 램프. SVG goo 필터.',
+    html: `<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="m-bg-goo"><feGaussianBlur stdDeviation="10"/><feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 22 -10"/></filter></svg><div class="m-bg-lava" aria-hidden="true"><div><i style="--l:20%;--s:60px;--t:7s"></i><i style="--l:45%;--s:80px;--t:9s;--d:-3s"></i><i style="--l:65%;--s:50px;--t:6s;--d:-2s"></i><i style="--l:35%;--s:44px;--t:8s;--d:-5s"></i></div></div>`,
+    css: `.m-bg-lava{position:absolute;inset:0;overflow:hidden;background:linear-gradient(#2a0f2e,#14101f)}
+.m-bg-lava div{position:absolute;inset:0;filter:url(#m-bg-goo)}
+.m-bg-lava div::after{content:"";position:absolute;left:0;right:0;bottom:-20px;height:40px;background:#ff7a59}
+.m-bg-lava i{position:absolute;left:var(--l);bottom:-20px;width:var(--s);height:var(--s);border-radius:50%;background:linear-gradient(#ff9ecd,#ff7a59);animation:m-bg-lava var(--t) ease-in-out infinite alternate;animation-delay:var(--d,0s)}
+@keyframes m-bg-lava{to{transform:translateY(-190px) scale(.85)}}` },
+
+  { name: '떠다니는 도형',
+    kw: 'floating shapes · geometric · rotate drift',
+    prompt: `원, 테두리 사각형, 삼각형, 십자 같은 단순한 도형 여섯 개가 배경 여기저기서 각자 다른 속도로 둥둥 떠다니며 천천히 돌게 해줘. 6~12초 왕복, 반투명 파스텔, 순수 CSS로.`,
+    cat: '배경', desc: '파스텔 도형들이 천천히 떠다닙니다. 랜딩 페이지 장식에.',
+    html: `<div class="m-bg-shapes" aria-hidden="true"><i class="c" style="--l:12%;--t:20%;--d:8s"></i><i class="s" style="--l:75%;--t:15%;--d:10s"></i><i class="t" style="--l:60%;--t:65%;--d:7s"></i><i class="p" style="--l:25%;--t:70%;--d:9s"></i><i class="c" style="--l:85%;--t:70%;--d:12s"></i><i class="s" style="--l:42%;--t:30%;--d:6s"></i></div>`,
+    css: `.m-bg-shapes{position:absolute;inset:0;overflow:hidden;background:#14101f}
+.m-bg-shapes i{position:absolute;left:var(--l);top:var(--t);width:26px;height:26px;opacity:.7;animation:m-bg-float var(--d) ease-in-out infinite alternate}
+.m-bg-shapes .c{border-radius:50%;background:#ff9ecd}
+.m-bg-shapes .s{border:3px solid #8fe3d0;border-radius:4px}
+.m-bg-shapes .t{background:#ffd479;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.m-bg-shapes .p{background:linear-gradient(#b39cff,#b39cff) center/100% 6px no-repeat,linear-gradient(#b39cff,#b39cff) center/6px 100% no-repeat}
+@keyframes m-bg-float{to{transform:translate(18px,-26px) rotate(180deg)}}` },
+
+  { name: '파티클 연결선',
+    kw: 'particle network · constellation · canvas lines',
+    prompt: `점 28개가 캔버스 위를 천천히 떠다니고, 서로 80px 안으로 가까워진 점끼리는 가까울수록 진한 선으로 이어지게 해줘(별자리·네트워크 느낌). 캔버스 크기는 ResizeObserver로 맞추고, 움직임 줄이기 설정이면 한 장면만 그리기, 바닐라 JS로.`,
+    cat: '배경', desc: '떠다니는 점들이 가까워지면 선으로 이어집니다. 기술·AI 사이트의 단골 배경.',
+    html: `<canvas class="m-bg-net" aria-hidden="true"></canvas>`,
+    css: `.m-bg-net{position:absolute;inset:0;width:100%;height:100%;background:#14101f}`,
+    js: root => {
+      const cv = root.querySelector('.m-bg-net'), g = cv.getContext('2d');
+      const pts = [...Array(28)].map(() => ({ x: Math.random(), y: Math.random(), vx: (Math.random() - .5) * .002, vy: (Math.random() - .5) * .002 }));
+      const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      new ResizeObserver(() => { cv.width = cv.clientWidth; cv.height = cv.clientHeight; if (still) step(); }).observe(cv);
+      const step = () => {
+        const w = cv.width, h = cv.height;
+        g.clearRect(0, 0, w, h);
+        for (const p of pts) { p.x = (p.x + p.vx + 1) % 1; p.y = (p.y + p.vy + 1) % 1; }
+        for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
+          const d = Math.hypot((pts[i].x - pts[j].x) * w, (pts[i].y - pts[j].y) * h);
+          if (d > 80) continue;
+          g.strokeStyle = `rgba(143,227,208,${1 - d / 80})`;
+          g.beginPath(); g.moveTo(pts[i].x * w, pts[i].y * h); g.lineTo(pts[j].x * w, pts[j].y * h); g.stroke();
+        }
+        g.fillStyle = '#f2eefc';
+        for (const p of pts) { g.beginPath(); g.arc(p.x * w, p.y * h, 1.8, 0, 7); g.fill(); }
+      };
+      const loop = () => { if (!root.contains(cv)) return; if (cv.isConnected && cv.width) step(); requestAnimationFrame(loop); };
+      if (!still) loop();
+    } },
+
+  { name: '매트릭스 비',
+    kw: 'matrix rain · falling characters · canvas trail',
+    prompt: `영화 매트릭스처럼 초록 글자들이 세로 줄마다 다른 위치에서 떨어지고, 지나간 자리는 서서히 어두워지는 꼬리가 남게 해줘. 캔버스에 매 프레임 반투명 검정을 덧칠하는 방식, 50ms마다 한 칸, 바닐라 JS로.`,
+    cat: '배경', desc: '초록 글자가 비처럼 쏟아집니다. 해커·개발 테마에.',
+    html: `<canvas class="m-bg-matrix" aria-hidden="true"></canvas>`,
+    css: `.m-bg-matrix{position:absolute;inset:0;width:100%;height:100%;background:#000}`,
+    js: root => {
+      const cv = root.querySelector('.m-bg-matrix'), g = cv.getContext('2d'), size = 14;
+      const chars = 'アイウエオカキクケコサシスセソ0123456789';
+      let drops = [];
+      new ResizeObserver(() => { cv.width = cv.clientWidth; cv.height = cv.clientHeight; drops = [...Array(Math.ceil(cv.width / size))].map(() => Math.random() * -20); }).observe(cv);
+      const step = () => {
+        g.fillStyle = 'rgba(0,0,0,.09)';
+        g.fillRect(0, 0, cv.width, cv.height);
+        g.fillStyle = '#2fd39a';
+        g.font = size + 'px monospace';
+        drops.forEach((y, i) => {
+          g.fillText(chars[Math.floor(Math.random() * chars.length)], i * size, y * size);
+          drops[i] = y * size > cv.height && Math.random() > .97 ? 0 : y + 1;
+        });
+      };
+      const t = setInterval(() => {
+        if (!root.contains(cv)) return clearInterval(t);
+        if (cv.isConnected && cv.width && !matchMedia('(prefers-reduced-motion: reduce)').matches) step();
+      }, 50);
+    } },
+
+  { name: '우주 패럴랙스',
+    kw: 'space parallax · star layers · nebula',
+    prompt: `우주 배경에 별 세 겹을 깔고, 먼 별은 느리게(60초), 중간 별은 30초, 가까운 별은 빠르게(15초) 왼쪽으로 흘러 우주선 창밖처럼 깊이감이 나게 해줘. 보라 성운도 은은하게, 배경 위치만 움직여 순수 CSS로.`,
+    cat: '배경', desc: '세 겹의 별이 다른 속도로 흘러 깊이가 생깁니다.',
+    html: `<div class="m-bg-space" aria-hidden="true"><i></i><i></i><i></i></div>`,
+    css: `.m-bg-space{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at 70% 40%,rgba(108,75,216,.45),transparent 50%),radial-gradient(ellipse at 20% 80%,rgba(255,77,141,.25),transparent 45%),#05040a}
+.m-bg-space i{position:absolute;inset:0}
+.m-bg-space i:nth-child(1){background:radial-gradient(1px 1px at 10px 20px,#fff8,transparent),radial-gradient(1px 1px at 60px 70px,#fff8,transparent) 0 0/100px 90px;animation:m-bg-sp 60s linear infinite}
+.m-bg-space i:nth-child(2){background:radial-gradient(1.5px 1.5px at 30px 40px,#fff,transparent),radial-gradient(1.5px 1.5px at 120px 100px,#fff,transparent) 0 0/160px 130px;animation:m-bg-sp2 30s linear infinite}
+.m-bg-space i:nth-child(3){background:radial-gradient(2.5px 2.5px at 50px 60px,#fff,transparent) 0 0/220px 170px;animation:m-bg-sp3 15s linear infinite}
+@keyframes m-bg-sp{to{background-position:-400px 0}}
+@keyframes m-bg-sp2{to{background-position:-480px 0}}
+@keyframes m-bg-sp3{to{background-position:-440px 0}}` },
+
+  { name: '하늘 시간 변화',
+    kw: 'day night cycle · sky gradient crossfade · sun arc',
+    prompt: `하늘 배경이 새벽 → 낮 → 노을 → 밤으로 16초 동안 부드럽게 바뀌고, 그에 맞춰 해가 왼쪽 아래에서 떠올라 오른쪽으로 지게 해줘. 그라디언트는 겹친 층의 투명도로 바꾸고, 해는 화면 아래 가운데를 축으로 회전, 순수 CSS로.`,
+    cat: '배경', desc: '하루가 16초에 지나갑니다. 그라디언트는 직접 애니메이션이 안 돼 층을 겹쳐 바꿉니다.',
+    html: `<div class="m-bg-sky" aria-hidden="true"><i></i><i></i><i></i><b></b></div>`,
+    css: `.m-bg-sky{position:absolute;inset:0;overflow:hidden;background:linear-gradient(#ffb38a,#ff9ecd)}
+.m-bg-sky i{position:absolute;inset:0;opacity:0;animation:m-bg-sky 16s linear infinite}
+.m-bg-sky i:nth-child(1){background:linear-gradient(#5aa9ff,#bfe3ff);animation-delay:-12s}
+.m-bg-sky i:nth-child(2){background:linear-gradient(#ff7a59,#6c4bd8);animation-delay:-8s}
+.m-bg-sky i:nth-child(3){background:linear-gradient(#05040a,#1d1747);animation-delay:-4s}
+.m-bg-sky b{position:absolute;left:50%;bottom:-130px;width:24px;height:280px;margin-left:-12px;animation:m-bg-arc 16s linear infinite}
+.m-bg-sky b::before{content:"";position:absolute;left:0;top:0;width:24px;height:24px;border-radius:50%;background:#ffd479;box-shadow:0 0 18px #ffd479}
+@keyframes m-bg-sky{0%,100%{opacity:0}10%,30%{opacity:1}40%{opacity:0}}
+@keyframes m-bg-arc{from{transform:rotate(-80deg)}to{transform:rotate(280deg)}}` },
+
+  { name: '구름 흐름',
+    kw: 'drifting clouds · box-shadow cloud · sky',
+    prompt: `파란 하늘에 동글동글한 구름 세 개가 크기·높이·속도를 달리해 왼쪽에서 오른쪽으로 끝없이 흘러가게 해줘. 구름은 원 하나에 box-shadow 원을 붙여 만들고, 18~30초 등속, 순수 CSS로.`,
+    cat: '배경', desc: 'box-shadow로 만든 구름이 천천히 흘러갑니다.',
+    html: `<div class="m-bg-clouds" aria-hidden="true"><i style="--t:20%;--s:1;--d:22s;--o:-5s"></i><i style="--t:50%;--s:.7;--d:30s;--o:-18s"></i><i style="--t:70%;--s:1.3;--d:18s;--o:-11s"></i></div>`,
+    css: `.m-bg-clouds{position:absolute;inset:0;overflow:hidden;background:linear-gradient(#5aa9ff,#bfe3ff)}
+.m-bg-clouds i{position:absolute;left:-120px;top:var(--t);width:44px;height:44px;border-radius:50%;background:#fff;box-shadow:30px -14px 0 6px #fff,62px 0 0 -2px #fff,30px 8px 0 4px #fff;scale:var(--s);animation:m-bg-cloud var(--d) linear infinite;animation-delay:var(--o)}
+@keyframes m-bg-cloud{to{left:calc(100% + 60px)}}` },
+
+  { name: '산 패럴랙스',
+    kw: 'mountain parallax · layered landscape · infinite scroll',
+    prompt: `노을 하늘 아래 산맥 세 겹을 깔고 먼 산은 40초, 중간 산은 24초, 가까운 산은 12초에 한 바퀴씩 왼쪽으로 흘러 기차 창밖처럼 보이게 해줘. 산 모양은 data URI SVG를 가로 반복, 순수 CSS로.`,
+    cat: '배경', desc: '세 겹의 산이 다른 속도로 지나갑니다. 기차 창밖 풍경.',
+    html: `<div class="m-bg-mount" aria-hidden="true"><i></i><i></i><i></i></div>`,
+    css: `.m-bg-mount{position:absolute;inset:0;overflow:hidden;background:linear-gradient(#ff9e6b,#ff9ecd 60%,#b39cff)}
+.m-bg-mount i{position:absolute;left:0;right:0;bottom:0;background-repeat:repeat-x;background-position:0 100%}
+.m-bg-mount i:nth-child(1){height:65%;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 100' preserveAspectRatio='none'%3E%3Cpath d='M0 100V60L40 30 80 55 130 15 180 50 230 25 300 60V100z' fill='%23b77bd6'/%3E%3C/svg%3E");background-size:300px 100%;animation:m-bg-m1 40s linear infinite}
+.m-bg-mount i:nth-child(2){height:45%;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 100' preserveAspectRatio='none'%3E%3Cpath d='M0 100V50L50 20 100 60 150 30 200 55 240 50V100z' fill='%237a4fae'/%3E%3C/svg%3E");background-size:240px 100%;animation:m-bg-m2 24s linear infinite}
+.m-bg-mount i:nth-child(3){height:28%;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100' preserveAspectRatio='none'%3E%3Cpath d='M0 100V40L30 20 70 50 120 10 160 45 200 40V100z' fill='%233b2f5c'/%3E%3C/svg%3E");background-size:200px 100%;animation:m-bg-m3 12s linear infinite}
+@keyframes m-bg-m1{to{background-position:-300px 100%}}
+@keyframes m-bg-m2{to{background-position:-240px 100%}}
+@keyframes m-bg-m3{to{background-position:-200px 100%}}` },
+
+  { name: '플러스 패턴',
+    kw: 'plus pattern · repeating gradient · drift',
+    prompt: `작은 + 무늬를 그라디언트 두 개로 만들어 격자로 반복하고, 무늬 전체가 대각선으로 6초에 한 칸씩 천천히 흘러가게 해줘. 가장자리는 어둡게 감싸고, 순수 CSS로.`,
+    cat: '배경', desc: '+ 무늬가 대각선으로 흐릅니다. 차분한 섹션 배경에.',
+    html: `<div class="m-bg-plus" aria-hidden="true"></div>`,
+    css: `.m-bg-plus{position:absolute;inset:0;background:radial-gradient(circle,transparent 35%,#14101f 90%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M16 11v10M11 16h10' stroke='%23b39cff' stroke-opacity='.55' stroke-width='2'/%3E%3C/svg%3E") 0 0/32px 32px,#14101f;animation:m-bg-plus 6s linear infinite}
+@keyframes m-bg-plus{to{background-position:0 0,32px 32px}}` },
+
+  { name: '마우스 그라디언트',
+    kw: 'cursor gradient background · smooth follow · @property',
+    prompt: `배경의 밝은 색 덩어리가 마우스 위치를 0.6초 늦게 부드럽게 따라오게 해줘. 위치 변수를 @property로 길이로 등록해 transition이 걸리게 하고, 위치만 바닐라 JS로 넣기.`,
+    cat: '배경', desc: '빛 덩어리가 커서를 느긋하게 따라옵니다. 미리보기 위에서 움직여 보세요.',
+    html: `<div class="m-bg-follow" aria-hidden="true"></div>`,
+    css: `@property --m-bg-fx{syntax:"<length>";inherits:false;initial-value:120px}
+@property --m-bg-fy{syntax:"<length>";inherits:false;initial-value:100px}
+.m-bg-follow{position:absolute;inset:0;background:radial-gradient(180px circle at var(--m-bg-fx) var(--m-bg-fy),rgba(179,156,255,.7),rgba(255,158,205,.3) 40%,transparent 70%),#14101f;transition:--m-bg-fx .6s ease-out,--m-bg-fy .6s ease-out}`,
+    js: root => {
+      const b = root.querySelector('.m-bg-follow');
+      root.addEventListener('mousemove', e => {
+        const r = b.getBoundingClientRect();
+        b.style.setProperty('--m-bg-fx', e.clientX - r.left + 'px');
+        b.style.setProperty('--m-bg-fy', e.clientY - r.top + 'px');
+      });
+    } },
+
+  { name: '마우스 패럴랙스 도형',
+    kw: 'mouse parallax · depth shapes · opposite movement',
+    prompt: `배경 도형 다섯 개가 마우스 반대 방향으로 움직이되, 가까운(큰) 도형일수록 더 많이(최대 30px) 움직여 입체감이 나게 해줘. 0.3초 감속으로 따라오게, 마우스 위치(-1~1)만 바닐라 JS로 CSS 변수에.`,
+    cat: '배경', desc: '도형들이 깊이에 따라 다르게 움직입니다. 미리보기 위에서 움직여 보세요.',
+    html: `<div class="m-bg-mpar" aria-hidden="true"><i style="--l:15%;--t:25%;--z:8;--s:20px;--c:#7cc4ff"></i><i style="--l:70%;--t:20%;--z:16;--s:34px;--c:#ff9ecd"></i><i style="--l:40%;--t:60%;--z:30;--s:54px;--c:#8fe3d0"></i><i style="--l:80%;--t:65%;--z:12;--s:26px;--c:#ffd479"></i><i style="--l:25%;--t:75%;--z:5;--s:14px;--c:#b39cff"></i></div>`,
+    css: `.m-bg-mpar{position:absolute;inset:0;overflow:hidden;background:#14101f}
+.m-bg-mpar i{position:absolute;left:var(--l);top:var(--t);width:var(--s);height:var(--s);border-radius:30%;background:var(--c);opacity:.8;transform:translate(calc(var(--mx,0) * var(--z) * -1px),calc(var(--my,0) * var(--z) * -1px)) rotate(calc(var(--mx,0) * 20deg));transition:transform .3s ease-out}`,
+    js: root => {
+      const b = root.querySelector('.m-bg-mpar');
+      root.addEventListener('mousemove', e => {
+        const r = b.getBoundingClientRect();
+        b.style.setProperty('--mx', ((e.clientX - r.left) / r.width - .5) * 2);
+        b.style.setProperty('--my', ((e.clientY - r.top) / r.height - .5) * 2);
+      });
+    } },
+
+  { name: '빛줄기',
+    kw: 'god rays · light beams · volumetric light',
+    prompt: `왼쪽 위에서 비스듬히 내리쬐는 빛줄기 네 개를 블러 처리한 그라디언트로 만들고, 각각 다른 속도로 살짝 흔들리며 밝아졌다 흐려지게 해줘(숲속·물속 빛내림). 5~9초 왕복, 순수 CSS로.`,
+    cat: '배경', desc: '위에서 내리쬐는 빛줄기가 일렁입니다.',
+    html: `<div class="m-bg-godray" aria-hidden="true"><i style="--l:5%;--w:30px;--d:6s"></i><i style="--l:25%;--w:50px;--d:8s"></i><i style="--l:48%;--w:24px;--d:5s"></i><i style="--l:65%;--w:40px;--d:9s"></i></div>`,
+    css: `.m-bg-godray{position:absolute;inset:0;overflow:hidden;background:linear-gradient(#0e3b3a,#06171c)}
+.m-bg-godray i{position:absolute;left:var(--l);top:-20%;width:var(--w);height:150%;background:linear-gradient(rgba(220,255,240,.55),transparent 80%);filter:blur(6px);transform:rotate(-24deg);transform-origin:top;animation:m-bg-ray var(--d) ease-in-out infinite alternate}
+@keyframes m-bg-ray{from{opacity:.25;transform:rotate(-28deg)}to{opacity:.85;transform:rotate(-20deg)}}` },
+
+  { name: '레이저',
+    kw: 'laser beams · club lights · sweeping lines',
+    prompt: `무대 아래 양쪽 모서리에서 분홍·민트 레이저 빔 네 줄이 위로 뻗어 부채꼴로 좌우를 쓸고, 빔 끝으로 갈수록 흐려지며 은은한 빛 번짐이 나게 해줘. 2~3초 왕복, 순수 CSS로.`,
+    cat: '배경', desc: '모서리에서 뻗은 레이저가 무대를 쓸어 댑니다. 공연·이벤트 페이지에.',
+    html: `<div class="m-bg-laser" aria-hidden="true"><i style="--x:0;--c:#ff4d8d;--a:60deg;--b:20deg;--d:2.4s"></i><i style="--x:0;--c:#8fe3d0;--a:40deg;--b:5deg;--d:3s"></i><i style="--x:100%;--c:#8fe3d0;--a:-60deg;--b:-20deg;--d:2.6s"></i><i style="--x:100%;--c:#ff4d8d;--a:-40deg;--b:-5deg;--d:2.2s"></i></div>`,
+    css: `.m-bg-laser{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at 50% 100%,#2a1640,#08050f 70%)}
+.m-bg-laser i{position:absolute;left:var(--x);bottom:0;width:2px;height:320px;background:linear-gradient(transparent,var(--c));box-shadow:0 0 8px var(--c);transform-origin:50% 100%;animation:m-bg-laser var(--d) ease-in-out infinite alternate}
+@keyframes m-bg-laser{from{transform:rotate(var(--a))}to{transform:rotate(var(--b))}}` },
+
+  { name: '등고선',
+    kw: 'topographic lines · contour map · repeating radial',
+    prompt: `지도 등고선처럼 서로 다른 두 중심에서 퍼지는 가는 동심선을 겹쳐 깔고, 두 중심이 20초에 걸쳐 천천히 움직여 선들이 꿈틀대게 해줘. repeating-radial-gradient 두 겹, 순수 CSS로.`,
+    cat: '배경', desc: '등고선이 천천히 꿈틀거립니다. 아웃도어·지도 사이트에.',
+    html: `<div class="m-bg-topo" aria-hidden="true"></div>`,
+    css: `.m-bg-topo{position:absolute;inset:0;background:repeating-radial-gradient(circle at 30% 40%,transparent 0 11px,rgba(143,227,208,.3) 11px 12px),repeating-radial-gradient(circle at 75% 70%,transparent 0 15px,rgba(179,156,255,.3) 15px 16px),#101a17;background-size:200% 200%;animation:m-bg-topo 20s ease-in-out infinite alternate}
+@keyframes m-bg-topo{to{background-position:30% 20%,70% 60%}}` },
+
+  { name: '회로 기판',
+    kw: 'circuit board · traveling signal · stroke-dashoffset',
+    prompt: `흐린 회로 배선 위로 밝은 신호 조각이 배선을 따라 흘러가는 배경을 만들어줘. 같은 SVG 경로를 두 번 그려 아래는 흐린 선, 위는 짧은 빛 조각(stroke-dasharray)을 stroke-dashoffset으로 3~5초마다 흘려서, 순수 CSS로.`,
+    cat: '배경', desc: '회로 배선을 따라 신호가 흐릅니다. 기술·하드웨어 사이트에.',
+    html: `<svg class="m-bg-circuit" viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g><path d="M0 40H80L100 60H180L200 40H300"/><path d="M0 110H60L80 130H150V170H300"/><path d="M40 200V150L60 130M220 0V80L240 100H300"/><path d="M120 0V30L140 50V100H260"/></g><g><path d="M0 40H80L100 60H180L200 40H300" style="--d:3s"/><path d="M0 110H60L80 130H150V170H300" style="--d:4s"/><path d="M40 200V150L60 130M220 0V80L240 100H300" style="--d:3.5s"/><path d="M120 0V30L140 50V100H260" style="--d:5s"/></g></svg>`,
+    css: `.m-bg-circuit{position:absolute;inset:0;width:100%;height:100%;background:#0b1512}
+.m-bg-circuit path{fill:none;stroke:#1f3a32;stroke-width:2}
+.m-bg-circuit g+g path{stroke:#8fe3d0;stroke-linecap:round;stroke-dasharray:24 400;filter:drop-shadow(0 0 3px #8fe3d0);animation:m-bg-signal var(--d) linear infinite}
+@keyframes m-bg-signal{from{stroke-dashoffset:24}to{stroke-dashoffset:-400}}` },
+
+  { name: '소용돌이',
+    kw: 'vortex · hypnotic spiral · counter-rotating conic',
+    prompt: `가는 부채꼴 줄무늬 두 겹을 서로 반대 방향(20초, 30초)으로 돌려 겹친 무늬가 소용돌이처럼 일렁이게 해줘. 가운데로 갈수록 어둡게 빨려 드는 느낌, repeating-conic-gradient로 순수 CSS만.`,
+    cat: '배경', desc: '반대로 도는 두 겹 무늬가 소용돌이처럼 보입니다(무아레).',
+    html: `<div class="m-bg-vortex" aria-hidden="true"></div>`,
+    css: `.m-bg-vortex{position:absolute;inset:0;overflow:hidden;background:#14101f}
+.m-bg-vortex::before,.m-bg-vortex::after{content:"";position:absolute;inset:-60%;background:repeating-conic-gradient(rgba(179,156,255,.22) 0 2deg,transparent 2deg 9deg);-webkit-mask:radial-gradient(circle,transparent 4%,#000 40%);mask:radial-gradient(circle,transparent 4%,#000 40%);animation:m-bg-vortex 20s linear infinite}
+.m-bg-vortex::after{background:repeating-conic-gradient(rgba(143,227,208,.18) 0 2deg,transparent 2deg 11deg);animation-duration:30s;animation-direction:reverse}
+@keyframes m-bg-vortex{to{transform:rotate(360deg)}}` },
+
+  { name: '기울어진 글자 패턴',
+    kw: 'kinetic typography background · tilted rows · opposite marquee',
+    prompt: `"MOTION · SHELF ·" 같은 큰 글자 줄 네 개를 -12도 기울여 쌓고, 줄마다 번갈아 반대 방향으로 끊김 없이 흐르게 해줘(18초). 글자는 외곽선과 채움을 번갈아, 내용을 두 번 이어 붙여 -50% 이동, 순수 CSS로.`,
+    cat: '배경', desc: '기울어진 글자 줄들이 엇갈려 흐르는 키네틱 타이포 배경.',
+    html: `<div class="m-bg-type" aria-hidden="true"><div><p>MOTION · SHELF · MOTION · SHELF · </p><p>MOTION · SHELF · MOTION · SHELF · </p><p>MOTION · SHELF · MOTION · SHELF · </p><p>MOTION · SHELF · MOTION · SHELF · </p></div></div>`,
+    css: `.m-bg-type{position:absolute;inset:0;overflow:hidden;background:#14101f}
+.m-bg-type div{position:absolute;inset:-40% -20%;display:grid;align-content:center;gap:4px;transform:rotate(-12deg)}
+.m-bg-type p{width:max-content;margin:0;color:#2e2642;font:900 40px/1 system-ui,sans-serif;white-space:nowrap;animation:m-bg-type 18s linear infinite}
+.m-bg-type p::after{content:"MOTION · SHELF · MOTION · SHELF · "}
+.m-bg-type p:nth-child(even){color:transparent;-webkit-text-stroke:1px #4a3f66;animation-direction:reverse}
+@keyframes m-bg-type{to{transform:translateX(-50%)}}` },
+
+  { name: '무드 컬러',
+    kw: 'ambient color cycle · mood background · slow hue',
+    prompt: `배경 단색이 민트 → 하늘 → 보라 → 분홍 → 복숭아로 20초에 걸쳐 아주 천천히 바뀌며 순환하게 해줘. 가운데는 밝고 가장자리는 어둡게 감싸서, 순수 CSS로.`,
+    cat: '배경', desc: '분위기 조명처럼 색이 천천히 바뀝니다. 명상·음악 앱에.',
+    html: `<div class="m-bg-mood" aria-hidden="true"></div>`,
+    css: `.m-bg-mood{position:absolute;inset:0;background-color:#8fe3d0;background-image:radial-gradient(circle,rgba(255,255,255,.25),rgba(20,16,31,.75) 80%);animation:m-bg-mood 20s linear infinite}
+@keyframes m-bg-mood{0%,100%{background-color:#8fe3d0}20%{background-color:#7cc4ff}40%{background-color:#b39cff}60%{background-color:#ff9ecd}80%{background-color:#ffb38a}}` },
+
+  { name: '보케',
+    kw: 'bokeh · out of focus lights · soft circles',
+    prompt: `초점이 나간 조명처럼 크기와 색이 다른 흐린 원 여덟 개가 어두운 배경 위에서 천천히 떠다니며 밝아졌다 흐려지게 해줘. 원은 블러, 떠다니기 8~14초 왕복, 순수 CSS로.`,
+    cat: '배경', desc: '흐린 빛망울이 천천히 떠다닙니다. 연말·감성 배경에.',
+    html: `<div class="m-bg-bokeh" aria-hidden="true"><i style="--l:10%;--t:20%;--s:50px;--c:#ffd479;--d:9s"></i><i style="--l:30%;--t:60%;--s:70px;--c:#ff9ecd;--d:12s"></i><i style="--l:55%;--t:15%;--s:40px;--c:#8fe3d0;--d:10s"></i><i style="--l:75%;--t:50%;--s:80px;--c:#b39cff;--d:14s"></i><i style="--l:85%;--t:10%;--s:30px;--c:#ffd479;--d:8s"></i><i style="--l:45%;--t:75%;--s:36px;--c:#7cc4ff;--d:11s"></i><i style="--l:20%;--t:40%;--s:24px;--c:#fff;--d:9.5s"></i><i style="--l:65%;--t:80%;--s:56px;--c:#ffb38a;--d:13s"></i></div>`,
+    css: `.m-bg-bokeh{position:absolute;inset:0;overflow:hidden;background:#0e0b16}
+.m-bg-bokeh i{position:absolute;left:var(--l);top:var(--t);width:var(--s);height:var(--s);border-radius:50%;background:radial-gradient(circle,var(--c) 0 55%,transparent 72%);filter:blur(3px);opacity:.35;animation:m-bg-bokeh var(--d) ease-in-out infinite alternate}
+@keyframes m-bg-bokeh{to{transform:translate(20px,-24px) scale(1.15);opacity:.7}}` },
+
+  { name: '무대 조명',
+    kw: 'stage spotlights · sweeping cones · floor pool',
+    prompt: `무대 위쪽 양옆에서 원뿔 모양 조명 두 개가 바닥을 향해 비추며 엇갈려 좌우로 흔들리고, 바닥엔 빛 웅덩이가 함께 움직이게 해줘. 원뿔은 clip-path 삼각형에 그라디언트, 3~4초 왕복, 순수 CSS로.`,
+    cat: '배경', desc: '무대 조명이 엇갈려 흔들립니다. 수상·발표 화면에.',
+    html: `<div class="m-bg-stage" aria-hidden="true"><i style="--x:25%;--a:-18deg;--b:14deg;--d:3.4s"></i><i style="--x:75%;--a:16deg;--b:-14deg;--d:4s"></i></div>`,
+    css: `.m-bg-stage{position:absolute;inset:0;overflow:hidden;background:linear-gradient(#08050f 70%,#1d1729)}
+.m-bg-stage i{position:absolute;left:var(--x);top:-10px;width:160px;height:260px;margin-left:-80px;background:linear-gradient(rgba(255,240,200,.55),rgba(255,240,200,.05));clip-path:polygon(46% 0,54% 0,100% 100%,0 100%);transform-origin:50% 0;mix-blend-mode:screen;animation:m-bg-stage var(--d) ease-in-out infinite alternate}
+@keyframes m-bg-stage{from{transform:rotate(var(--a))}to{transform:rotate(var(--b))}}` },
+
+  { name: '모닥불',
+    kw: 'campfire · flickering flames · rising sparks',
+    prompt: `아래쪽 가운데에 주황·노랑 불꽃 덩어리 세 개가 빠르게 일렁이며 타오르고, 작은 불티가 위로 날아올라 사라지게 해줘. 불꽃은 물방울 모양 border-radius에 블러, 0.4~0.7초로 불규칙하게, 순수 CSS로.`,
+    cat: '배경', desc: '일렁이는 불꽃과 날아오르는 불티. 따뜻한 분위기 페이지에.',
+    html: `<div class="m-bg-fire" aria-hidden="true"><i style="--s:70px;--c:#ff5a2a;--d:.6s"></i><i style="--s:50px;--c:#ff9e3d;--d:.45s"></i><i style="--s:30px;--c:#ffe27a;--d:.35s"></i><b style="--x:-14px;--d:1.8s"></b><b style="--x:10px;--d:2.3s;--o:-.8s"></b><b style="--x:2px;--d:2s;--o:-1.4s"></b></div>`,
+    css: `.m-bg-fire{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at 50% 100%,#5a1d0e,#0b0507 65%)}
+.m-bg-fire i{position:absolute;left:50%;bottom:16px;width:var(--s);height:calc(var(--s) * 1.4);margin-left:calc(var(--s) / -2);border-radius:50% 50% 45% 45% / 65% 65% 35% 35%;background:var(--c);filter:blur(5px);transform-origin:50% 100%;mix-blend-mode:screen;animation:m-bg-flame var(--d) ease-in-out infinite alternate}
+.m-bg-fire b{position:absolute;left:calc(50% + var(--x));bottom:40px;width:3px;height:3px;border-radius:50%;background:#ffd479;box-shadow:0 0 4px #ff9e3d;animation:m-bg-spark var(--d) ease-out infinite;animation-delay:var(--o,0s)}
+@keyframes m-bg-flame{from{transform:scale(1,1) skewX(-3deg)}to{transform:scale(.92,1.08) skewX(4deg) translateY(-3px)}}
+@keyframes m-bg-spark{from{transform:none;opacity:1}to{transform:translate(calc(var(--x) * -1),-120px);opacity:0}}` },
+
+  { name: '연기',
+    kw: 'smoke · rising mist · blurred puffs',
+    prompt: `아래에서 흐린 회색 연기 덩어리 다섯 개가 시차를 두고 피어올라 위로 갈수록 커지고 흩어지며 사라지게 해줘. 덩어리는 크게 블러, 5초 감속, 좌우로 살짝 흘러가게, 순수 CSS로.`,
+    cat: '배경', desc: '연기가 피어올라 흩어집니다.',
+    html: `<div class="m-bg-smoke" aria-hidden="true"><i style="--l:35%;--o:0s;--x:-30px"></i><i style="--l:50%;--o:-1s;--x:20px"></i><i style="--l:42%;--o:-2s;--x:40px"></i><i style="--l:58%;--o:-3s;--x:-20px"></i><i style="--l:47%;--o:-4s;--x:10px"></i></div>`,
+    css: `.m-bg-smoke{position:absolute;inset:0;overflow:hidden;background:linear-gradient(#15121c,#2a2533)}
+.m-bg-smoke i{position:absolute;left:var(--l);bottom:-40px;width:70px;height:70px;border-radius:50%;background:rgba(200,195,215,.45);filter:blur(16px);animation:m-bg-smoke 5s ease-out infinite;animation-delay:var(--o)}
+@keyframes m-bg-smoke{from{transform:translate(0,0) scale(.6);opacity:0}20%{opacity:.8}to{transform:translate(var(--x),-230px) scale(2.2);opacity:0}}` },
+
+  { name: '흐르는 선',
+    kw: 'flowing lines · animated sine waves · SVG paths',
+    prompt: `가는 물결선 네 줄이 서로 다른 색과 속도(6~12초)로 옆으로 끝없이 흘러가는 배경을 만들어줘. 한 주기 반복되는 SVG 곡선을 두 배 길이로 그리고 절반만큼 옮기는 방식, 순수 CSS로.`,
+    cat: '배경', desc: '물결선들이 겹쳐 흐릅니다. 오디오·데이터 느낌.',
+    html: `<svg class="m-bg-lines" viewBox="0 0 300 200" preserveAspectRatio="none" aria-hidden="true"><path style="--c:#8fe3d0;--d:6s" d="M0 100Q37.5 60 75 100T150 100T225 100T300 100T375 100T450 100T525 100T600 100"/><path style="--c:#b39cff;--d:9s" d="M0 110Q37.5 80 75 110T150 110T225 110T300 110T375 110T450 110T525 110T600 110"/><path style="--c:#ff9ecd;--d:12s" d="M0 90Q37.5 140 75 90T150 90T225 90T300 90T375 90T450 90T525 90T600 90"/><path style="--c:#7cc4ff;--d:8s" d="M0 100Q37.5 130 75 100T150 100T225 100T300 100T375 100T450 100T525 100T600 100"/></svg>`,
+    css: `.m-bg-lines{position:absolute;inset:0;width:100%;height:100%;background:#14101f}
+.m-bg-lines path{fill:none;stroke:var(--c);stroke-width:1.5;opacity:.7;animation:m-bg-lines var(--d) linear infinite}
+@keyframes m-bg-lines{to{transform:translateX(-300px)}}` },
+
+  { name: '점 물결 격자',
+    kw: 'dot matrix wave · diagonal stagger · generated grid',
+    prompt: `14×8 점 격자가 왼쪽 위에서 오른쪽 아래로 대각선 물결을 타며 차례로 커졌다 작아지고 밝아졌다 흐려지게 해줘. 점마다 (가로+세로 칸 번호)×0.08초 시차, 2.4초 주기. 점은 바닐라 JS로 만들고 움직임은 CSS로.`,
+    cat: '배경', desc: '점 격자 위로 대각선 물결이 지나갑니다.',
+    html: `<div class="m-bg-dotwave" aria-hidden="true"></div>`,
+    css: `.m-bg-dotwave{position:absolute;inset:0;display:grid;grid-template-columns:repeat(14,1fr);place-items:center;padding:10px;background:#14101f}
+.m-bg-dotwave i{width:5px;height:5px;border-radius:50%;background:#8fe3d0;opacity:.2;animation:m-bg-dotwave 2.4s ease-in-out infinite;animation-delay:calc(var(--d) * .08s)}
+@keyframes m-bg-dotwave{50%{transform:scale(1.8);opacity:1}}`,
+    js: root => {
+      const g = root.querySelector('.m-bg-dotwave');
+      g.innerHTML = [...Array(14 * 8)].map((_, i) => `<i style="--d:${i % 14 + Math.floor(i / 14)}"></i>`).join('');
+    } },
+
+  { name: '섹션 물결 경계',
+    kw: 'wave section divider · animated separator · SVG',
+    prompt: `위 섹션과 아래 섹션 사이 경계선을 물결 모양으로 만들고, 물결이 옆으로 천천히 흘러가게 해줘. 물결 두 겹을 반투명·불투명으로 겹쳐 서로 다른 속도(8초·14초)로, data URI SVG 가로 반복, 순수 CSS로.`,
+    cat: '배경', desc: '섹션 사이 경계가 물결치며 흐릅니다. 랜딩 페이지 구분선에.',
+    html: `<div class="m-bg-divider" aria-hidden="true"><i></i><i></i></div>`,
+    css: `.m-bg-divider{position:absolute;inset:0;overflow:hidden;background:linear-gradient(#6c4bd8 55%,#f2eefc 55%)}
+.m-bg-divider i{position:absolute;left:0;right:0;top:calc(55% - 30px);height:36px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 40' preserveAspectRatio='none'%3E%3Cpath d='M0 20Q50 0 100 20T200 20V40H0z' fill='%23f2eefc'/%3E%3C/svg%3E") 0 0/200px 100% repeat-x;animation:m-bg-div 8s linear infinite}
+.m-bg-divider i:first-child{top:calc(55% - 38px);opacity:.4;animation-duration:14s;animation-direction:reverse}
+@keyframes m-bg-div{to{background-position:200px 0}}` },
+
   // ── 스크롤 ──
   { name: '스크롤 진행 바',
     kw: 'scroll progress bar · reading indicator · animation-timeline: scroll()',
