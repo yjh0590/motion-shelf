@@ -66,10 +66,7 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(-
 .terms dt small{font:500 11px "JetBrains Mono",monospace;color:var(--accent2);margin-left:6px}
 .terms dd{margin:0;color:var(--muted);font-size:14px}
 .guide .tip{margin:0;padding:12px 0 16px 20px;border-top:1px solid var(--line);display:grid;gap:4px}
-.guide h2 small{font-size:14px;font-weight:400;color:var(--muted);margin-left:6px}
-#termList h3{color:var(--c);border-top:1px solid var(--line);padding-top:14px}
-#termList h3 small{font:500 11px "JetBrains Mono",monospace;color:var(--muted);margin-left:6px}
-.actions button{flex:1;padding:8px;border-radius:8px;border:1px solid var(--line);background:#241d33;color:var(--text);font:inherit;font-size:13px;cursor:pointer}
+#termList h3{color:var(--c);border-top:1px solid var(--line);padding-top:14px}.actions button{flex:1;padding:8px;border-radius:8px;border:1px solid var(--line);background:#241d33;color:var(--text);font:inherit;font-size:13px;cursor:pointer}
 .actions button:hover{border-color:var(--accent)}
 pre{margin:0;max-height:320px;overflow:auto;padding:14px;background:#0f0c17;border-radius:10px;font:12px/1.55 "JetBrains Mono",monospace;color:#d9d2ee;white-space:pre-wrap;word-break:break-all}
 .empty{color:var(--muted);text-align:center;padding:40px 0}
@@ -87,7 +84,7 @@ footer{padding:48px 0;color:var(--muted);font-size:14px;text-align:center}
 .rm{display:none;flex-wrap:wrap;align-items:center;gap:10px;margin:8px 0 0;color:var(--muted);font-size:14px}
 @media (prefers-reduced-motion:reduce){
   .rm{display:flex}
-  html:not(.motion-on) .preview *,html:not(.motion-on) .preview *::before,html:not(.motion-on) .preview *::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}
+  html:not(.motion-on) .preview *,html:not(.motion-on) .preview *::before,html:not(.motion-on) .preview *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
 </style>
 <style id="demo-css"></style>
@@ -138,7 +135,7 @@ footer{padding:48px 0;color:var(--muted);font-size:14px;text-align:center}
   </section>
 
   <section class="view guide" id="v-terms" hidden>
-    <h2>모션 용어 사전<small id="termCount"></small></h2>
+    <h2>모션 용어 사전</h2>
     <p><a href="#guide">프롬프트 공식</a>의 다섯 칸에 넣을 단어를 칸별로 모았어요. 한국어로 말해도 되지만, 옆의 영어 이름을 같이 쓰면 AI도 검색도 더 정확하게 알아들어요.</p>
     <div id="termList"></div>
   </section>
@@ -631,18 +628,15 @@ const TERMS = [
 
 const $ = s => document.querySelector(s);
 const grid = $('#grid');
-$('#termCount').textContent = TERMS.reduce((n, t) => n + t[2].length, 0) + '개';
 $('#termList').innerHTML = TERMS.map(([title, c, items]) =>
-  `<h3 style="--c:${c}">${title}<small>${items.length}</small></h3><dl class="terms">${items.map(([ko, en, d]) =>
+  `<h3 style="--c:${c}">${title}</h3><dl class="terms">${items.map(([ko, en, d]) =>
     `<div><dt>${ko}<small>${en}</small></dt><dd>${d}</dd></div>`).join('')}</dl>`).join('');
 // 상단 탭: 주소의 #이름과 같은 #v-이름 섹션만 보여 준다. 없는 이름이면 요소 모음.
 const views = [...document.querySelectorAll('.view')];
 const show = () => {
-  const want = 'v-' + location.hash.slice(1);
-  const id = views.some(v => v.id === want) ? want : 'v-shelf';
-  views.forEach(v => v.hidden = v.id !== id);
-  document.querySelectorAll('.tabs a').forEach(a =>
-    'v-' + a.hash.slice(1) === id ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
+  const cur = document.getElementById('v-' + location.hash.slice(1)) ?? views[0];
+  views.forEach(v => v.hidden = v !== cur);
+  document.querySelectorAll('.tabs a').forEach(a => a.ariaCurrent = 'v-' + a.hash.slice(1) === cur.id ? 'page' : null);
 };
 addEventListener('hashchange', show);
 show();
