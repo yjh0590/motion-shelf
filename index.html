@@ -212,6 +212,14 @@ const D = [
     css: `.m-underline{color:#f2eefc;font-size:20px;text-decoration:none;padding-bottom:4px;background:linear-gradient(#8fe3d0,#8fe3d0) center bottom/0 2px no-repeat;transition:background-size .3s}
 .m-underline:hover{background-size:100% 2px}` },
 
+  { name: '프레스 버튼',
+    kw: 'press · active state · scale down · tactile',
+    prompt: `버튼을 누르는 동안 94% 크기로 살짝 작아지고, 떼면 통통 튀며(overshoot) 원래 크기로 돌아오게 해줘. 누를 땐 0.08초로 빠르게, 돌아올 땐 0.4초. 순수 CSS로.`,
+    cat: '버튼', desc: ':active에서만 트랜지션을 짧게 바꿔, 누를 땐 즉각적이고 뗄 땐 탄력 있게.',
+    html: `<button class="m-press">꾹 눌러 보세요</button>`,
+    css: `.m-press{padding:14px 28px;border:0;border-radius:12px;background:#ffd479;color:#14101f;font:inherit;font-weight:700;cursor:pointer;transition:transform .4s cubic-bezier(.3,1.8,.5,1)}
+.m-press:active{transform:scale(.94);transition:transform .08s ease-out}` },
+
   // ── 로딩 ──
   { name: '점 세 개',
     kw: 'dot loader · bounce · animation-delay',
@@ -303,6 +311,49 @@ const D = [
 .m-count::after{content:counter(n)}
 @keyframes m-cnt{to{--m-n:2026}}` },
 
+  { name: '텍스트 스크램블',
+    kw: 'text scramble · decode effect · hacker text',
+    prompt: `제목에 마우스를 올리면 글자들이 무작위 기호로 뒤섞였다가 왼쪽부터 한 글자씩 원래 글자로 맞춰지는 스크램블(디코딩) 효과를 넣어줘. 글자당 0.09초, 고정폭 글꼴로 폭이 흔들리지 않게. 페이지가 열릴 때도 한 번 재생하되 움직임 줄이기 설정이면 생략, 라이브러리 없이.`,
+    cat: '텍스트', desc: '30ms마다 아직 안 맞춰진 글자만 무작위 기호로 바꿉니다. 호버하면 다시 재생.',
+    html: `<span class="m-scramble">ACCESS GRANTED</span>`,
+    css: `.m-scramble{font:800 22px "JetBrains Mono",monospace;color:#8fe3d0;white-space:pre;cursor:default}`,
+    js: root => {
+      const el = root.querySelector('.m-scramble'), text = el.textContent, pool = '!<>-_/[]{}=+*^?#';
+      let timer;
+      const run = () => {
+        let f = 0;
+        clearInterval(timer);
+        timer = setInterval(() => {
+          el.textContent = [...text].map((c, i) => i < f / 3 || c === ' ' ? c : pool[Math.random() * pool.length | 0]).join('');
+          if (f++ >= text.length * 3) clearInterval(timer);
+        }, 30);
+      };
+      el.addEventListener('mouseenter', run);
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) run();
+    } },
+
+  { name: '마스크 리빌',
+    kw: 'mask reveal · line reveal · overflow hidden · slide up',
+    prompt: `제목 두 줄이 나타날 때, 각 줄이 보이지 않는 선 아래에서 위로 밀려 올라오며 드러나게 해줘(마스크 리빌). 줄마다 0.12초 시차, 0.7초, 빠르게 출발해 부드럽게 멈추는 이징. 순수 CSS로.`,
+    cat: '텍스트', desc: '줄을 overflow:hidden 상자에 넣고 안의 글자만 아래에서 올립니다. 랜딩 제목의 단골.',
+    html: `<div class="m-mask"><span><b>Motion makes</b></span><span><b>it feel alive.</b></span></div>`,
+    css: `.m-mask{font-size:26px;line-height:1.25;color:#f2eefc;text-align:center}
+.m-mask span{display:block;overflow:hidden}
+.m-mask b{display:block;animation:m-unmask .7s cubic-bezier(.16,1,.3,1) both}
+.m-mask span:nth-child(2) b{animation-delay:.12s}
+@keyframes m-unmask{from{transform:translateY(110%)}}` },
+
+  { name: '블러 인',
+    kw: 'blur in · focus in · filter: blur() · word stagger',
+    prompt: `문장이 나타날 때 단어가 하나씩 흐릿한 상태(blur 12px)에서 초점이 맞듯 또렷해지며 8px 떠오르게 해줘. 단어마다 0.15초 시차, 0.8초, 순수 CSS로.`,
+    cat: '텍스트', desc: 'opacity에 filter:blur()를 더하면 페이드보다 훨씬 부드럽게 느껴져요.',
+    html: `<p class="m-blur"><span>Soft</span> <span>focus</span> <span>entrance</span></p>`,
+    css: `.m-blur{margin:0;font-size:26px;font-weight:800;color:#f2eefc}
+.m-blur span{display:inline-block;animation:m-blurin .8s ease-out both}
+.m-blur span:nth-child(2){animation-delay:.15s}
+.m-blur span:nth-child(3){animation-delay:.3s}
+@keyframes m-blurin{from{opacity:0;filter:blur(12px);transform:translateY(8px)}}` },
+
   // ── 카드 ──
   { name: '3D 틸트 카드',
     kw: '3D tilt card · perspective · mousemove',
@@ -354,6 +405,20 @@ const D = [
 .m-glass-wrap i:nth-child(2){bottom:0;right:20px;background:#8fe3d0;animation-delay:-2s}
 .m-glass{position:relative;width:180px;height:100px;display:grid;place-items:center;border-radius:16px;color:#fff;font-weight:700;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 @keyframes m-float{to{transform:translate(20px,-14px)}}` },
+
+  { name: '스포트라이트 카드',
+    kw: 'spotlight card · cursor glow · radial-gradient · mousemove',
+    prompt: `카드 위에서 마우스를 움직이면 커서 위치를 따라다니는 민트색 빛(반지름 160px 원형 그라디언트)이 카드 안쪽을 비추게 해줘. 마우스가 들어오고 나갈 때 0.3초 페이드. JS는 좌표만 CSS 변수로 넘기는 방식으로.`,
+    cat: '카드', desc: 'JS는 커서 좌표를 --x, --y에 넣기만 하고, 빛은 radial-gradient가 그립니다.',
+    html: `<div class="m-spot">Spotlight</div>`,
+    css: `.m-spot{position:relative;width:200px;height:120px;display:grid;place-items:center;overflow:hidden;border:1px solid #2e2642;border-radius:16px;background:#1d1729;color:#f2eefc;font-weight:700}
+.m-spot::before{content:"";position:absolute;inset:0;background:radial-gradient(160px circle at var(--x,50%) var(--y,50%),rgba(143,227,208,.35),transparent 70%);opacity:0;transition:opacity .3s}
+.m-spot:hover::before{opacity:1}`,
+    js: root => root.querySelector('.m-spot').addEventListener('mousemove', e => {
+      const c = e.currentTarget, r = c.getBoundingClientRect();
+      c.style.setProperty('--x', e.clientX - r.left + 'px');
+      c.style.setProperty('--y', e.clientY - r.top + 'px');
+    }) },
 
   // ── 인터랙션 ──
   { name: '토글 스위치',
@@ -418,6 +483,57 @@ const D = [
 .m-ping i,.m-ping i::after{position:absolute;top:2px;right:-2px;width:12px;height:12px;border-radius:50%;background:#ff4f7b}
 .m-ping i::after{content:"";top:0;right:0;animation:m-pingk 1.2s cubic-bezier(0,0,.2,1) infinite}
 @keyframes m-pingk{75%,100%{transform:scale(2.4);opacity:0}}` },
+
+  { name: '셰이크',
+    kw: 'shake · input error · validation feedback · aria-invalid',
+    prompt: `이메일 입력값이 잘못됐을 때 확인을 누르면 입력창이 좌우로 6px씩 두 번 흔들리고 테두리가 빨갛게 바뀌게 해줘. 0.4초. 누를 때마다 다시 흔들리게, aria-invalid로 상태 관리.`,
+    cat: '인터랙션', desc: '비워 두거나 이메일이 아닌 값을 넣고 확인을 눌러 보세요. 검사는 브라우저의 checkValidity().',
+    html: `<div class="m-shake"><input type="email" required placeholder="이메일" aria-label="이메일"><button>확인</button></div>`,
+    css: `.m-shake{display:flex;gap:8px}
+.m-shake input{width:150px;padding:10px 12px;border:1px solid #2e2642;border-radius:10px;background:#1d1729;color:#f2eefc;font:inherit}
+.m-shake input[aria-invalid="true"]{border-color:#ff4f7b;animation:m-shake .4s}
+.m-shake button{padding:10px 16px;border:0;border-radius:10px;background:#8fe3d0;color:#14101f;font:inherit;font-weight:700;cursor:pointer}
+@keyframes m-shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}`,
+    js: root => root.querySelector('.m-shake button').addEventListener('click', () => {
+      const i = root.querySelector('.m-shake input');
+      i.setAttribute('aria-invalid', !i.checkValidity());
+      // 애니메이션을 껐다 켜서 누를 때마다 처음부터 다시 재생
+      i.style.animation = 'none'; i.offsetWidth; i.style.animation = '';
+    }) },
+
+  { name: '컨페티',
+    kw: 'confetti · particle burst · celebration',
+    prompt: `버튼을 클릭하면 버튼에서 색종이 조각 24개가 사방으로 터져 나가며 회전하다 사라지게 해줘. 0.9초, 처음엔 빠르게 퍼지고 끝에서 느려지게. 조각은 끝나면 지우고, 라이브러리 없이.`,
+    cat: '인터랙션', desc: 'JS는 조각마다 방향·거리·회전을 CSS 변수로 뽑아 줄 뿐, 움직임은 키프레임 하나.',
+    html: `<button class="m-confetti">🎉 축하하기</button>`,
+    css: `.m-confetti{position:relative;padding:14px 28px;border:0;border-radius:12px;background:#ff9ecd;color:#14101f;font:inherit;font-weight:700;cursor:pointer}
+.m-confetti i{position:absolute;top:50%;left:50%;width:8px;height:8px;border-radius:2px;background:var(--c);pointer-events:none;animation:m-burst .9s cubic-bezier(.1,.8,.3,1) forwards}
+@keyframes m-burst{60%{opacity:1}to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}`,
+    js: root => root.querySelector('.m-confetti').addEventListener('click', e => {
+      for (let n = 0; n < 24; n++) {
+        const p = document.createElement('i'), a = Math.random() * 2 * Math.PI, d = 40 + Math.random() * 60;
+        p.style.cssText = `--x:${Math.cos(a) * d}px;--y:${Math.sin(a) * d}px;--r:${Math.random() * 720}deg;--c:${['#8fe3d0', '#b39cff', '#ffd479', '#fff'][n % 4]}`;
+        e.currentTarget.append(p);
+        p.addEventListener('animationend', () => p.remove());
+      }
+    }) },
+
+  { name: '커서 팔로워',
+    kw: 'cursor follower · custom cursor · mousemove · trailing',
+    prompt: `마우스 커서를 28px짜리 원형 테두리가 살짝 늦게 따라오게 해줘(커서 팔로워). 0.18초 지연으로 부드럽게, 영역을 벗어나면 사라지게. 클릭을 가로막지 않게 pointer-events는 끄고, 라이브러리 없이.`,
+    cat: '인터랙션', desc: '좌표는 JS가 넣고, 늦게 따라오는 느낌은 transform 트랜지션이 만듭니다. 터치 기기에선 안 보여요.',
+    html: `<p class="m-cursor-hint">이 안에서 마우스를 움직여 보세요</p><i class="m-cursor"></i>`,
+    css: `.m-cursor-hint{margin:0;color:#a59bc2}
+.m-cursor{position:absolute;top:0;left:0;width:28px;height:28px;margin:-14px 0 0 -14px;border:2px solid #8fe3d0;border-radius:50%;pointer-events:none;opacity:0;transition:transform .18s ease-out,opacity .2s}`,
+    js: root => {
+      const dot = root.querySelector('.m-cursor');
+      root.addEventListener('mousemove', e => {
+        const r = root.getBoundingClientRect();
+        dot.style.opacity = 1;
+        dot.style.transform = `translate(${e.clientX - r.left}px, ${e.clientY - r.top}px)`;
+      });
+      root.addEventListener('mouseleave', () => dot.style.opacity = 0);
+    } },
 
   // ── 컴포넌트 ──
   { name: '모달',
@@ -565,6 +681,16 @@ const D = [
 .m-marquee:hover div{animation-play-state:paused}
 @keyframes m-mq{to{transform:translateX(-50%)}}` },
 
+  { name: '그레인 배경',
+    kw: 'film grain · noise texture · feTurbulence · mix-blend-mode',
+    prompt: `그라디언트 배경 위에 필름 그레인(노이즈) 질감을 얹어줘. SVG feTurbulence 노이즈를 overlay로 겹치고, 0.6초 주기로 자글자글 움직이게. 이미지 파일 없이 순수 CSS로.`,
+    cat: '배경', desc: '노이즈는 data URI 안의 SVG 필터 한 줄. steps()로 뚝뚝 끊어 움직여야 필름처럼 보여요.',
+    html: `<div class="m-grain"><span>Grain</span></div>`,
+    css: `.m-grain{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;background:linear-gradient(135deg,#6c4bd8,#2fb39a);color:#fff;font-size:28px;font-weight:800}
+.m-grain::after{content:"";position:absolute;inset:-50%;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.4;mix-blend-mode:overlay;animation:m-grain .6s steps(1) infinite}
+.m-grain span{position:relative}
+@keyframes m-grain{25%{transform:translate(-3%,2%)}50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-2%)}}` },
+
   // ── 스크롤 ──
   { name: '스크롤 진행 바',
     kw: 'scroll progress bar · reading indicator · animation-timeline: scroll()',
@@ -584,6 +710,19 @@ const D = [
     css: `.m-reveal{position:absolute;inset:0;overflow-y:auto;padding:20px;display:grid;gap:16px}
 .m-reveal div{height:70px;border-radius:12px;background:linear-gradient(135deg,#8fe3d0,#b39cff);animation:m-in linear both;animation-timeline:view();animation-range:entry 0% cover 40%}
 @keyframes m-in{from{opacity:0;transform:translateY(40px) scale(.9)}}` },
+
+  { name: '패럴랙스',
+    kw: 'parallax · depth · scroll speed · animation-timeline: scroll()',
+    prompt: `스크롤할 때 배경 도형 세 개가 서로 다른 속도로 움직여 깊이감이 느껴지게 해줘(패럴랙스). 큰 도형일수록 느리게, 작은 도형일수록 빠르게. JS 없이 CSS scroll() 타임라인으로.`,
+    cat: '스크롤', desc: '도형마다 스크롤 방향으로 밀어 주는 거리(--d)를 다르게 줘서 속도 차이를 만듭니다. (Chrome·Edge·Safari 26+)',
+    html: `<div class="m-plx"><i></i><i></i><i></i><p>안을 스크롤해 보세요 ↓</p><p>도형마다 속도가 달라요.</p><p>멀수록 느리게, 가까울수록 빠르게.</p></div>`,
+    css: `.m-plx{position:absolute;inset:0;overflow-y:auto;padding:20px;color:#f2eefc}
+.m-plx p{position:relative;margin:0 0 150px}
+.m-plx i{position:absolute;border-radius:50%;animation:m-plx linear both;animation-timeline:scroll()}
+.m-plx i:nth-child(1){top:30px;left:10%;width:90px;height:90px;background:#3b2a78;--d:260px}
+.m-plx i:nth-child(2){top:120px;right:10%;width:54px;height:54px;background:#6c4bd8;--d:170px}
+.m-plx i:nth-child(3){top:240px;left:40%;width:26px;height:26px;background:#8fe3d0;--d:50px}
+@keyframes m-plx{to{transform:translateY(var(--d))}}` },
 
   // ── 이징 ──
   { name: '이징 비교',
