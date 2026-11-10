@@ -5727,6 +5727,79 @@ const D = [
 .m-ease i{position:relative;display:block;height:16px;border-radius:8px;background:rgba(255,255,255,.05);font:normal 10px/16px "JetBrains Mono",monospace;color:#8a80a6;text-align:center}
 .m-ease i::before{content:"";position:absolute;top:0;left:0;width:16px;height:16px;border-radius:50%;background:#8fe3d0;animation:m-go 1.6s var(--e) infinite alternate}
 @keyframes m-go{to{left:calc(100% - 16px)}}` },
+
+  // 이징 곡선 49종: 곡선 목록에서 데모를 만든다. 그래프 위 노란 점은 x를 등속, y를 그 이징으로 움직여 곡선을 따라 그리고,
+  // 아래 민트 점은 같은 이징으로 이동한다. 복사한 CSS에는 실제 값(linear()는 계산된 점 목록)이 그대로 들어간다.
+  ...(() => {
+    const PI = Math.PI;
+    const bez = ([x1, y1, x2, y2]) => s => { const u = 1 - s; return [3 * u * u * s * x1 + 3 * u * s * s * x2 + s ** 3, 3 * u * u * s * y1 + 3 * u * s * s * y2 + s ** 3]; };
+    const lin = (f, n) => 'linear(' + [...Array(n + 1)].map((_, i) => i === n ? 1 : i === 0 ? 0 : +f(i / n).toFixed(3)).join(', ') + ')';
+    const bOut = t => { const k = 7.5625, d = 2.75; if (t < 1 / d) return k * t * t; if (t < 2 / d) return k * (t -= 1.5 / d) * t + .75; if (t < 2.5 / d) return k * (t -= 2.25 / d) * t + .9375; return k * (t -= 2.625 / d) * t + .984375; };
+    const spring = (z, T) => t => { const w = Math.sqrt(1 - z * z), x = t * T; return 1 - Math.exp(-z * x) * (Math.cos(w * x) + z / w * Math.sin(w * x)); };
+    const c4 = 2 * PI / 3, c5 = 2 * PI / 4.5;
+    const FAM = { sine: ['부드러운', '가장 완만한 곡선이에요.'], quad: ['약한', '살짝 휘는 곡선이에요.'], cubic: ['중간 세기', '무난하게 많이 쓰는 세기예요.'], quart: ['강한', '확실히 휘는 곡선이에요.'], quint: ['아주 강한', '시작과 끝이 극적으로 달라요.'], expo: ['극단적인', '거의 순간처럼 출발하거나 멈춰요. UI에서 인기예요.'], circ: ['원호', '원의 일부라 끝부분이 급격해요.'], back: ['오버슈트', '목표를 살짝 지나쳤다 돌아오거나, 뒤로 물러났다 출발해요.'] };
+    const DIR = { in: ['가속', '천천히 출발해 점점 빨라져요. 화면 밖으로 나가는 퇴장에.'], out: ['감속', '빠르게 출발해 부드럽게 멈춰요. 등장·호버에.'], 'in-out': ['가속 후 감속', '천천히 출발해 가운데서 빠르고 다시 천천히 멈춰요. 제자리 왕복에.'] };
+    const PEN = { sine: [[.12, 0, .39, 0], [.61, 1, .88, 1], [.37, 0, .63, 1]], quad: [[.11, 0, .5, 0], [.5, 1, .89, 1], [.45, 0, .55, 1]], cubic: [[.32, 0, .67, 0], [.33, 1, .68, 1], [.65, 0, .35, 1]], quart: [[.5, 0, .75, 0], [.25, 1, .5, 1], [.76, 0, .24, 1]], quint: [[.64, 0, .78, 0], [.22, 1, .36, 1], [.83, 0, .17, 1]], expo: [[.7, 0, .84, 0], [.16, 1, .3, 1], [.87, 0, .13, 1]], circ: [[.55, 0, 1, .45], [0, .55, .45, 1], [.85, 0, .15, 1]], back: [[.36, 0, .66, -.56], [.34, 1.56, .64, 1], [.68, -.6, .32, 1.6]] };
+    // [이름, 키워드, CSS 값, 그래프용 함수(t→[x,y]), 느낌, 설명]
+    const L = [];
+    const addB = (name, kw, css, p, feel, desc) => L.push([name, kw, css, bez(p), feel, desc]);
+    const addF = (name, kw, f, n, feel, desc) => L.push([name, kw, lin(f, n), t => [t, f(t)], feel, desc]);
+    addB('linear', 'linear · constant speed · no easing', 'linear', [0, 0, 1, 1], '처음부터 끝까지 같은 속도(linear)', '등속. 스피너·마퀴처럼 계속 도는 것에만 쓰세요. 이동에 쓰면 기계적이에요.');
+    addB('ease', 'ease · browser default · cubic-bezier(.25,.1,.25,1)', 'ease', [.25, .1, .25, 1], '브라우저 기본값 ease', 'transition의 기본값. 살짝 빠르게 출발해 부드럽게 멈춰요.');
+    addB('ease-in', 'ease-in · accelerate · keyword', 'ease-in', [.42, 0, 1, 1], '천천히 출발해 빨라지는 ease-in', '가속. 요소가 화면 밖으로 사라질 때 자연스러워요.');
+    addB('ease-out', 'ease-out · decelerate · keyword', 'ease-out', [0, 0, .58, 1], '빠르게 출발해 부드럽게 멈추는 ease-out', '감속. 등장과 호버에 가장 무난한 기본 선택이에요.');
+    addB('ease-in-out', 'ease-in-out · accelerate decelerate · keyword', 'ease-in-out', [.42, 0, .58, 1], '천천히 시작해 천천히 끝나는 ease-in-out', '양끝이 부드러워요. 제자리 왕복·슬라이드 전환에.');
+    for (const fam in PEN) ['in', 'out', 'in-out'].forEach((dir, k) => {
+      const p = PEN[fam][k], name = `${fam}-${dir}`;
+      addB(name, `ease${dir === 'in' ? 'In' : dir === 'out' ? 'Out' : 'InOut'}${fam[0].toUpperCase() + fam.slice(1)} · ${fam} easing · cubic-bezier`, `cubic-bezier(${p.join(', ')})`, p, `${FAM[fam][0]} ${DIR[dir][0]}인 ${name}`, `${FAM[fam][1]} ${DIR[dir][1]}`);
+    });
+    const elIn = t => -(2 ** (10 * t - 10)) * Math.sin((t * 10 - 10.75) * c4), elOut = t => 2 ** (-10 * t) * Math.sin((t * 10 - .75) * c4) + 1;
+    const elInOut = t => t < .5 ? -(2 ** (20 * t - 10) * Math.sin((20 * t - 11.125) * c5)) / 2 : 2 ** (-20 * t + 10) * Math.sin((20 * t - 11.125) * c5) / 2 + 1;
+    addF('elastic-in', 'easeInElastic · rubber band · CSS linear()', elIn, 50, '고무줄을 당겼다 놓듯 출렁이며 출발하는 elastic-in', '뒤로 출렁이다 튀어 나가요. cubic-bezier로는 못 만들어 linear() 함수로 점을 찍었어요.');
+    addF('elastic-out', 'easeOutElastic · spring wobble · CSS linear()', elOut, 50, '도착해서 고무줄처럼 출렁이며 멈추는 elastic-out', '도착 후 출렁출렁. 알림·배지 등장에 재미를 줄 때. linear() 함수.');
+    addF('elastic-in-out', 'easeInOutElastic · double wobble · CSS linear()', elInOut, 60, '양끝에서 출렁이는 elastic-in-out', '출발과 도착 모두 출렁여요. 과하니 아주 가끔만. linear() 함수.');
+    addF('bounce-in', 'easeInBounce · bounce start · CSS linear()', t => 1 - bOut(1 - t), 50, '바닥에서 몇 번 통통 튀다 출발하는 bounce-in', '튀다가 출발해요. 잘 안 쓰지만 장난스러운 퇴장에. linear() 함수.');
+    addF('bounce-out', 'easeOutBounce · ball drop · CSS linear()', bOut, 50, '떨어진 공처럼 바닥에 통통 튀며 멈추는 bounce-out', '공이 바닥에 튀듯 멈춰요. 떨어지는 요소에. linear() 함수.');
+    addF('bounce-in-out', 'easeInOutBounce · CSS linear()', t => t < .5 ? (1 - bOut(1 - 2 * t)) / 2 : (1 + bOut(2 * t - 1)) / 2, 60, '양끝에서 통통 튀는 bounce-in-out', '양끝이 튀어요. 가볍고 장난스러운 화면에만. linear() 함수.');
+    addF('spring-gentle', 'spring · damping 0.6 · CSS linear()', spring(.6, 10), 40, '살짝 넘쳤다 자리 잡는 부드러운 스프링', '감쇠가 큰 스프링. 한 번 살짝 넘치고 바로 멈춰 고급스러워요. linear() 함수.');
+    addF('spring-bouncy', 'spring · damping 0.3 · CSS linear()', spring(.3, 16), 50, '여러 번 출렁이다 멈추는 탱탱한 스프링', '감쇠가 작은 스프링. 탱탱하게 몇 번 흔들려요. linear() 함수.');
+    addF('spring-stiff', 'spring · damping 0.85 · CSS linear()', spring(.85, 8), 40, '거의 안 넘치고 단단하게 멈추는 스프링', '빠르고 단단한 스프링. 넘침이 거의 없어 버튼·토글에 좋아요. linear() 함수.');
+    const step = (n, start) => t => Math.min(1, (start ? Math.ceil(t * n) : Math.floor(t * n)) / n);
+    L.push(['steps(5)', 'steps · stepped animation · jump-end', 'steps(5)', t => [t, step(5)(t)], '다섯 칸으로 뚝뚝 끊어 움직이는 steps(5)', '부드럽게 잇지 않고 다섯 번 끊어요. 타자기·스프라이트 애니메이션에.']);
+    L.push(['steps(5, start)', 'steps jump-start · stepped · start', 'steps(5, start)', t => [t, step(5, true)(t)], '시작하자마자 첫 칸을 건너뛰는 steps(5, start)', '시작 순간 한 칸 먼저 뛰어요. end와 차이를 비교해 보세요.']);
+    L.push(['steps(1)', 'steps(1) · instant jump · blink', 'steps(1)', t => [t, step(1)(t)], '중간 없이 끝으로 순간이동하는 steps(1)', '움직임 없이 딱 바뀌어요. 깜빡이는 커서처럼 켜고 끄는 데.']);
+    addB('material-standard', 'Material 3 standard · cubic-bezier(.2,0,0,1)', 'cubic-bezier(.2, 0, 0, 1)', [.2, 0, 0, 1], '머티리얼 3 표준 이징', '구글 머티리얼 3의 기본 곡선. 화면 안에서 움직이는 요소에.');
+    addB('material-decelerate', 'Material 3 emphasized decelerate · enter', 'cubic-bezier(.05, .7, .1, 1)', [.05, .7, .1, 1], '머티리얼 3 강조 감속(들어올 때)', '머티리얼 3에서 요소가 화면에 들어올 때 쓰는 곡선.');
+    addB('material-accelerate', 'Material 3 emphasized accelerate · exit', 'cubic-bezier(.3, 0, .8, .15)', [.3, 0, .8, .15], '머티리얼 3 강조 가속(나갈 때)', '머티리얼 3에서 요소가 화면 밖으로 나갈 때 쓰는 곡선.');
+    addB('material-legacy', 'Material 2 standard · fast out slow in', 'cubic-bezier(.4, 0, .2, 1)', [.4, 0, .2, 1], '머티리얼 2 표준(fast out, slow in)', '오래 쓰인 머티리얼 2의 표준 곡선. 어디에나 무난해요.');
+    addB('slow-mo', 'slow motion middle · fast slow fast · cubic-bezier', 'cubic-bezier(0, .9, 1, .1)', [0, .9, 1, .1], '빠르게 들어와 가운데서 슬로모션처럼 느려졌다 다시 빠르게 나가는', '가운데서 느려지는 슬로모션. 영화 같은 연출에.');
+    addB('anticipate', 'anticipation · wind up · cubic-bezier', 'cubic-bezier(.38, -.4, .88, .65)', [.38, -.4, .88, .65], '뒤로 살짝 물러났다가 힘차게 출발하는 예비 동작', '애니메이션 원칙의 "예비 동작". 출발 전에 뒤로 살짝 움츠려요.');
+    addF('jitter', 'rough steps · uneven progress · CSS linear()', t => [0, .15, .1, .35, .3, .55, .5, .75, .7, 1][Math.min(9, Math.round(t * 9))], 9, '덜컥거리며 나아가는 거친', '앞뒤로 덜컥이며 나아가요. 고장 난 기계·글리치 느낌. linear() 함수.');
+    L.push(['linear() 구간', 'CSS linear() with stops · custom piecewise curve', 'linear(0, .1 25%, .75 50%, .85 75%, 1)', t => [t, t < .25 ? .4 * t : t < .5 ? .1 + 2.6 * (t - .25) : t < .75 ? .75 + .4 * (t - .5) : .85 + .6 * (t - .75)], '구간마다 속도를 직접 정한 linear()', 'linear()에 % 위치를 주면 구간별 속도를 직접 설계할 수 있어요. 느림 → 급가속 → 느림.']);
+
+    return L.map(([name, kw, css, g, feel, desc], i) => {
+      const c = `m-ez-${i}`, long = css.length > 60;
+      const pts = [...Array(61)].map((_, k) => g(k / 60)).map(([x, y]) => `${(x * 100).toFixed(1)} ${(100 - y * 100).toFixed(1)}`);
+      const label = long ? `linear(… ${css.split(',').length}개 점)` : css;
+      return {
+        name, kw, cat: '이징', desc,
+        prompt: `요소가 왼쪽에서 오른쪽으로 이동할 때 ${feel} 느낌의 이징으로 움직이게 해줘. ${long ? 'CSS linear() 함수로 곡선을 점으로 찍어서(코드 복사 참고)' : `CSS 값은 ${css}`}, 1.6초, 순수 CSS로.`,
+        html: `<div class="${c}"><figure aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M${pts.join('L')}"/></svg><span><i></i></span></figure><div><i></i></div><code>${label}</code></div>`,
+        css: `.${c}{display:grid;justify-items:center;gap:12px}
+.${c} figure{position:relative;width:190px;height:84px;margin:0;border-left:1px solid #3a3152;border-bottom:1px solid #3a3152}
+.${c} svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.${c} path{fill:none;stroke:#b39cff;stroke-width:2;vector-effect:non-scaling-stroke}
+.${c} span{position:absolute;left:0;bottom:0;height:100%;animation:${c}-x 2s linear infinite}
+.${c} span i{position:absolute;left:-5px;bottom:-5px;width:10px;height:10px;border-radius:50%;background:#ffd479;animation:${c}-y 2s ${css} infinite}
+.${c}>div{position:relative;width:190px;height:6px;border-radius:3px;background:#2e2642}
+.${c}>div i{position:absolute;top:-5px;left:0;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:#8fe3d0;animation:${c}-t 2s ${css} infinite}
+.${c} code{max-width:190px;color:#a59bc2;font:11px ui-monospace,monospace;text-align:center}
+@keyframes ${c}-x{0%{left:0}80%,100%{left:100%}}
+@keyframes ${c}-y{0%{bottom:-5px}80%,100%{bottom:calc(100% - 5px)}}
+@keyframes ${c}-t{0%{left:0}80%,100%{left:100%}}`
+      };
+    });
+  })(),
 ];
 
 const REFS = [
