@@ -2674,6 +2674,816 @@ const D = [
       root.addEventListener('mouseleave', () => dot.style.opacity = 0);
     } },
 
+  { name: '별점',
+    kw: 'star rating · radio stars · hover preview',
+    prompt: `별 다섯 개 별점을 만들어줘. 마우스를 올린 별까지 노랗게 미리 보이고, 누르면 그 점수로 고정되며 고른 별이 톡 튀게. 실제로는 라디오 버튼이라 키보드로도 되게, :has()와 형제 선택자로 순수 CSS만.`,
+    cat: '인터랙션', desc: '올린 별까지 미리 칠해지고 누르면 고정됩니다. 화살표 키로도 됩니다.',
+    html: `<div class="m-ix-stars" role="radiogroup" aria-label="별점"><input type="radio" name="m-ix-star" id="m-ix-s5"><label for="m-ix-s5" aria-label="5점">★</label><input type="radio" name="m-ix-star" id="m-ix-s4"><label for="m-ix-s4" aria-label="4점">★</label><input type="radio" name="m-ix-star" id="m-ix-s3" checked><label for="m-ix-s3" aria-label="3점">★</label><input type="radio" name="m-ix-star" id="m-ix-s2"><label for="m-ix-s2" aria-label="2점">★</label><input type="radio" name="m-ix-star" id="m-ix-s1"><label for="m-ix-s1" aria-label="1점">★</label></div>`,
+    css: `.m-ix-stars{display:flex;flex-direction:row-reverse;gap:4px}
+.m-ix-stars input{position:absolute;opacity:0}
+.m-ix-stars label{color:#3a3152;font-size:34px;line-height:1;cursor:pointer;transition:color .15s}
+.m-ix-stars input:checked~label{color:#ffd479}
+.m-ix-stars:has(label:hover) label{color:#3a3152}
+.m-ix-stars:has(label:hover) label:hover,.m-ix-stars:has(label:hover) label:hover~label{color:#ffd479}
+.m-ix-stars input:checked+label{animation:m-ix-star .4s cubic-bezier(.3,1.8,.5,1)}
+.m-ix-stars input:focus-visible+label{outline:2px solid #b39cff;outline-offset:2px;border-radius:4px}
+@keyframes m-ix-star{50%{transform:scale(1.35) rotate(-8deg)}}` },
+
+  { name: '반응 고르기',
+    kw: 'reaction picker · emoji bar · hover reveal',
+    prompt: `"좋아요" 버튼에 마우스를 올리면 위로 이모지 다섯 개가 담긴 막대가 튀어나오고 이모지는 하나씩 0.04초 시차로 떠오르게 해줘. 이모지에 올리면 1.4배 커지며 살짝 들리게, 0.25초 살짝 튕기는 이징, 순수 CSS로.`,
+    cat: '인터랙션', desc: '페이스북처럼 반응을 고르는 이모지 막대. 버튼에 마우스를 올려 보세요.',
+    html: `<div class="m-ix-react"><div role="group" aria-label="반응"><button style="--i:0" aria-label="좋아요">👍</button><button style="--i:1" aria-label="최고예요">❤️</button><button style="--i:2" aria-label="웃겨요">😂</button><button style="--i:3" aria-label="놀라워요">😮</button><button style="--i:4" aria-label="슬퍼요">😢</button></div><button>👍 좋아요</button></div>`,
+    css: `.m-ix-react{position:relative;padding-top:56px}
+.m-ix-react>button{padding:8px 16px;border:1px solid #2e2642;border-radius:999px;background:#241d33;color:#f2eefc;font-weight:700;cursor:pointer}
+.m-ix-react div{position:absolute;left:50%;top:0;display:flex;gap:2px;padding:6px;border-radius:999px;background:#2a2240;box-shadow:0 6px 18px rgba(0,0,0,.4);opacity:0;visibility:hidden;transform:translate(-50%,8px);transition:opacity .2s,transform .2s,visibility .2s}
+.m-ix-react:hover div,.m-ix-react:focus-within div{opacity:1;visibility:visible;transform:translate(-50%,0)}
+.m-ix-react div button{border:0;background:none;font-size:22px;cursor:pointer;opacity:0;transform:translateY(10px);transition:transform .25s cubic-bezier(.3,1.6,.5,1),opacity .2s;transition-delay:calc(var(--i) * .04s)}
+.m-ix-react:hover div button,.m-ix-react:focus-within div button{opacity:1;transform:none}
+.m-ix-react div button:hover{transform:scale(1.4) translateY(-6px);transition-delay:0s}` },
+
+  { name: '북마크',
+    kw: 'bookmark toggle · fill · bounce',
+    prompt: `북마크 아이콘을 누르면 속이 노랗게 채워지면서 아래로 살짝 늘어났다 튕겨 돌아오고, 다시 누르면 비워지게 해줘. 0.4초, 상태는 aria-pressed, 바닐라 JS는 토글만.`,
+    cat: '인터랙션', desc: '누르면 채워지며 통 튑니다.',
+    html: `<button class="m-ix-mark" aria-pressed="false" aria-label="저장"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-5-6 5z"/></svg></button>`,
+    css: `.m-ix-mark{padding:10px;border:0;border-radius:12px;background:#241d33;cursor:pointer}
+.m-ix-mark svg{display:block;width:30px;fill:transparent;stroke:#ffd479;stroke-width:2;stroke-linejoin:round;transform-origin:top;transition:fill .2s}
+.m-ix-mark[aria-pressed=true] svg{fill:#ffd479;animation:m-ix-mark .4s cubic-bezier(.3,1.6,.5,1)}
+@keyframes m-ix-mark{40%{transform:scaleY(1.25) scaleX(.9)}}`,
+    js: root => {
+      const b = root.querySelector('.m-ix-mark');
+      b.onclick = () => b.ariaPressed = b.ariaPressed !== 'true';
+    } },
+
+  { name: '팔로우 버튼',
+    kw: 'follow toggle · state swap · outlined to filled',
+    prompt: `채워진 "팔로우" 버튼을 누르면 테두리만 있는 "팔로잉 ✓"으로 바뀌고 체크가 톡 튀어나오게 해줘. 팔로잉 상태에서 마우스를 올리면 "언팔로우"로 바뀌며 빨갛게. 0.25초, 상태는 aria-pressed, 바닐라 JS는 토글만.`,
+    cat: '인터랙션', desc: '팔로우 → 팔로잉, 호버하면 언팔로우로 미리 경고합니다.',
+    html: `<button class="m-ix-follow" aria-pressed="false"><span>팔로우</span><span>팔로잉 <i>✓</i></span><span>언팔로우</span></button>`,
+    css: `.m-ix-follow{display:grid;width:116px;padding:10px 0;border:2px solid #8fe3d0;border-radius:999px;background:#8fe3d0;color:#14101f;font-weight:800;cursor:pointer;transition:background .25s,color .25s,border-color .25s}
+.m-ix-follow span{grid-area:1/1;transition:opacity .2s}
+.m-ix-follow span+span,.m-ix-follow span+span+span{opacity:0}
+.m-ix-follow i{display:inline-block;font-style:normal}
+.m-ix-follow[aria-pressed=true]{background:none;color:#8fe3d0}
+.m-ix-follow[aria-pressed=true] span:first-child{opacity:0}
+.m-ix-follow[aria-pressed=true] span:nth-child(2){opacity:1}
+.m-ix-follow[aria-pressed=true] i{animation:m-ix-check .35s cubic-bezier(.3,1.8,.5,1)}
+.m-ix-follow[aria-pressed=true]:hover{border-color:#ff4d6d;color:#ff4d6d}
+.m-ix-follow[aria-pressed=true]:hover span:nth-child(2){opacity:0}
+.m-ix-follow[aria-pressed=true]:hover span:nth-child(3){opacity:1}
+@keyframes m-ix-check{from{transform:scale(0) rotate(-45deg)}}`,
+    js: root => {
+      const b = root.querySelector('.m-ix-follow');
+      b.onclick = () => b.ariaPressed = b.ariaPressed !== 'true';
+    } },
+
+  { name: '수량 스테퍼',
+    kw: 'quantity stepper · number slide · plus minus',
+    prompt: `− 숫자 + 수량 조절기를 만들고, +를 누르면 새 숫자가 아래에서 올라오고 −를 누르면 위에서 내려오게 해줘. 0.25초 감속, 1 아래로는 안 내려가고 그땐 − 버튼이 흐려지게, 바닐라 JS로.`,
+    cat: '인터랙션', desc: '늘리면 아래서, 줄이면 위에서 숫자가 들어옵니다.',
+    html: `<div class="m-ix-step"><button aria-label="빼기">−</button><output aria-live="polite">1</output><button aria-label="더하기">+</button></div>`,
+    css: `.m-ix-step{display:flex;align-items:center;overflow:hidden;border:1px solid #2e2642;border-radius:999px;background:#241d33}
+.m-ix-step button{width:40px;height:40px;border:0;background:none;color:#f2eefc;font-size:20px;cursor:pointer}
+.m-ix-step button:disabled{opacity:.3;cursor:default}
+.m-ix-step output{width:36px;color:#f2eefc;font:800 18px ui-monospace,monospace;text-align:center}
+.m-ix-step output.up{animation:m-ix-up .25s ease-out}
+.m-ix-step output.down{animation:m-ix-down .25s ease-out}
+@keyframes m-ix-up{from{transform:translateY(100%);opacity:0}}
+@keyframes m-ix-down{from{transform:translateY(-100%);opacity:0}}`,
+    js: root => {
+      const [minus, plus] = root.querySelectorAll('.m-ix-step button'), out = root.querySelector('.m-ix-step output');
+      const set = d => {
+        out.value = Math.max(1, +out.value + d);
+        out.className = '';
+        void out.offsetWidth;
+        out.className = d > 0 ? 'up' : 'down';
+        minus.disabled = out.value == 1;
+      };
+      minus.onclick = () => set(-1);
+      plus.onclick = () => set(1);
+      minus.disabled = true;
+    } },
+
+  { name: '검색창 펼치기',
+    kw: 'expanding search · icon to input · focus-within',
+    prompt: `돋보기 아이콘만 있던 검색창이 누르면 옆으로 160px 길어지며 입력칸이 열리고, 포커스가 빠지고 비어 있으면 다시 접히게 해줘. 0.4초 감속, :focus-within으로 순수 CSS만.`,
+    cat: '인터랙션', desc: '아이콘을 누르면 검색창이 펼쳐집니다.',
+    html: `<label class="m-ix-search"><span aria-hidden="true">⌕</span><input type="search" placeholder="검색어 입력" aria-label="검색"></label>`,
+    css: `.m-ix-search{display:flex;align-items:center;height:44px;padding:0 4px;border-radius:999px;background:#241d33;cursor:text}
+.m-ix-search span{width:36px;color:#8fe3d0;font-size:22px;text-align:center}
+.m-ix-search input{width:0;padding:0;border:0;outline:0;background:none;color:#f2eefc;font:inherit;transition:width .4s cubic-bezier(.16,1,.3,1),padding .4s}
+.m-ix-search:focus-within,.m-ix-search:has(input:not(:placeholder-shown)){box-shadow:0 0 0 2px #8fe3d0}
+.m-ix-search:focus-within input,.m-ix-search input:not(:placeholder-shown){width:160px;padding-right:12px}` },
+
+  { name: '비밀번호 보기',
+    kw: 'password visibility toggle · eye icon · slash',
+    prompt: `비밀번호 입력칸 오른쪽 눈 아이콘을 누르면 글자가 보이고 눈 위의 사선이 0.25초 동안 사라지며, 다시 누르면 사선이 그어지고 가려지게 해줘. aria-pressed로 상태, 바닐라 JS로.`,
+    cat: '인터랙션', desc: '눈 아이콘의 사선이 그어졌다 지워지며 보이기를 바꿉니다.',
+    html: `<label class="m-ix-pw"><input type="password" value="motion2026" aria-label="비밀번호"><button type="button" aria-pressed="false" aria-label="비밀번호 보기"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><line x1="4" y1="4" x2="20" y2="20"/></svg></button></label>`,
+    css: `.m-ix-pw{display:flex;align-items:center;width:220px;padding:0 6px 0 14px;border:1px solid #2e2642;border-radius:12px;background:#241d33}
+.m-ix-pw input{flex:1;min-width:0;height:42px;border:0;outline:0;background:none;color:#f2eefc;font:15px ui-monospace,monospace}
+.m-ix-pw button{padding:6px;border:0;background:none;cursor:pointer}
+.m-ix-pw svg{display:block;width:22px;fill:none;stroke:#a59bc2;stroke-width:2;stroke-linecap:round}
+.m-ix-pw line{stroke-dasharray:23;stroke-dashoffset:0;transition:stroke-dashoffset .25s}
+.m-ix-pw [aria-pressed=true] line{stroke-dashoffset:23}
+.m-ix-pw [aria-pressed=true] svg{stroke:#8fe3d0}`,
+    js: root => {
+      const b = root.querySelector('.m-ix-pw button'), i = root.querySelector('.m-ix-pw input');
+      b.onclick = () => {
+        const show = i.type === 'password';
+        i.type = show ? 'text' : 'password';
+        b.ariaPressed = show;
+        b.ariaLabel = show ? '비밀번호 숨기기' : '비밀번호 보기';
+      };
+    } },
+
+  { name: '플로팅 라벨',
+    kw: 'floating label · input focus · placeholder-shown',
+    prompt: `입력칸 안에 있던 라벨이 포커스하거나 글자가 있으면 위로 떠올라 작아지고 민트색이 되게 해줘. 0.2초, 비어 있는지는 :placeholder-shown으로 순수 CSS만.`,
+    cat: '인터랙션', desc: '라벨이 위로 떠올라 자리를 비켜 줍니다(머티리얼 입력칸).',
+    html: `<label class="m-ix-float"><input type="email" placeholder=" "><span>이메일 주소</span></label>`,
+    css: `.m-ix-float{position:relative;display:block;width:220px}
+.m-ix-float input{width:100%;height:52px;padding:18px 14px 6px;border:1px solid #2e2642;border-radius:12px;outline:0;background:#241d33;color:#f2eefc;font:15px system-ui,sans-serif;transition:border-color .2s}
+.m-ix-float span{position:absolute;left:15px;top:16px;color:#a59bc2;font-size:15px;pointer-events:none;transform-origin:left;transition:transform .2s,color .2s}
+.m-ix-float input:focus{border-color:#8fe3d0}
+.m-ix-float input:focus+span,.m-ix-float input:not(:placeholder-shown)+span{color:#8fe3d0;transform:translateY(-10px) scale(.75)}` },
+
+  { name: '밑줄 포커스',
+    kw: 'input underline · focus line grow · center out',
+    prompt: `밑줄만 있는 입력칸에 포커스하면 가운데에서 양옆으로 민트색 밑줄이 자라나게 해줘. 0.3초 감속, 입력칸 뒤에 둔 요소를 :focus + 로 늘려서 순수 CSS만.`,
+    cat: '인터랙션', desc: '포커스하면 밑줄이 가운데서 양옆으로 자랍니다.',
+    html: `<label class="m-ix-line"><input placeholder="이름을 입력하세요" aria-label="이름"><i></i></label>`,
+    css: `.m-ix-line{position:relative;display:block;width:220px}
+.m-ix-line input{width:100%;padding:10px 2px;border:0;border-bottom:1px solid #4a3f66;outline:0;background:none;color:#f2eefc;font:16px system-ui,sans-serif}
+.m-ix-line i{position:absolute;left:0;right:0;bottom:0;height:2px;background:#8fe3d0;transform:scaleX(0);transition:transform .3s cubic-bezier(.16,1,.3,1)}
+.m-ix-line input:focus+i{transform:none}` },
+
+  { name: '글자 수 링',
+    kw: 'character counter · progress ring · limit warning',
+    prompt: `입력칸 옆 작은 원이 입력한 글자 수만큼 채워지고, 남은 글자가 10자 이하면 노랑, 넘기 직전엔 빨강으로 바뀌며 남은 수를 보여 주게 해줘(트위터 스타일). 최대 40자, 비율만 바닐라 JS로 CSS 변수에.`,
+    cat: '인터랙션', desc: '쓸수록 링이 차고 한도에 가까워지면 색이 바뀝니다. 입력해 보세요.',
+    html: `<label class="m-ix-count"><input maxlength="40" placeholder="한 줄 소개" aria-label="한 줄 소개"><b aria-live="polite"></b></label>`,
+    css: `.m-ix-count{display:flex;align-items:center;gap:10px;width:230px;padding:0 10px 0 14px;border:1px solid #2e2642;border-radius:12px;background:#241d33}
+.m-ix-count input{flex:1;min-width:0;height:44px;border:0;outline:0;background:none;color:#f2eefc;font:15px system-ui,sans-serif}
+.m-ix-count b{--c:#8fe3d0;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:radial-gradient(closest-side,#241d33 72%,transparent 75%),conic-gradient(var(--c) calc(var(--p,0) * 1%),#3a3152 0);color:var(--c);font:700 10px ui-monospace,monospace;transition:transform .2s}
+.m-ix-count b.warn{--c:#ffd479;transform:scale(1.15)}
+.m-ix-count b.over{--c:#ff4d6d}`,
+    js: root => {
+      const i = root.querySelector('.m-ix-count input'), b = root.querySelector('.m-ix-count b');
+      i.addEventListener('input', () => {
+        const left = i.maxLength - i.value.length;
+        b.style.setProperty('--p', i.value.length / i.maxLength * 100);
+        b.className = left <= 3 ? 'warn over' : left <= 10 ? 'warn' : '';
+        b.textContent = left <= 10 ? left : '';
+      });
+    } },
+
+  { name: 'OTP 입력',
+    kw: 'one-time code · auto advance · verification input',
+    prompt: `인증번호 네 칸 입력을 만들어줘. 숫자를 치면 칸이 톡 튀며 다음 칸으로 넘어가고, 지우면 앞 칸으로 돌아가게. 네 칸이 다 차면 모든 칸 테두리가 초록으로 빛나게. 바닐라 JS로.`,
+    cat: '인터랙션', desc: '한 칸씩 자동으로 넘어가고, 다 차면 초록으로 확인됩니다.',
+    html: `<div class="m-ix-otp" role="group" aria-label="인증번호 4자리"><input inputmode="numeric" maxlength="1" aria-label="1번째"><input inputmode="numeric" maxlength="1" aria-label="2번째"><input inputmode="numeric" maxlength="1" aria-label="3번째"><input inputmode="numeric" maxlength="1" aria-label="4번째"></div>`,
+    css: `.m-ix-otp{display:flex;gap:8px}
+.m-ix-otp input{width:44px;height:54px;border:2px solid #2e2642;border-radius:10px;outline:0;background:#241d33;color:#f2eefc;font:800 22px ui-monospace,monospace;text-align:center;transition:border-color .2s,box-shadow .3s}
+.m-ix-otp input:focus{border-color:#b39cff}
+.m-ix-otp input.pop{animation:m-ix-pop .2s ease-out}
+.m-ix-otp.done input{border-color:#2fd39a;box-shadow:0 0 12px rgba(47,211,154,.4)}
+@keyframes m-ix-pop{50%{transform:scale(1.12)}}`,
+    js: root => {
+      const box = root.querySelector('.m-ix-otp'), ins = [...box.querySelectorAll('input')];
+      ins.forEach((inp, k) => {
+        inp.addEventListener('input', () => {
+          inp.value = inp.value.replace(/\D/g, '');
+          if (inp.value) { inp.classList.remove('pop'); void inp.offsetWidth; inp.classList.add('pop'); ins[k + 1]?.focus(); }
+          box.classList.toggle('done', ins.every(x => x.value));
+        });
+        inp.addEventListener('keydown', e => { if (e.key === 'Backspace' && !inp.value) ins[k - 1]?.focus(); });
+      });
+    } },
+
+  { name: '슬라이더 말풍선',
+    kw: 'range slider tooltip · value bubble · custom thumb',
+    prompt: `슬라이더를 잡거나 포커스하면 손잡이 위에 현재 값이 담긴 말풍선이 톡 튀어나와 손잡이를 따라다니게 해줘. 지나온 구간은 민트색으로 채우고, 말풍선 0.2초 살짝 튕기는 이징, 값만 바닐라 JS로 CSS 변수에.`,
+    cat: '인터랙션', desc: '손잡이를 잡으면 값 말풍선이 따라다닙니다.',
+    html: `<label class="m-ix-range"><output>50</output><input type="range" value="50" aria-label="음량"></label>`,
+    css: `.m-ix-range{position:relative;display:block;width:220px;padding-top:34px}
+.m-ix-range input{width:100%;height:6px;margin:0;border-radius:3px;appearance:none;-webkit-appearance:none;background:linear-gradient(#8fe3d0,#8fe3d0) 0/calc(var(--v,50) * 1%) 100% no-repeat,#3a3152;cursor:pointer}
+.m-ix-range input::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#f2eefc;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.m-ix-range input::-moz-range-thumb{width:20px;height:20px;border:0;border-radius:50%;background:#f2eefc}
+.m-ix-range output{position:absolute;top:0;left:calc(10px + (100% - 20px) * var(--v,50) / 100);padding:3px 8px;border-radius:6px;background:#8fe3d0;color:#14101f;font:800 12px ui-monospace,monospace;transform:translateX(-50%) scale(0);transform-origin:50% 120%;transition:transform .2s cubic-bezier(.3,1.6,.5,1)}
+.m-ix-range:hover output,.m-ix-range:focus-within output{transform:translateX(-50%) scale(1)}`,
+    js: root => {
+      const i = root.querySelector('.m-ix-range input'), o = root.querySelector('.m-ix-range output');
+      i.addEventListener('input', () => { i.parentNode.style.setProperty('--v', i.value); o.value = i.value; });
+    } },
+
+  { name: '끌어다 놓기',
+    kw: 'drag and drop · drop zone · HTML5 DnD',
+    prompt: `태그 칩을 끌어서 상자에 놓을 수 있게 해줘. 끄는 동안 원래 자리 칩은 흐려지고, 상자 위에 오면 상자 테두리가 민트 점선으로 바뀌며 살짝 커지고, 놓으면 칩이 상자 안에서 톡 튀며 자리 잡게. HTML5 드래그 앤 드롭, 바닐라 JS로.`,
+    cat: '인터랙션', desc: '칩을 끌어 상자에 넣습니다. (마우스용 HTML5 드래그라 터치는 따로 처리해야 합니다)',
+    html: `<div class="m-ix-dnd"><div><span draggable="true">🎨 디자인</span><span draggable="true">⚙️ 개발</span><span draggable="true">📣 마케팅</span></div><div class="m-ix-zone" aria-label="여기에 놓기">여기에 놓기</div></div>`,
+    css: `.m-ix-dnd{display:grid;gap:12px;width:230px}
+.m-ix-dnd>div:first-child{display:flex;flex-wrap:wrap;gap:6px;min-height:32px}
+.m-ix-dnd span{padding:6px 10px;border-radius:999px;background:#2a2240;color:#f2eefc;font-size:13px;cursor:grab;transition:opacity .2s}
+.m-ix-dnd span.ghost{opacity:.3}
+.m-ix-dnd span.in{animation:m-ix-in .3s cubic-bezier(.3,1.6,.5,1)}
+.m-ix-zone{display:flex;flex-wrap:wrap;align-content:flex-start;gap:6px;min-height:70px;padding:10px;border:2px dashed #4a3f66;border-radius:12px;color:#a59bc2;font-size:12px;transition:border-color .2s,transform .2s,background .2s}
+.m-ix-zone.over{border-color:#8fe3d0;background:rgba(143,227,208,.08);transform:scale(1.03)}
+@keyframes m-ix-in{from{transform:scale(.6)}}`,
+    js: root => {
+      const zone = root.querySelector('.m-ix-zone');
+      let dragged = null;
+      root.querySelectorAll('.m-ix-dnd [draggable]').forEach(c => c.addEventListener('dragstart', e => { dragged = c; e.dataTransfer.setData('text/plain', ''); c.classList.add('ghost'); }));
+      root.addEventListener('dragend', () => dragged?.classList.remove('ghost'));
+      zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+      zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+      zone.addEventListener('drop', e => {
+        e.preventDefault();
+        zone.classList.remove('over');
+        if (!dragged) return;
+        zone.append(dragged);
+        dragged.classList.remove('in'); void dragged.offsetWidth; dragged.classList.add('in');
+      });
+    } },
+
+  { name: '끌어서 순서 바꾸기',
+    kw: 'sortable list · drag reorder · HTML5 DnD',
+    prompt: `목록 항목을 끌어서 순서를 바꾸게 해줘. 끄는 항목은 기울며 흐려지고, 다른 항목 위 절반을 지나면 그 앞에, 아래 절반이면 그 뒤에 바로 끼어들게. HTML5 드래그 앤 드롭, 바닐라 JS로.`,
+    cat: '인터랙션', desc: '항목을 끌어 순서를 바꿉니다(마우스용).',
+    html: `<ol class="m-ix-sort"><li draggable="true">☰ 1순위 기획</li><li draggable="true">☰ 2순위 디자인</li><li draggable="true">☰ 3순위 개발</li><li draggable="true">☰ 4순위 배포</li></ol>`,
+    css: `.m-ix-sort{display:grid;gap:6px;width:200px;margin:0;padding:0;list-style:none}
+.m-ix-sort li{padding:9px 12px;border-radius:10px;background:#2a2240;color:#f2eefc;font-size:13px;cursor:grab;transition:opacity .2s,transform .2s}
+.m-ix-sort li.drag{opacity:.4;transform:rotate(-2deg) scale(.97)}`,
+    js: root => {
+      const list = root.querySelector('.m-ix-sort');
+      let drag = null;
+      list.addEventListener('dragstart', e => { drag = e.target; e.dataTransfer.setData('text/plain', ''); drag.classList.add('drag'); });
+      list.addEventListener('dragend', () => drag?.classList.remove('drag'));
+      list.addEventListener('dragover', e => {
+        e.preventDefault();
+        const over = e.target.closest('li');
+        if (!over || over === drag) return;
+        const r = over.getBoundingClientRect();
+        over[e.clientY > r.top + r.height / 2 ? 'after' : 'before'](drag);
+      });
+    } },
+
+  { name: '당겨서 새로고침',
+    kw: 'pull to refresh · rubber band · spinner',
+    prompt: `목록을 아래로 끌면 고무줄처럼 점점 덜 따라오며(끈 거리의 절반) 위쪽 화살표가 돌아가고, 60px 넘게 당기고 놓으면 화살표가 스피너로 바뀌어 1초 돌다 목록이 제자리로 올라가게 해줘. 덜 당기면 바로 돌아가게. 바닐라 JS 포인터 이벤트로.`,
+    cat: '인터랙션', desc: '모바일 앱의 당겨서 새로고침. 목록을 아래로 끌어 보세요.',
+    html: `<div class="m-ix-ptr"><i aria-hidden="true">↓</i><ul><li>새 글 하나</li><li>새 글 둘</li><li>새 글 셋</li></ul></div>`,
+    css: `.m-ix-ptr{position:relative;width:200px;height:150px;overflow:hidden;border-radius:14px;background:#14101f;touch-action:none;user-select:none;cursor:grab}
+.m-ix-ptr i{position:absolute;left:50%;top:14px;display:grid;place-items:center;width:28px;height:28px;margin-left:-14px;border-radius:50%;background:#241d33;color:#8fe3d0;font-style:normal;transform:rotate(calc(var(--d,0) * 3deg))}
+.m-ix-ptr.busy i{color:transparent;border:2px solid #3a3152;border-top-color:#8fe3d0;animation:m-ix-spin .7s linear infinite}
+.m-ix-ptr ul{display:grid;gap:6px;height:100%;margin:0;padding:10px;list-style:none;background:#241d33;transform:translateY(calc(var(--d,0) * 1px))}
+.m-ix-ptr.back ul{transition:transform .35s cubic-bezier(.16,1,.3,1)}
+.m-ix-ptr li{padding:8px 10px;border-radius:8px;background:#2e2642;color:#f2eefc;font-size:13px}
+@keyframes m-ix-spin{to{transform:rotate(360deg)}}`,
+    js: root => {
+      const box = root.querySelector('.m-ix-ptr');
+      let y0 = null, d = 0;
+      const set = v => box.style.setProperty('--d', d = v);
+      box.addEventListener('pointerdown', e => { if (box.classList.contains('busy')) return; y0 = e.clientY; box.classList.remove('back'); box.setPointerCapture(e.pointerId); });
+      box.addEventListener('pointermove', e => { if (y0 !== null) set(Math.max(0, (e.clientY - y0) / 2)); });
+      box.addEventListener('pointerup', () => {
+        if (y0 === null) return;
+        y0 = null;
+        box.classList.add('back');
+        if (d < 60) return set(0);
+        set(50);
+        box.classList.add('busy');
+        setTimeout(() => { box.classList.remove('busy'); set(0); }, 1000);
+      });
+    } },
+
+  { name: '맨 위로 버튼',
+    kw: 'back to top · scroll threshold · smooth scroll',
+    prompt: `내용을 60px 넘게 내리면 오른쪽 아래에 "↑" 버튼이 아래에서 떠오르며 나타나고, 누르면 맨 위로 부드럽게 올라가며 버튼은 다시 사라지게 해줘. 0.3초 살짝 튕기는 이징, 바닐라 JS로. 미리보기에선 작은 스크롤 상자 안에서.`,
+    cat: '인터랙션', desc: '조금 내리면 맨 위로 버튼이 떠오릅니다. 상자 안을 스크롤해 보세요.',
+    html: `<div class="m-ix-top"><div tabindex="0" aria-label="스크롤 영역"><p>스크롤을 내려 보세요 ↓</p><p>…</p><p>…</p><p>…</p><p>…</p><p>…</p><p>끝</p></div><button aria-label="맨 위로">↑</button></div>`,
+    css: `.m-ix-top{position:relative;width:200px;height:150px}
+.m-ix-top>div{height:100%;overflow:auto;padding:0 14px;border-radius:14px;background:#241d33;color:#a59bc2;font-size:13px;scrollbar-width:none}
+.m-ix-top p{margin:14px 0 40px}
+.m-ix-top button{position:absolute;right:10px;bottom:10px;width:36px;height:36px;border:0;border-radius:50%;background:#8fe3d0;color:#14101f;font-weight:900;cursor:pointer;opacity:0;visibility:hidden;transform:translateY(16px) scale(.6);transition:transform .3s cubic-bezier(.3,1.6,.5,1),opacity .2s,visibility .3s}
+.m-ix-top.show button{opacity:1;visibility:visible;transform:none}`,
+    js: root => {
+      const wrap = root.querySelector('.m-ix-top'), box = wrap.firstElementChild;
+      box.addEventListener('scroll', () => wrap.classList.toggle('show', box.scrollTop > 60));
+      wrap.querySelector('button').onclick = () => box.scrollTo({ top: 0, behavior: 'smooth' });
+    } },
+
+  { name: '독 확대',
+    kw: 'macOS dock magnification · neighbor scale · :has()',
+    prompt: `macOS 독처럼 아이콘 줄에서 마우스를 올린 아이콘은 크게, 바로 옆 아이콘은 중간으로 커지며 옆 아이콘을 밀어내게 해줘. 크기는 40 → 64 / 52px, 0.2초 감속, 아래쪽 정렬, :has()와 인접 선택자로 순수 CSS만.`,
+    cat: '인터랙션', desc: '아이콘과 이웃이 함께 커지는 독. 아이콘 위를 쓸어 보세요.',
+    html: `<nav class="m-ix-dock" aria-label="앱"><a href="#" aria-label="파인더">📁</a><a href="#" aria-label="메일">✉️</a><a href="#" aria-label="음악">🎵</a><a href="#" aria-label="사진">🖼️</a><a href="#" aria-label="설정">⚙️</a></nav>`,
+    css: `.m-ix-dock{display:flex;align-items:flex-end;gap:6px;height:80px;padding:6px 10px;border-radius:18px;background:rgba(255,255,255,.08)}
+.m-ix-dock a{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:#2a2240;font-size:20px;text-decoration:none;transition:width .2s ease-out,height .2s ease-out,font-size .2s ease-out}
+.m-ix-dock a:hover{width:64px;height:64px;font-size:32px}
+.m-ix-dock a:hover+a,.m-ix-dock a:has(+a:hover){width:52px;height:52px;font-size:26px}` },
+
+  { name: '마우스 꼬리',
+    kw: 'cursor trail · particle trail · fading dots',
+    prompt: `마우스를 움직이면 지나간 자리에 색이 조금씩 바뀌는 점이 남았다가 0.6초 동안 작아지며 사라지게 해줘. 8px 이상 움직일 때만 점을 만들고, 사라진 점은 지우기, 바닐라 JS로.`,
+    cat: '인터랙션', desc: '커서가 지나간 자리에 빛 꼬리가 남습니다. 미리보기 위에서 움직여 보세요.',
+    html: `<p class="m-ix-trail">여기서 마우스를 움직여 보세요</p>`,
+    css: `.m-ix-trail{margin:0;color:#a59bc2;font-size:13px;pointer-events:none}
+.m-ix-dot{position:absolute;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;pointer-events:none;animation:m-ix-dot .6s ease-out forwards}
+@keyframes m-ix-dot{to{transform:scale(0);opacity:0}}`,
+    js: root => {
+      let lx = 0, ly = 0, hue = 160;
+      root.addEventListener('mousemove', e => {
+        const r = root.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+        if (Math.hypot(x - lx, y - ly) < 8) return;
+        lx = x; ly = y; hue = (hue + 12) % 360;
+        const d = Object.assign(document.createElement('i'), { className: 'm-ix-dot' });
+        d.style.cssText = `left:${x}px;top:${y}px;background:hsl(${hue} 80% 70%)`;
+        d.addEventListener('animationend', () => d.remove());
+        root.appendChild(d);
+      });
+    } },
+
+  { name: '클릭 불꽃',
+    kw: 'click spark · burst lines · feedback anywhere',
+    prompt: `영역 아무 데나 클릭하면 그 자리에서 짧은 빛줄기 8개가 사방으로 튀었다 사라지게 해줘. 0.45초 감속, 끝나면 요소 지우기, 바닐라 JS로.`,
+    cat: '인터랙션', desc: '누른 자리에서 불꽃이 튑니다. 미리보기 아무 데나 눌러 보세요.',
+    html: `<p class="m-ix-sparkhint">아무 데나 클릭해 보세요</p>`,
+    css: `.m-ix-sparkhint{margin:0;color:#a59bc2;font-size:13px;pointer-events:none}
+.m-ix-spark{position:absolute;width:0;height:0;pointer-events:none}
+.m-ix-spark i{position:absolute;left:-1px;top:-14px;width:2px;height:10px;border-radius:1px;background:#ffd479;transform-origin:1px 14px;transform:rotate(calc(var(--i) * 45deg));animation:m-ix-spark .45s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes m-ix-spark{from{transform:rotate(calc(var(--i) * 45deg)) translateY(8px) scaleY(.2)}60%{opacity:1}to{transform:rotate(calc(var(--i) * 45deg)) translateY(-10px) scaleY(1);opacity:0}}`,
+    js: root => root.addEventListener('click', e => {
+      const r = root.getBoundingClientRect();
+      const s = Object.assign(document.createElement('div'), { className: 'm-ix-spark', innerHTML: [...Array(8)].map((_, i) => `<i style="--i:${i}"></i>`).join('') });
+      s.style.cssText = `left:${e.clientX - r.left}px;top:${e.clientY - r.top}px`;
+      s.lastChild.addEventListener('animationend', () => s.remove());
+      root.appendChild(s);
+    }) },
+
+  { name: '링 커서',
+    kw: 'ring cursor · hover grow · magnetic target',
+    prompt: `마우스를 0.15초 늦게 따라오는 테두리 원 커서를 만들고, 버튼 위에 올라가면 원이 버튼 크기만큼 커지며 반투명하게 채워지게 해줘. 크기 변화 0.25초, 위치만 바닐라 JS로.`,
+    cat: '인터랙션', desc: '따라오는 원이 버튼 위에서 커집니다. 미리보기 위에서 움직여 보세요.',
+    html: `<div class="m-ix-ringbox"><button>작업 보기</button><button>연락하기</button></div><i class="m-ix-ring" aria-hidden="true"></i>`,
+    css: `.m-ix-ringbox{display:flex;gap:16px}
+.m-ix-ringbox button{padding:10px 16px;border:0;border-radius:999px;background:#241d33;color:#f2eefc;font-weight:700;cursor:none}
+.m-ix-ring{position:absolute;left:0;top:0;width:28px;height:28px;margin:-14px 0 0 -14px;border:2px solid #8fe3d0;border-radius:50%;pointer-events:none;opacity:0;transform:translate(var(--x),var(--y));transition:transform .15s ease-out,width .25s,height .25s,margin .25s,background .25s,opacity .2s}
+.m-ix-ring.on{opacity:1}
+.m-ix-ring.big{width:64px;height:64px;margin:-32px 0 0 -32px;background:rgba(143,227,208,.15)}`,
+    js: root => {
+      const ring = root.querySelector('.m-ix-ring');
+      root.addEventListener('mousemove', e => {
+        const r = root.getBoundingClientRect();
+        ring.style.setProperty('--x', e.clientX - r.left + 'px');
+        ring.style.setProperty('--y', e.clientY - r.top + 'px');
+        ring.classList.add('on');
+        ring.classList.toggle('big', !!e.target.closest('button'));
+      });
+      root.addEventListener('mouseleave', () => ring.classList.remove('on'));
+    } },
+
+  { name: '전후 비교',
+    kw: 'before after slider · image compare · clip-path',
+    prompt: `두 장의 사진을 겹쳐 두고 가운데 세로 손잡이를 좌우로 끌면 왼쪽엔 '전', 오른쪽엔 '후' 사진이 보이는 비교 슬라이더를 만들어줘. 위 사진은 clip-path로 자르고, 조작은 투명한 input range로 해서 키보드로도 되게, 값만 바닐라 JS로.`,
+    cat: '인터랙션', desc: '손잡이를 끌어 보정 전후를 비교합니다. 화살표 키로도 됩니다.',
+    html: `<div class="m-ix-ba"><i></i><i></i><input type="range" value="50" aria-label="전후 비교 위치"></div>`,
+    css: `.m-ix-ba{position:relative;width:220px;height:140px;overflow:hidden;border-radius:14px}
+.m-ix-ba i{position:absolute;inset:0;background:radial-gradient(circle at 70% 30%,#ffd479 0 11%,transparent 12%),linear-gradient(transparent 62%,#2a6b5f 62%),linear-gradient(160deg,#ff9ecd,#7cc4ff)}
+.m-ix-ba i:first-child{filter:grayscale(1) brightness(.7)}
+.m-ix-ba i+i{clip-path:inset(0 0 0 var(--p,50%))}
+.m-ix-ba::after{content:"⇆";position:absolute;top:0;bottom:0;left:var(--p,50%);display:grid;place-items:center;width:2px;background:#fff;color:#14101f;font-size:12px;text-indent:-9px;pointer-events:none}
+.m-ix-ba input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize}`,
+    js: root => {
+      const i = root.querySelector('.m-ix-ba input');
+      i.addEventListener('input', () => i.parentNode.style.setProperty('--p', i.value + '%'));
+    } },
+
+  { name: '돋보기',
+    kw: 'magnifier lens · zoom on hover · background-position',
+    prompt: `이미지 위에 마우스를 올리면 커서 자리에 지름 80px 원형 돋보기가 생겨 그 부분을 2배로 확대해 보여 주게 해줘. 렌즈는 같은 배경을 2배 크기로 깔고 위치를 맞추는 방식, 위치만 바닐라 JS로.`,
+    cat: '인터랙션', desc: '커서 자리를 2배로 확대해 보는 돋보기. 상품 상세 사진에.',
+    html: `<div class="m-ix-mag" role="img" aria-label="확대해 볼 수 있는 패턴 이미지"><i aria-hidden="true"></i></div>`,
+    css: `.m-ix-mag{--img:radial-gradient(circle at 30% 40%,#ffd479 0 10%,transparent 11%),radial-gradient(#fff3 1.5px,transparent 2px) 0 0/12px 12px,linear-gradient(135deg,#6c4bd8,#ff9ecd);position:relative;width:200px;height:130px;border-radius:14px;background:var(--img);cursor:none}
+.m-ix-mag i{position:absolute;left:var(--x,0);top:var(--y,0);width:80px;height:80px;margin:-40px 0 0 -40px;border:3px solid #fff;border-radius:50%;background:radial-gradient(circle at 30% 40%,#ffd479 0 10%,transparent 11%) calc(40px - var(--x,0) * 2) calc(40px - var(--y,0) * 2)/400px 260px,radial-gradient(#fff3 3px,transparent 4px) calc(40px - var(--x,0) * 2) calc(40px - var(--y,0) * 2)/24px 24px,linear-gradient(135deg,#6c4bd8,#ff9ecd) calc(40px - var(--x,0) * 2) calc(40px - var(--y,0) * 2)/400px 260px;box-shadow:0 6px 16px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .2s}
+.m-ix-mag:hover i{opacity:1}`,
+    js: root => {
+      const m = root.querySelector('.m-ix-mag');
+      m.addEventListener('mousemove', e => {
+        const r = m.getBoundingClientRect();
+        m.style.setProperty('--x', e.clientX - r.left + 'px');
+        m.style.setProperty('--y', e.clientY - r.top + 'px');
+      });
+    } },
+
+  { name: '색상 선택',
+    kw: 'color swatch picker · radio · product preview',
+    prompt: `색상 동그라미 네 개 중 하나를 고르면 그 동그라미에 바깥 링이 톡 튀며 생기고, 위 상품 미리보기 색이 0.3초 동안 그 색으로 바뀌게 해줘. 실제로는 라디오 버튼, :has(:checked)로 순수 CSS만.`,
+    cat: '인터랙션', desc: '색을 고르면 링이 생기고 상품 색이 바뀝니다. 쇼핑몰 옵션 선택에.',
+    html: `<div class="m-ix-color"><i aria-hidden="true">👕</i><div role="radiogroup" aria-label="색상"><input type="radio" name="m-ix-col" aria-label="민트" style="--c:#8fe3d0" checked><input type="radio" name="m-ix-col" aria-label="보라" style="--c:#b39cff"><input type="radio" name="m-ix-col" aria-label="분홍" style="--c:#ff9ecd"><input type="radio" name="m-ix-col" aria-label="노랑" style="--c:#ffd479"></div></div>`,
+    css: `.m-ix-color{display:grid;justify-items:center;gap:14px}
+.m-ix-color i{display:grid;place-items:center;width:84px;height:84px;border-radius:20px;background:#8fe3d0;font-size:40px;font-style:normal;transition:background .3s}
+.m-ix-color:has(input:nth-child(2):checked) i{background:#b39cff}
+.m-ix-color:has(input:nth-child(3):checked) i{background:#ff9ecd}
+.m-ix-color:has(input:nth-child(4):checked) i{background:#ffd479}
+.m-ix-color div{display:flex;gap:12px}
+.m-ix-color input{width:24px;height:24px;margin:0;border-radius:50%;appearance:none;background:var(--c);cursor:pointer;box-shadow:0 0 0 0 #1d1729,0 0 0 0 var(--c);transition:box-shadow .25s cubic-bezier(.3,1.6,.5,1)}
+.m-ix-color input:checked{box-shadow:0 0 0 3px #1d1729,0 0 0 5px var(--c)}
+.m-ix-color input:focus-visible{outline:2px solid #f2eefc;outline-offset:6px}` },
+
+  { name: '원형 테마 전환',
+    kw: 'theme switch · circular reveal · clip-path from button',
+    prompt: `밝은 패널의 테마 버튼을 누르면 버튼 위치에서 어두운 원이 퍼져 패널 전체를 덮으며 다크 테마가 되고, 다시 누르면 버튼 쪽으로 원이 줄어들며 밝아지게 해줘. 0.6초 감속, 글자색은 0.2초 늦게 바뀌게, 바닐라 JS는 클래스만.`,
+    cat: '인터랙션', desc: '버튼에서 어둠이 번져 테마가 바뀝니다. 실제로는 화면 전체에 같은 방식으로.',
+    html: `<div class="m-ix-theme"><b>오늘의 일정</b><p>10:00 디자인 리뷰</p><button aria-pressed="false" aria-label="다크 모드">◐</button></div>`,
+    css: `.m-ix-theme{position:relative;isolation:isolate;width:210px;padding:18px;overflow:hidden;border-radius:16px;background:#f2eefc;color:#14101f;transition:color .3s .2s}
+.m-ix-theme::before{content:"";position:absolute;inset:0;z-index:-1;background:#14101f;clip-path:circle(0 at calc(100% - 32px) 30px);transition:clip-path .6s cubic-bezier(.16,1,.3,1)}
+.m-ix-theme.dark{color:#f2eefc}
+.m-ix-theme.dark::before{clip-path:circle(150% at calc(100% - 32px) 30px)}
+.m-ix-theme p{margin:6px 0 0;font-size:13px;opacity:.7}
+.m-ix-theme button{position:absolute;top:16px;right:18px;width:28px;height:28px;border:0;border-radius:50%;background:#ffd479;color:#14101f;cursor:pointer}`,
+    js: root => {
+      const p = root.querySelector('.m-ix-theme'), b = p.querySelector('button');
+      b.onclick = () => b.ariaPressed = p.classList.toggle('dark');
+    } },
+
+  { name: '필터 칩',
+    kw: 'filter chips · multi select · checkmark slide',
+    prompt: `필터 칩을 누르면 칩 배경이 민트로 바뀌고 왼쪽에 체크 표시가 폭이 늘어나며 미끄러져 들어오게 해줘. 여러 개 선택 가능, 0.25초, 실제로는 체크박스, 순수 CSS로.`,
+    cat: '인터랙션', desc: '고른 칩에 체크가 미끄러져 들어옵니다. 여러 개 고를 수 있습니다.',
+    html: `<div class="m-ix-chips" role="group" aria-label="필터"><label><input type="checkbox" checked><i>✓</i>무료 배송</label><label><input type="checkbox"><i>✓</i>할인 중</label><label><input type="checkbox"><i>✓</i>새 상품</label></div>`,
+    css: `.m-ix-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:240px}
+.m-ix-chips label{display:inline-flex;align-items:center;padding:7px 12px;border:1px solid #2e2642;border-radius:999px;background:#241d33;color:#f2eefc;font-size:13px;cursor:pointer;transition:background .25s,color .25s,border-color .25s}
+.m-ix-chips input{position:absolute;opacity:0}
+.m-ix-chips i{display:inline-block;width:0;overflow:hidden;font-style:normal;font-weight:900;opacity:0;transition:width .25s cubic-bezier(.16,1,.3,1),opacity .2s,margin .25s}
+.m-ix-chips label:has(:checked){border-color:#8fe3d0;background:#8fe3d0;color:#14101f}
+.m-ix-chips label:has(:checked) i{width:12px;margin-right:4px;opacity:1}
+.m-ix-chips label:has(:focus-visible){outline:2px solid #b39cff;outline-offset:2px}` },
+
+  { name: '배지 카운트',
+    kw: 'notification badge · count bump · bell ring',
+    prompt: `종 아이콘 오른쪽 위 빨간 숫자 배지가 알림이 올 때마다 1씩 오르며 톡 튀고 종은 좌우로 흔들리게 해줘. 배지 0.3초, 종 0.6초, 숫자가 0이면 배지가 작아지며 숨게. "알림 보내기"를 누르면 하나씩, 바닐라 JS로.`,
+    cat: '인터랙션', desc: '알림이 올 때마다 배지가 튀고 종이 흔들립니다.',
+    html: `<div class="m-ix-badge"><span aria-label="알림"><i aria-hidden="true">🔔</i><b>0</b></span><button>알림 보내기</button></div>`,
+    css: `.m-ix-badge{display:flex;align-items:center;gap:18px}
+.m-ix-badge span{position:relative;display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:#241d33}
+.m-ix-badge i{font-size:24px;font-style:normal;transform-origin:50% 10%}
+.m-ix-badge b{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:#ff4d6d;color:#fff;font:800 11px/20px system-ui,sans-serif;text-align:center;transform:scale(0);transition:transform .2s}
+.m-ix-badge .on b{transform:none}
+.m-ix-badge .bump b{animation:m-ix-bump .3s cubic-bezier(.3,1.8,.5,1)}
+.m-ix-badge .bump i{animation:m-ix-ring .6s ease-in-out}
+.m-ix-badge button{padding:8px 14px;border:1px solid #2e2642;border-radius:10px;background:#241d33;color:#f2eefc;cursor:pointer}
+@keyframes m-ix-bump{50%{transform:scale(1.4)}}
+@keyframes m-ix-ring{20%{transform:rotate(18deg)}40%{transform:rotate(-14deg)}60%{transform:rotate(8deg)}80%{transform:rotate(-4deg)}}`,
+    js: root => {
+      const s = root.querySelector('.m-ix-badge span'), b = s.querySelector('b');
+      root.querySelector('.m-ix-badge button').onclick = () => {
+        b.textContent = +b.textContent + 1;
+        s.ariaLabel = `알림 ${b.textContent}개`;
+        s.classList.remove('bump'); void s.offsetWidth;
+        s.classList.add('on', 'bump');
+      };
+    } },
+
+  { name: '파일 드롭존',
+    kw: 'file dropzone · dragover highlight · marching border',
+    prompt: `파일을 끌어 영역 위에 올리면 점선 테두리가 민트로 바뀌어 빙글빙글 행진하고 위쪽 아이콘이 통통 튀게, 놓으면 파일 이름이 아래에 하나씩 떠오르게 해줘. 누르면 파일 선택 창도 열리게, 바닐라 JS로.`,
+    cat: '인터랙션', desc: '파일을 끌어 오면 영역이 반응합니다. 미리보기에선 눌러서 파일을 골라 보세요.',
+    html: `<label class="m-ix-drop"><input type="file" multiple hidden><i aria-hidden="true">⬆</i><span>파일을 끌어 놓거나 눌러서 선택</span><ul></ul></label>`,
+    css: `.m-ix-drop{display:grid;justify-items:center;gap:6px;width:220px;padding:18px;border-radius:14px;background:linear-gradient(90deg,#4a3f66 50%,transparent 0) 0 0/12px 2px repeat-x,linear-gradient(90deg,#4a3f66 50%,transparent 0) 0 100%/12px 2px repeat-x,linear-gradient(#4a3f66 50%,transparent 0) 0 0/2px 12px repeat-y,linear-gradient(#4a3f66 50%,transparent 0) 100% 0/2px 12px repeat-y,#1d1729;color:#a59bc2;font-size:12px;cursor:pointer}
+.m-ix-drop i{color:#8fe3d0;font-size:24px;font-style:normal}
+.m-ix-drop.over{background:linear-gradient(90deg,#8fe3d0 50%,transparent 0) 0 0/12px 2px repeat-x,linear-gradient(90deg,#8fe3d0 50%,transparent 0) 0 100%/12px 2px repeat-x,linear-gradient(#8fe3d0 50%,transparent 0) 0 0/2px 12px repeat-y,linear-gradient(#8fe3d0 50%,transparent 0) 100% 0/2px 12px repeat-y,rgba(143,227,208,.06);animation:m-ix-march .6s linear infinite}
+.m-ix-drop.over i{animation:m-ix-hop .5s ease-in-out infinite alternate}
+.m-ix-drop ul{margin:0;padding:0;list-style:none;color:#f2eefc}
+.m-ix-drop li{animation:m-ix-file .3s cubic-bezier(.16,1,.3,1) both}
+@keyframes m-ix-march{to{background-position:12px 0,-12px 100%,0 -12px,100% 12px,0 0}}
+@keyframes m-ix-hop{to{transform:translateY(-6px)}}
+@keyframes m-ix-file{from{transform:translateY(8px);opacity:0}}`,
+    js: root => {
+      const z = root.querySelector('.m-ix-drop'), list = z.querySelector('ul'), input = z.querySelector('input');
+      let depth = 0;
+      const show = files => [...files].slice(0, 3).forEach(f => list.append(Object.assign(document.createElement('li'), { textContent: '📄 ' + f.name })));
+      z.addEventListener('dragenter', e => { e.preventDefault(); depth++; z.classList.add('over'); });
+      z.addEventListener('dragleave', () => { if (--depth === 0) z.classList.remove('over'); });
+      z.addEventListener('dragover', e => e.preventDefault());
+      z.addEventListener('drop', e => { e.preventDefault(); depth = 0; z.classList.remove('over'); show(e.dataTransfer.files); });
+      input.addEventListener('change', () => show(input.files));
+    } },
+
+  { name: '키 누름 표시',
+    kw: 'keycap press · keyboard feedback · keydown',
+    prompt: `W A S D 키캡을 키보드 배열로 두고, 실제 키보드에서 그 키를 누르면 해당 키캡이 3px 눌려 들어가며 민트색이 되게 해줘. 마우스로 눌러도 되게, 0.08초, 바닐라 JS로 keydown/keyup에 클래스만.`,
+    cat: '인터랙션', desc: '키보드로 W·A·S·D를 눌러 보세요. 게임·단축키 안내에.',
+    html: `<div class="m-ix-keys" aria-label="W A S D 키"><kbd data-k="w">W</kbd><kbd data-k="a">A</kbd><kbd data-k="s">S</kbd><kbd data-k="d">D</kbd></div>`,
+    css: `.m-ix-keys{display:grid;grid-template-columns:repeat(3,44px);gap:6px}
+.m-ix-keys kbd{display:grid;place-items:center;height:44px;border-radius:8px;background:#2a2240;color:#f2eefc;font:800 15px ui-monospace,monospace;box-shadow:0 4px 0 #14101f;cursor:pointer;user-select:none;transition:transform .08s,box-shadow .08s,background .08s}
+.m-ix-keys kbd:first-child{grid-column:2}
+.m-ix-keys kbd:nth-child(2){grid-column:1}
+.m-ix-keys kbd.on{background:#8fe3d0;color:#14101f;box-shadow:0 1px 0 #14101f;transform:translateY(3px)}`,
+    js: root => {
+      const keys = root.querySelector('.m-ix-keys');
+      const set = (k, on) => keys.querySelector(`[data-k="${k}"]`)?.classList.toggle('on', on);
+      const down = e => { if (!root.contains(keys)) return removeEventListener('keydown', down); set(e.key.toLowerCase(), true); };
+      const up = e => { if (!root.contains(keys)) return removeEventListener('keyup', up); set(e.key.toLowerCase(), false); };
+      addEventListener('keydown', down);
+      addEventListener('keyup', up);
+      keys.addEventListener('pointerdown', e => e.target.dataset.k && set(e.target.dataset.k, true));
+      keys.addEventListener('pointerup', e => e.target.dataset.k && set(e.target.dataset.k, false));
+    } },
+
+  { name: '투표',
+    kw: 'poll · results bars · animated percentage',
+    prompt: `선택지 세 개 중 하나를 누르면 모든 선택지가 결과 막대로 바뀌어 각 비율만큼 0.7초 동안 차오르고 퍼센트가 보이며, 내가 고른 항목은 민트색과 체크로 강조되게 해줘. 바닐라 JS로.`,
+    cat: '인터랙션', desc: '투표하면 결과 막대가 차오릅니다.',
+    html: `<div class="m-ix-poll" role="group" aria-label="점심 메뉴 투표"><b>점심 뭐 먹지?</b><button data-v="46">🍜 국수</button><button data-v="32">🍱 도시락</button><button data-v="22">🥗 샐러드</button></div>`,
+    css: `.m-ix-poll{display:grid;gap:6px;width:210px;color:#f2eefc}
+.m-ix-poll b{margin-bottom:2px;font-size:14px}
+.m-ix-poll button{position:relative;display:flex;justify-content:space-between;padding:9px 12px;overflow:hidden;border:1px solid #2e2642;border-radius:10px;background:#241d33;color:inherit;font:inherit;font-size:13px;text-align:left;cursor:pointer}
+.m-ix-poll button::before{content:"";position:absolute;inset:0;z-index:0;background:#3a3152;transform:scaleX(0);transform-origin:left;transition:transform .7s cubic-bezier(.16,1,.3,1)}
+.m-ix-poll button::after{content:attr(data-v) "%";position:relative;opacity:0;transition:opacity .3s .3s}
+.m-ix-poll.done button{cursor:default}
+.m-ix-poll.done button::before{transform:scaleX(calc(var(--v) / 100))}
+.m-ix-poll.done button::after{opacity:1}
+.m-ix-poll button.me{border-color:#8fe3d0}
+.m-ix-poll button.me::before{background:rgba(143,227,208,.35)}
+.m-ix-poll button span{position:relative}`,
+    js: root => {
+      const p = root.querySelector('.m-ix-poll');
+      p.querySelectorAll('button').forEach(b => {
+        b.innerHTML = `<span>${b.textContent}</span>`;
+        b.style.setProperty('--v', b.dataset.v);
+        b.onclick = () => {
+          if (p.classList.contains('done')) return;
+          b.classList.add('me');
+          b.firstChild.textContent += ' ✓';
+          p.classList.add('done');
+        };
+      });
+    } },
+
+  { name: '단계 폼',
+    kw: 'multi-step form · wizard · slide between steps',
+    prompt: `세 단계짜리 가입 폼을 만들어 "다음"을 누르면 현재 단계가 왼쪽으로 밀려나고 다음 단계가 오른쪽에서 들어오게, "이전"은 반대로 해줘. 위쪽 단계 점도 함께 채워지게. 0.4초 감속, 바닐라 JS로 단계 번호만 CSS 변수에.`,
+    cat: '인터랙션', desc: '단계가 옆으로 밀리며 넘어가는 가입 폼.',
+    html: `<div class="m-ix-wiz"><nav aria-hidden="true"><i></i><i></i><i></i></nav><div><section><b>1. 이메일</b><input placeholder="you@mail.com" aria-label="이메일"></section><section><b>2. 비밀번호</b><input type="password" placeholder="••••••" aria-label="비밀번호"></section><section><b>3. 완료!</b><p>환영해요 🎉</p></section></div><footer><button>이전</button><button>다음</button></footer></div>`,
+    css: `.m-ix-wiz{width:220px;overflow:hidden;color:#f2eefc}
+.m-ix-wiz nav{display:flex;gap:6px;margin-bottom:10px}
+.m-ix-wiz nav i{flex:1;height:4px;border-radius:2px;background:#3a3152;transition:background .3s}
+.m-ix-wiz nav i:nth-child(-n+1),.m-ix-wiz[data-s="1"] nav i:nth-child(-n+2),.m-ix-wiz[data-s="2"] nav i{background:#8fe3d0}
+.m-ix-wiz>div{display:flex;transform:translateX(calc(var(--s,0) * -100%));transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.m-ix-wiz section{display:grid;gap:8px;flex:0 0 100%;font-size:14px}
+.m-ix-wiz input{padding:9px 10px;border:1px solid #2e2642;border-radius:8px;background:#241d33;color:#f2eefc;font:inherit}
+.m-ix-wiz p{margin:0;color:#a59bc2}
+.m-ix-wiz footer{display:flex;justify-content:space-between;margin-top:12px}
+.m-ix-wiz button{padding:7px 14px;border:0;border-radius:8px;background:#241d33;color:#f2eefc;cursor:pointer}
+.m-ix-wiz button+button{background:#8fe3d0;color:#14101f;font-weight:700}
+.m-ix-wiz button:disabled{opacity:.3;cursor:default}`,
+    js: root => {
+      const w = root.querySelector('.m-ix-wiz'), [prev, next] = w.querySelectorAll('footer button');
+      let s = 0;
+      const go = d => {
+        s = Math.min(2, Math.max(0, s + d));
+        w.style.setProperty('--s', s);
+        w.dataset.s = s;
+        prev.disabled = s === 0;
+        next.disabled = s === 2;
+        w.querySelectorAll('section').forEach((x, i) => x.inert = i !== s);
+      };
+      prev.onclick = () => go(-1);
+      next.onclick = () => go(1);
+      go(0);
+    } },
+
+  { name: '실행 취소 스낵바',
+    kw: 'undo snackbar · countdown bar · soft delete',
+    prompt: `항목의 삭제를 누르면 항목이 흐려지며 접혀 사라지고, 아래에서 "삭제했어요 · 되돌리기" 스낵바가 올라와 4초짜리 줄어드는 진행 바를 보여 주게 해줘. 되돌리기를 누르면 항목이 다시 펼쳐지고 스낵바는 내려가게. 바닐라 JS로.`,
+    cat: '인터랙션', desc: '지우고 4초 안에 되돌릴 수 있습니다. "정말 지울까요?" 확인창 대신 쓰는 패턴.',
+    html: `<div class="m-ix-undo"><p>📄 회의록.pdf <button>삭제</button></p><div role="status"><span>삭제했어요</span><button>되돌리기</button><i></i></div></div>`,
+    css: `.m-ix-undo{position:relative;width:230px;height:150px}
+.m-ix-undo p{display:flex;justify-content:space-between;align-items:center;height:44px;margin:0;padding:0 12px;overflow:hidden;border-radius:10px;background:#241d33;color:#f2eefc;font-size:13px;transition:height .3s,opacity .3s}
+.m-ix-undo p.gone{height:0;opacity:0}
+.m-ix-undo button{border:0;background:none;color:#ff6b8b;font:inherit;font-weight:700;cursor:pointer}
+.m-ix-undo div{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:center;padding:12px 14px;overflow:hidden;border-radius:10px;background:#f2eefc;color:#14101f;font-size:13px;opacity:0;visibility:hidden;transform:translateY(20px);transition:transform .3s cubic-bezier(.16,1,.3,1),opacity .2s,visibility .3s}
+.m-ix-undo div button{color:#6c4bd8}
+.m-ix-undo div i{position:absolute;left:0;bottom:0;height:3px;width:100%;background:#6c4bd8;transform-origin:left}
+.m-ix-undo div.show{opacity:1;visibility:visible;transform:none}
+.m-ix-undo div.show i{animation:m-ix-count 4s linear forwards}
+@keyframes m-ix-count{to{transform:scaleX(0)}}`,
+    js: root => {
+      const item = root.querySelector('.m-ix-undo p'), bar = root.querySelector('.m-ix-undo div');
+      let t;
+      item.querySelector('button').onclick = () => {
+        item.classList.add('gone');
+        bar.classList.remove('show'); void bar.offsetWidth; bar.classList.add('show');
+        clearTimeout(t);
+        t = setTimeout(() => bar.classList.remove('show'), 4000);
+      };
+      bar.querySelector('button').onclick = () => { clearTimeout(t); item.classList.remove('gone'); bar.classList.remove('show'); };
+    } },
+
+  { name: '이모지 만족도',
+    kw: 'emoji rating slider · mood scale · face change',
+    prompt: `만족도 슬라이더를 움직이면 위의 큰 이모지가 😢 → 😕 → 😐 → 🙂 → 😍로 바뀌며 바뀔 때마다 톡 튀고, 슬라이더 색도 빨강에서 초록으로 바뀌게 해줘. 0.3초 살짝 튕기는 이징, 바닐라 JS로.`,
+    cat: '인터랙션', desc: '슬라이더 값에 따라 표정이 바뀝니다. 설문·피드백에.',
+    html: `<div class="m-ix-mood"><i aria-hidden="true">😐</i><input type="range" min="0" max="4" value="2" aria-label="만족도"></div>`,
+    css: `.m-ix-mood{--c:#ffd479;display:grid;justify-items:center;gap:12px;width:200px}
+.m-ix-mood i{font-size:48px;font-style:normal}
+.m-ix-mood i.pop{animation:m-ix-mood .3s cubic-bezier(.3,1.8,.5,1)}
+.m-ix-mood input{width:100%;accent-color:var(--c);cursor:pointer}
+@keyframes m-ix-mood{50%{transform:scale(1.3) rotate(-8deg)}}`,
+    js: root => {
+      const box = root.querySelector('.m-ix-mood'), face = box.querySelector('i'), r = box.querySelector('input');
+      const faces = ['😢', '😕', '😐', '🙂', '😍'], colors = ['#ff4d6d', '#ff9e6b', '#ffd479', '#9be38f', '#2fd39a'];
+      r.addEventListener('input', () => {
+        face.textContent = faces[r.value];
+        box.style.setProperty('--c', colors[r.value]);
+        face.classList.remove('pop'); void face.offsetWidth; face.classList.add('pop');
+      });
+    } },
+
+  { name: '스포일러 가리기',
+    kw: 'spoiler reveal · blur text · click to show',
+    prompt: `문장 속 스포일러 단어를 흐리게 블러 처리한 상자로 가려 두고, 누르거나 Enter를 치면 블러가 0.3초 동안 걷히며 드러나게 해줘. 다시 누르면 가려지게, 바닐라 JS는 클래스 토글만.`,
+    cat: '인터랙션', desc: '흐리게 가린 내용을 눌러서 봅니다. 리뷰·커뮤니티 글에.',
+    html: `<p class="m-ix-spoiler">범인은 바로 <span role="button" tabindex="0" aria-pressed="false" aria-label="스포일러 보기">집사</span>였다.</p>`,
+    css: `.m-ix-spoiler{margin:0;color:#f2eefc;font-size:18px}
+.m-ix-spoiler span{display:inline-block;padding:0 6px;border-radius:6px;background:#3a3152;filter:blur(6px);cursor:pointer;transition:filter .3s,background .3s}
+.m-ix-spoiler span[aria-pressed=true]{background:transparent;filter:none;color:#ff9ecd;font-weight:800}`,
+    js: root => {
+      const s = root.querySelector('.m-ix-spoiler span');
+      const flip = () => s.ariaPressed = s.ariaPressed !== 'true';
+      s.onclick = flip;
+      s.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); } };
+    } },
+
+  { name: '따라다니는 툴팁',
+    kw: 'cursor tooltip · follow mouse · data attribute',
+    prompt: `색 칩 위에 마우스를 올리면 커서 오른쪽 아래 14px 자리에 그 칩의 이름 툴팁이 따라다니며 보이고, 칩을 벗어나면 0.15초 동안 사라지게 해줘. 툴팁 글은 data-tip에서, 위치만 바닐라 JS로.`,
+    cat: '인터랙션', desc: '툴팁이 커서를 따라다닙니다. 차트·지도처럼 작은 대상이 많을 때.',
+    html: `<div class="m-ix-ftip"><i data-tip="민트 #8fe3d0" style="--c:#8fe3d0"></i><i data-tip="보라 #b39cff" style="--c:#b39cff"></i><i data-tip="분홍 #ff9ecd" style="--c:#ff9ecd"></i><i data-tip="노랑 #ffd479" style="--c:#ffd479"></i><b role="tooltip"></b></div>`,
+    css: `.m-ix-ftip{display:flex;gap:10px}
+.m-ix-ftip i{width:44px;height:44px;border-radius:10px;background:var(--c);cursor:pointer}
+.m-ix-ftip b{position:absolute;left:0;top:0;padding:4px 8px;border-radius:6px;background:#f2eefc;color:#14101f;font:700 11px ui-monospace,monospace;white-space:nowrap;pointer-events:none;opacity:0;transform:translate(var(--x),var(--y));transition:opacity .15s}
+.m-ix-ftip b.on{opacity:1}`,
+    js: root => {
+      const tip = root.querySelector('.m-ix-ftip b');
+      root.addEventListener('mousemove', e => {
+        const t = e.target.closest('[data-tip]'), r = root.getBoundingClientRect();
+        tip.classList.toggle('on', !!t);
+        if (!t) return;
+        tip.textContent = t.dataset.tip;
+        tip.style.setProperty('--x', e.clientX - r.left + 14 + 'px');
+        tip.style.setProperty('--y', e.clientY - r.top + 14 + 'px');
+      });
+    } },
+
+  { name: '2단계 삭제',
+    kw: 'confirm delete · two step button · auto revert',
+    prompt: `"삭제" 버튼을 한 번 누르면 빨갛게 넓어지며 "정말 삭제할까요?"로 바뀌고, 3초 안에 한 번 더 눌러야 "삭제됨 ✓"이 되게 해줘. 3초가 지나면 원래대로. 폭 변화 0.3초, 확인 상태에선 살짝 흔들리게, 바닐라 JS로.`,
+    cat: '인터랙션', desc: '한 번 더 눌러야 지워집니다. 확인 창 없이 실수를 막는 방법.',
+    html: `<button class="m-ix-confirm">🗑 삭제</button>`,
+    css: `.m-ix-confirm{min-width:90px;padding:10px 16px;border:1px solid #2e2642;border-radius:10px;background:#241d33;color:#f2eefc;font-weight:700;cursor:pointer;transition:min-width .3s cubic-bezier(.16,1,.3,1),background .2s,color .2s}
+.m-ix-confirm.ask{min-width:160px;border-color:#ff4d6d;background:#ff4d6d;color:#fff;animation:m-ix-nudge .4s}
+.m-ix-confirm.done{background:#2fd39a;border-color:#2fd39a;color:#14101f}
+@keyframes m-ix-nudge{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}`,
+    js: root => {
+      const b = root.querySelector('.m-ix-confirm');
+      let t;
+      const reset = () => { b.className = 'm-ix-confirm'; b.textContent = '🗑 삭제'; };
+      b.onclick = () => {
+        clearTimeout(t);
+        if (b.classList.contains('ask')) { b.className = 'm-ix-confirm done'; b.textContent = '삭제됨 ✓'; t = setTimeout(reset, 1500); return; }
+        b.className = 'm-ix-confirm ask'; b.textContent = '정말 삭제할까요?';
+        t = setTimeout(reset, 3000);
+      };
+    } },
+
+  { name: '크기 조절 분할',
+    kw: 'resizable split pane · drag handle · separator',
+    prompt: `좌우 두 패널 사이의 손잡이를 끌면 패널 너비가 20~80% 사이에서 따라 바뀌게 해줘. 손잡이는 호버하면 민트로 굵어지고, 키보드 화살표로도 5%씩 조절되게(role=separator). 바닐라 JS 포인터 이벤트로.`,
+    cat: '인터랙션', desc: '가운데 손잡이를 끌어 영역을 나눕니다. 에디터·메일 앱의 분할 화면.',
+    html: `<div class="m-ix-split"><section>목록</section><b role="separator" tabindex="0" aria-orientation="vertical" aria-valuemin="20" aria-valuemax="80" aria-valuenow="40" aria-label="크기 조절"></b><section>내용</section></div>`,
+    css: `.m-ix-split{display:flex;width:240px;height:120px;overflow:hidden;border-radius:12px;background:#241d33;color:#a59bc2;font-size:13px}
+.m-ix-split section{display:grid;place-items:center;min-width:0}
+.m-ix-split section:first-child{flex:0 0 var(--w,40%);background:#2a2240}
+.m-ix-split section:last-child{flex:1}
+.m-ix-split b{position:relative;flex:0 0 4px;background:#3a3152;cursor:col-resize;touch-action:none;transition:background .2s,flex-basis .2s}
+.m-ix-split b:hover,.m-ix-split b:focus-visible,.m-ix-split b.drag{flex-basis:6px;background:#8fe3d0;outline:0}`,
+    js: root => {
+      const box = root.querySelector('.m-ix-split'), h = box.querySelector('b');
+      const set = w => { w = Math.round(Math.min(80, Math.max(20, w))); box.style.setProperty('--w', w + '%'); h.ariaValueNow = w; };
+      h.addEventListener('pointerdown', e => { h.setPointerCapture(e.pointerId); h.classList.add('drag'); });
+      h.addEventListener('pointermove', e => { if (!h.classList.contains('drag')) return; const r = box.getBoundingClientRect(); set((e.clientX - r.left) / r.width * 100); });
+      h.addEventListener('pointerup', () => h.classList.remove('drag'));
+      h.addEventListener('keydown', e => { const d = { ArrowLeft: -5, ArrowRight: 5 }[e.key]; if (d) set(+h.ariaValueNow + d); });
+    } },
+
+  { name: '실시간 이메일 검증',
+    kw: 'inline validation · :user-valid · :user-invalid',
+    prompt: `이메일 입력칸에서 사용자가 입력을 마치고 나가면, 올바르면 테두리가 초록이 되며 오른쪽에 ✓가 톡 튀어나오고, 틀리면 빨강이 되며 칸이 좌우로 짧게 흔들리게 해줘. 처음엔 아무 표시 없게, :user-valid / :user-invalid로 순수 CSS만.`,
+    cat: '인터랙션', desc: '입력을 마친 뒤에만 맞고 틀림을 보여 줍니다. 타이핑 중에 빨갛게 혼내지 않습니다.',
+    html: `<label class="m-ix-valid"><input type="email" required placeholder="you@mail.com" aria-label="이메일"><i aria-hidden="true">✓</i></label>`,
+    css: `.m-ix-valid{position:relative;display:block;width:220px}
+.m-ix-valid input{width:100%;height:44px;padding:0 36px 0 14px;border:2px solid #2e2642;border-radius:12px;outline:0;background:#241d33;color:#f2eefc;font:15px system-ui,sans-serif;transition:border-color .2s}
+.m-ix-valid input:focus{border-color:#b39cff}
+.m-ix-valid i{position:absolute;right:12px;top:50%;margin-top:-10px;color:#2fd39a;font:900 16px/20px system-ui,sans-serif;font-style:normal;transform:scale(0);transition:transform .25s cubic-bezier(.3,1.8,.5,1)}
+.m-ix-valid input:user-valid{border-color:#2fd39a}
+.m-ix-valid input:user-valid+i{transform:none}
+.m-ix-valid input:user-invalid{border-color:#ff4d6d;animation:m-ix-no .35s}
+@keyframes m-ix-no{25%,75%{transform:translateX(-5px)}50%{transform:translateX(5px)}}` },
+
+  { name: '페이지 점',
+    kw: 'pagination dots · active pill stretch · radio',
+    prompt: `슬라이드 위치를 알려 주는 점 다섯 개 중 선택된 점만 가로로 24px 알약 모양으로 늘어나며 민트색이 되게 해줘. 0.3초 감속, 점은 라디오 버튼이라 키보드로도, 순수 CSS로.`,
+    cat: '인터랙션', desc: '현재 위치의 점만 길게 늘어납니다. 캐러셀·온보딩 아래에.',
+    html: `<div class="m-ix-dots" role="radiogroup" aria-label="슬라이드"><input type="radio" name="m-ix-dot" aria-label="1번" checked><input type="radio" name="m-ix-dot" aria-label="2번"><input type="radio" name="m-ix-dot" aria-label="3번"><input type="radio" name="m-ix-dot" aria-label="4번"><input type="radio" name="m-ix-dot" aria-label="5번"></div>`,
+    css: `.m-ix-dots{display:flex;gap:8px}
+.m-ix-dots input{width:8px;height:8px;margin:0;border-radius:4px;appearance:none;background:#4a3f66;cursor:pointer;transition:width .3s cubic-bezier(.16,1,.3,1),background .3s}
+.m-ix-dots input:checked{width:24px;background:#8fe3d0}
+.m-ix-dots input:focus-visible{outline:2px solid #b39cff;outline-offset:3px}` },
+
+  { name: '라이브 리액션',
+    kw: 'floating reactions · live stream hearts · drift up',
+    prompt: `하트 버튼을 누를 때마다 하트가 버튼에서 떠올라 좌우로 살랑이며 120px 올라가 사라지게 해줘(라이브 방송 반응). 1.6초, 하트마다 흔들림 폭과 크기를 조금씩 다르게, 끝나면 지우기, 바닐라 JS로.`,
+    cat: '인터랙션', desc: '누를 때마다 하트가 살랑이며 떠오릅니다. 연타해 보세요.',
+    html: `<div class="m-ix-live"><button aria-label="하트 보내기">❤️</button></div>`,
+    css: `.m-ix-live{position:relative;padding-top:120px}
+.m-ix-live button{width:48px;height:48px;border:0;border-radius:50%;background:#241d33;font-size:22px;cursor:pointer}
+.m-ix-live button:active{transform:scale(.9)}
+.m-ix-live i{position:absolute;left:12px;bottom:12px;font-size:calc(18px * var(--s));font-style:normal;pointer-events:none;animation:m-ix-rise 1.6s ease-out forwards,m-ix-sway .5s ease-in-out infinite alternate}
+@keyframes m-ix-rise{to{bottom:140px;opacity:0}}
+@keyframes m-ix-sway{from{transform:translateX(calc(var(--w) * -1px))}to{transform:translateX(calc(var(--w) * 1px))}}`,
+    js: root => {
+      const box = root.querySelector('.m-ix-live');
+      box.querySelector('button').onclick = () => {
+        const h = Object.assign(document.createElement('i'), { textContent: ['❤️', '💜', '💚', '💛'][Math.floor(Math.random() * 4)], ariaHidden: true });
+        h.style.cssText = `--w:${6 + Math.random() * 12};--s:${.8 + Math.random() * .6}`;
+        h.addEventListener('animationend', e => e.animationName === 'm-ix-rise' && h.remove());
+        box.appendChild(h);
+      };
+    } },
+
+  { name: '목록·격자 전환',
+    kw: 'list grid toggle · layout animation · View Transitions',
+    prompt: `목록 보기와 격자 보기를 바꾸는 버튼을 누르면 항목들이 새 자리로 부드럽게 미끄러져 재배치되게 해줘. 항목마다 view-transition-name을 주고 document.startViewTransition으로 위치 계산은 브라우저에 맡기기, 지원 안 하면 그냥 바뀌게. 0.4초.`,
+    cat: '인터랙션', desc: '보기 방식을 바꾸면 항목이 새 자리로 미끄러집니다. View Transitions(Chrome·Edge·Safari 18+).',
+    html: `<div class="m-ix-layout"><button aria-pressed="false">격자로 보기</button><ul><li style="view-transition-name:m-ix-vt1">🍎 사과</li><li style="view-transition-name:m-ix-vt2">🍋 레몬</li><li style="view-transition-name:m-ix-vt3">🍇 포도</li><li style="view-transition-name:m-ix-vt4">🥝 키위</li></ul></div>`,
+    css: `.m-ix-layout{display:grid;gap:8px;width:200px}
+.m-ix-layout button{justify-self:start;padding:6px 12px;border:1px solid #2e2642;border-radius:8px;background:#241d33;color:#f2eefc;font-size:12px;cursor:pointer}
+.m-ix-layout ul{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.m-ix-layout.grid ul{grid-template-columns:1fr 1fr}
+.m-ix-layout li{padding:8px 10px;border-radius:8px;background:#2a2240;color:#f2eefc;font-size:13px}
+.m-ix-layout.grid li{display:grid;place-items:center;height:44px;padding:0}
+::view-transition-group(m-ix-vt1),::view-transition-group(m-ix-vt2),::view-transition-group(m-ix-vt3),::view-transition-group(m-ix-vt4){animation-duration:.4s;animation-timing-function:cubic-bezier(.16,1,.3,1)}`,
+    js: root => {
+      const box = root.querySelector('.m-ix-layout'), b = box.querySelector('button');
+      b.onclick = () => {
+        const swap = () => { const g = box.classList.toggle('grid'); b.ariaPressed = g; b.textContent = g ? '목록으로 보기' : '격자로 보기'; };
+        if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) return swap();
+        document.startViewTransition(swap);
+      };
+    } },
+
+  { name: '더블탭 좋아요',
+    kw: 'double tap like · heart burst · instagram',
+    prompt: `사진을 두 번 누르면 가운데에 큰 하트가 0에서 1.2배로 커졌다 1배로 자리 잡고 0.4초 뒤 사라지며, 아래 좋아요 수가 1 오르게 해줘. 하트 0.8초, 바닐라 JS로 dblclick에 클래스만.`,
+    cat: '인터랙션', desc: '인스타그램처럼 사진을 두 번 눌러 좋아요. 두 번 눌러 보세요.',
+    html: `<figure class="m-ix-dbl"><div role="img" aria-label="사진, 두 번 눌러 좋아요"><i aria-hidden="true">❤</i></div><figcaption>♥ <b>128</b>명이 좋아해요</figcaption></figure>`,
+    css: `.m-ix-dbl{width:190px;margin:0;color:#f2eefc;font-size:12px}
+.m-ix-dbl div{position:relative;display:grid;place-items:center;height:130px;border-radius:12px;background:radial-gradient(circle at 70% 30%,#ffd479 0 11%,transparent 12%),linear-gradient(transparent 62%,#2a6b5f 62%),linear-gradient(160deg,#ff9ecd,#7cc4ff);cursor:pointer;user-select:none}
+.m-ix-dbl i{color:#fff;font-size:64px;font-style:normal;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35));opacity:0}
+.m-ix-dbl div.like i{animation:m-ix-heart .8s cubic-bezier(.3,1.6,.5,1)}
+.m-ix-dbl figcaption{margin-top:8px}
+@keyframes m-ix-heart{0%{transform:scale(0);opacity:1}30%{transform:scale(1.2);opacity:1}45%,70%{transform:scale(1);opacity:1}100%{transform:scale(1);opacity:0}}`,
+    js: root => {
+      const pic = root.querySelector('.m-ix-dbl div'), n = root.querySelector('.m-ix-dbl b');
+      pic.addEventListener('dblclick', () => {
+        pic.classList.remove('like'); void pic.offsetWidth; pic.classList.add('like');
+        n.textContent = +n.textContent + 1;
+      });
+    } },
+
+  { name: '회전 노브',
+    kw: 'rotary knob · drag to rotate · slider role',
+    prompt: `음량 노브를 위아래로 끌면 0~100 사이에서 값이 바뀌고 노브가 -135도에서 135도까지 돌며 바깥 호가 값만큼 채워지게 해줘. 키보드 화살표로 5씩, role=slider로 접근성, 바닐라 JS 포인터 이벤트로.`,
+    cat: '인터랙션', desc: '오디오 장비처럼 끌어서 돌리는 노브. 위아래로 끌어 보세요.',
+    html: `<div class="m-ix-knob"><b role="slider" tabindex="0" aria-label="음량" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"><i></i></b><output>40</output></div>`,
+    css: `.m-ix-knob{--v:40;display:grid;justify-items:center;gap:8px;color:#f2eefc;font:800 14px ui-monospace,monospace}
+.m-ix-knob b{display:grid;place-items:center;width:84px;height:84px;border-radius:50%;background:conic-gradient(from -135deg,#8fe3d0 calc(var(--v) * 2.7deg),#3a3152 0 270deg,transparent 0);cursor:ns-resize;touch-action:none;outline:0}
+.m-ix-knob b:focus-visible{box-shadow:0 0 0 3px #b39cff}
+.m-ix-knob i{position:relative;width:66px;height:66px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#4a3f66,#241d33);box-shadow:0 4px 10px rgba(0,0,0,.5);transform:rotate(calc(-135deg + var(--v) * 2.7deg))}
+.m-ix-knob i::after{content:"";position:absolute;left:50%;top:7px;width:4px;height:12px;margin-left:-2px;border-radius:2px;background:#8fe3d0}`,
+    js: root => {
+      const k = root.querySelector('.m-ix-knob'), b = k.querySelector('b'), out = k.querySelector('output');
+      let y0 = null, v0 = 40;
+      const set = v => { v = Math.round(Math.min(100, Math.max(0, v))); k.style.setProperty('--v', v); b.ariaValueNow = v; out.value = v; };
+      b.addEventListener('pointerdown', e => { y0 = e.clientY; v0 = +b.ariaValueNow; b.setPointerCapture(e.pointerId); });
+      b.addEventListener('pointermove', e => { if (y0 !== null) set(v0 + (y0 - e.clientY)); });
+      b.addEventListener('pointerup', () => y0 = null);
+      b.addEventListener('keydown', e => { const d = { ArrowUp: 5, ArrowRight: 5, ArrowDown: -5, ArrowLeft: -5 }[e.key]; if (d) { e.preventDefault(); set(+b.ariaValueNow + d); } });
+    } },
+
   // ── 컴포넌트 ──
   { name: '모달',
     kw: 'modal · dialog · @starting-style · backdrop',
