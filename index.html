@@ -33,8 +33,35 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(-
 .meta{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .meta h3{margin:0;font-size:16px}
 .tag{font:500 11px "JetBrains Mono",monospace;color:var(--accent2);border:1px solid var(--line);padding:2px 8px;border-radius:6px;white-space:nowrap}
-.desc{margin:0;color:var(--muted);font-size:14px;flex:1}
-.actions{display:flex;gap:6px}
+.desc{margin:0;color:var(--muted);font-size:14px}
+.kw{display:flex;flex-wrap:wrap;gap:4px}
+.kw code{font:500 11px "JetBrains Mono",monospace;color:var(--muted);background:#241d33;padding:2px 7px;border-radius:6px}
+.prompt{background:#171222;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:10px;padding:10px 12px}
+.prompt-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.prompt-head span{font:500 11px "JetBrains Mono",monospace;color:var(--accent);letter-spacing:.05em}
+.prompt-head button{padding:3px 10px;border-radius:6px;border:1px solid var(--line);background:none;color:var(--text);font:inherit;font-size:12px;cursor:pointer}
+.prompt-head button:hover{border-color:var(--accent)}
+.prompt p{margin:0;font-size:14px;line-height:1.65}
+.actions{display:flex;gap:6px;margin-top:auto}
+.guide{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:0 20px;margin-bottom:8px}
+.guide summary{cursor:pointer;font-size:20px;font-weight:800;padding:16px 0}
+.guide > p{color:var(--muted);margin:0 0 16px;max-width:760px}
+.formula{list-style:none;margin:0 0 16px;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;counter-reset:f}
+.formula li{counter-increment:f;display:grid;gap:2px;padding:12px;border:1px solid var(--line);border-top:3px solid var(--c);border-radius:12px}
+.formula b{color:var(--c)}
+.formula b::before{content:counter(f) ". "}
+.formula span{font-size:14px}
+.formula small{color:var(--muted);font-size:12.5px}
+.ex{display:grid;gap:8px;background:#171222;border-radius:12px;padding:14px 16px;margin-bottom:20px}
+.ex p{margin:0;line-height:2}
+.ex .bad{color:var(--muted)}
+.ex mark{background:none;color:var(--text);border-bottom:2px solid var(--c);padding-bottom:2px}
+.guide h3{font-size:16px;margin:0 0 10px}
+.terms{margin:0 0 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px 24px}
+.terms dt{font-weight:700}
+.terms dt small{font:500 11px "JetBrains Mono",monospace;color:var(--accent2);margin-left:6px}
+.terms dd{margin:0;color:var(--muted);font-size:14px}
+.guide .tip{padding:12px 0 16px;border-top:1px solid var(--line);margin:0}
 .actions button{flex:1;padding:8px;border-radius:8px;border:1px solid var(--line);background:#241d33;color:var(--text);font:inherit;font-size:13px;cursor:pointer}
 .actions button:hover{border-color:var(--accent)}
 pre{margin:0;max-height:320px;overflow:auto;padding:14px;background:#0f0c17;border-radius:10px;font:12px/1.55 "JetBrains Mono",monospace;color:#d9d2ee;white-space:pre-wrap;word-break:break-all}
@@ -56,8 +83,38 @@ footer{padding:48px 0;color:var(--muted);font-size:14px;text-align:center}
 <div class="wrap">
   <header>
     <h1>Motion <em>Shelf</em></h1>
-    <p>페이지 만들 때 꺼내 쓰는 모션·UI 요소 서랍. 대부분 순수 CSS이고, 필요한 것만 몇 줄의 JS를 씁니다. 미리보기를 만져 보고 <b>복사</b>를 누르면 HTML·CSS·JS가 통째로 복사돼요.</p>
+    <p>페이지 만들 때 꺼내 쓰는 모션·UI 요소 서랍. 대부분 순수 CSS이고, 필요한 것만 몇 줄의 JS를 씁니다. 미리보기를 만져 보고, AI에게 시킬 땐 카드의 <b>프롬프트</b>를, 직접 넣을 땐 <b>코드</b>를 복사하세요.</p>
   </header>
+
+  <details class="guide" open>
+    <summary>프롬프트 쓰는 법</summary>
+    <p>AI에게 모션을 부탁할 때 "예쁘게 움직이게 해줘"라고 하면 매번 다른 결과가 나와요. 아래 다섯 가지를 채워 말하면 한 번에 원하는 모양이 나옵니다. 전부 채울 필요는 없고, 빠진 건 AI가 알아서 정해요.</p>
+    <ol class="formula">
+      <li style="--c:#8fe3d0"><b>대상</b><span>무엇에</span><small>주요 버튼, 카드, 제목</small></li>
+      <li style="--c:#b39cff"><b>트리거</b><span>언제</span><small>호버, 클릭, 화면에 들어올 때, 계속 반복</small></li>
+      <li style="--c:#ff9ecd"><b>움직임</b><span>어떻게</span><small>위로 2px, 서서히 나타남, 회전, 색 변화</small></li>
+      <li style="--c:#ffd479"><b>느낌</b><span>속도와 이징</span><small>0.3초, 부드럽게, 톡 튀게</small></li>
+      <li style="--c:#7cc4ff"><b>조건</b><span>제약</span><small>순수 CSS, 라이브러리 없이, 기존 색 유지</small></li>
+    </ol>
+    <div class="ex">
+      <p class="bad">✗ 버튼 좀 예쁘게 움직이게 해줘</p>
+      <p>✓ <mark style="--c:#8fe3d0">주요 버튼에</mark> <mark style="--c:#b39cff">마우스를 올리면</mark> <mark style="--c:#ff9ecd">위로 2px 떠오르면서 버튼 색 빛이 번지게</mark> 해줘. <mark style="--c:#ffd479">0.3초 동안 부드럽게,</mark> <mark style="--c:#7cc4ff">순수 CSS로.</mark></p>
+    </div>
+    <h3>알아두면 프롬프트가 쉬워지는 단어</h3>
+    <dl class="terms">
+      <div><dt>이징<small>easing</small></dt><dd>속도가 변하는 곡선. ease-out은 빠르게 출발해 부드럽게 멈춰서 가장 무난해요.</dd></div>
+      <div><dt>듀레이션<small>duration</small></dt><dd>걸리는 시간. 버튼·호버는 0.2~0.4초가 적당해요.</dd></div>
+      <div><dt>딜레이<small>delay</small></dt><dd>시작하기 전에 기다리는 시간.</dd></div>
+      <div><dt>스태거<small>stagger</small></dt><dd>여러 요소가 시차를 두고 차례로 움직이는 것.</dd></div>
+      <div><dt>오버슈트<small>overshoot · spring</small></dt><dd>목표를 살짝 지나쳤다 돌아오는 것. "톡 튀는" 느낌의 정체예요.</dd></div>
+      <div><dt>트랜지션<small>transition</small></dt><dd>호버처럼 상태가 바뀔 때 A에서 B로 한 번 변하는 것.</dd></div>
+      <div><dt>키프레임<small>keyframes</small></dt><dd>여러 단계를 정해 두고 재생하거나 반복하는 애니메이션.</dd></div>
+      <div><dt>스크롤 연동<small>scroll-driven</small></dt><dd>스크롤한 만큼 진행되는 것. "화면에 들어올 때 한 번"은 scroll reveal이라고 해요.</dd></div>
+      <div><dt>마이크로 인터랙션<small>micro-interaction</small></dt><dd>클릭·토글 같은 작은 조작에 돌려주는 짧은 반응.</dd></div>
+      <div><dt>움직임 줄이기<small>prefers-reduced-motion</small></dt><dd>멀미가 있는 사람을 위한 기기 설정. "이 설정이면 애니메이션 끄기"를 조건에 넣으면 좋아요.</dd></div>
+    </dl>
+    <p class="tip">카드의 프롬프트를 복사해 숫자와 색만 바꿔 쓰세요. 코드까지 같이 붙여넣고 "이 느낌으로 내 사이트에 맞춰줘"라고 하면 더 정확해요. 회색 영어 키워드는 AI나 검색에 그대로 쓰면 통하는 이름이에요.</p>
+  </details>
   <div class="tools">
     <input id="q" type="search" placeholder="검색: 버튼, 로딩, 스크롤…" aria-label="데모 검색">
     <div id="chips" style="display:flex;flex-wrap:wrap;gap:6px"></div>
@@ -74,22 +131,31 @@ footer{padding:48px 0;color:var(--muted);font-size:14px;text-align:center}
 </div>
 
 <script>
-// 데모 하나 = { name, cat, desc, html, css, js? }. js(root)는 미리보기 요소를 받아 이벤트를 붙인다.
+// 데모 하나 = { name, kw, prompt, cat, desc, html, css, js? }. kw는 ' · '로 구분한 검색 키워드, prompt는 AI에게 그대로 줄 문장. js(root)는 미리보기 요소를 받아 이벤트를 붙인다.
 const D = [
   // ── 버튼 ──
-  { name: '글로우 버튼', cat: '버튼', desc: '호버하면 살짝 떠오르며 빛이 번집니다.',
+  { name: '글로우 버튼',
+    kw: 'hover glow · lift · box-shadow',
+    prompt: `버튼에 마우스를 올리면 위로 2px 떠오르면서 버튼 색과 같은 빛이 주변으로 번지게 해줘. 0.3초 동안 부드럽게, 순수 CSS로.`,
+ cat: '버튼', desc: '호버하면 살짝 떠오르며 빛이 번집니다.',
     html: `<button class="m-glow">Hover me</button>`,
     css: `.m-glow{padding:14px 28px;border:0;border-radius:12px;background:#8fe3d0;color:#14101f;font-weight:700;cursor:pointer;transition:box-shadow .3s,transform .3s}
 .m-glow:hover{transform:translateY(-2px);box-shadow:0 0 0 4px rgba(143,227,208,.25),0 10px 30px rgba(143,227,208,.45)}` },
 
-  { name: '슬라이드 채우기', cat: '버튼', desc: '배경이 왼쪽에서 차오르고, 나갈 땐 오른쪽으로 빠집니다.',
+  { name: '슬라이드 채우기',
+    kw: 'fill on hover · scaleX · transform-origin',
+    prompt: `테두리만 있는 버튼에 마우스를 올리면 배경색이 왼쪽에서 오른쪽으로 차오르고, 마우스를 떼면 오른쪽으로 빠져나가게 해줘. 글자색은 배경에 맞춰 반전. 0.35초, 순수 CSS로.`,
+ cat: '버튼', desc: '배경이 왼쪽에서 차오르고, 나갈 땐 오른쪽으로 빠집니다.',
     html: `<button class="m-fill">Fill me</button>`,
     css: `.m-fill{position:relative;isolation:isolate;overflow:hidden;padding:14px 28px;border:2px solid #b39cff;border-radius:12px;background:none;color:#b39cff;font-weight:700;cursor:pointer;transition:color .35s}
 .m-fill::before{content:"";position:absolute;inset:0;z-index:-1;background:#b39cff;transform:scaleX(0);transform-origin:right;transition:transform .35s cubic-bezier(.7,0,.3,1)}
 .m-fill:hover{color:#14101f}
 .m-fill:hover::before{transform:scaleX(1);transform-origin:left}` },
 
-  { name: '마그네틱 버튼', cat: '버튼', desc: '커서 쪽으로 버튼이 끌려옵니다. 미리보기 영역 아무 데나 움직여 보세요.',
+  { name: '마그네틱 버튼',
+    kw: 'magnetic button · mousemove · cursor follow',
+    prompt: `버튼 근처에서 마우스를 움직이면 버튼이 커서 쪽으로 자석처럼 살짝 끌려오게 해줘. 이동량은 커서 거리의 30% 정도, 마우스가 벗어나면 0.25초 동안 부드럽게 제자리로. 라이브러리 없이 JS로.`,
+ cat: '버튼', desc: '커서 쪽으로 버튼이 끌려옵니다. 미리보기 영역 아무 데나 움직여 보세요.',
     html: `<button class="m-magnet">Magnetic</button>`,
     css: `.m-magnet{padding:16px 32px;border:0;border-radius:999px;background:#f2eefc;color:#14101f;font-weight:700;cursor:pointer;transition:transform .25s ease-out}`,
     js: root => {
@@ -103,7 +169,10 @@ const D = [
       root.addEventListener('mouseleave', () => b.style.transform = '');
     } },
 
-  { name: '리플 클릭', cat: '버튼', desc: '클릭한 지점에서 물결이 퍼집니다 (머티리얼 스타일).',
+  { name: '리플 클릭',
+    kw: 'ripple effect · click feedback · material',
+    prompt: `버튼을 클릭하면 클릭한 지점에서 반투명 흰색 원이 퍼지면서 사라지는 리플(물결) 효과를 넣어줘. 0.6초, 버튼 밖으로 넘치지 않게, 라이브러리 없이.`,
+ cat: '버튼', desc: '클릭한 지점에서 물결이 퍼집니다 (머티리얼 스타일).',
     html: `<button class="m-ripple">Click me</button>`,
     css: `.m-ripple{position:relative;overflow:hidden;padding:14px 28px;border:0;border-radius:12px;background:#6c4bd8;color:#fff;font-weight:700;cursor:pointer}
 .m-ripple span{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);transform:scale(0);animation:m-ripple .6s linear;pointer-events:none}
@@ -116,13 +185,19 @@ const D = [
       dot.addEventListener('animationend', () => dot.remove());
     }) },
 
-  { name: '자라나는 밑줄', cat: '버튼', desc: '링크 밑줄이 가운데에서 양옆으로 자랍니다. background-size 트릭.',
+  { name: '자라나는 밑줄',
+    kw: 'animated underline · link hover · background-size',
+    prompt: `링크에 마우스를 올리면 밑줄이 가운데에서 양옆으로 자라나게 해줘. 두께 2px, 0.3초, 순수 CSS로.`,
+ cat: '버튼', desc: '링크 밑줄이 가운데에서 양옆으로 자랍니다. background-size 트릭.',
     html: `<a class="m-underline" href="#">밑줄이 자라나는 링크</a>`,
     css: `.m-underline{color:#f2eefc;font-size:20px;text-decoration:none;padding-bottom:4px;background:linear-gradient(#8fe3d0,#8fe3d0) center bottom/0 2px no-repeat;transition:background-size .3s}
 .m-underline:hover{background-size:100% 2px}` },
 
   // ── 로딩 ──
-  { name: '점 세 개', cat: '로딩', desc: '딜레이만 다르게 준 가장 흔한 로더.',
+  { name: '점 세 개',
+    kw: 'dot loader · bounce · animation-delay',
+    prompt: `점 3개가 차례대로 위아래로 통통 튀는 로딩 인디케이터를 만들어줘. 점마다 0.2초씩 시차, 무한 반복, 순수 CSS로.`,
+ cat: '로딩', desc: '딜레이만 다르게 준 가장 흔한 로더.',
     html: `<div class="m-dots"><i></i><i></i><i></i></div>`,
     css: `.m-dots{display:flex;gap:8px}
 .m-dots i{width:12px;height:12px;border-radius:50%;background:#8fe3d0;animation:m-bounce .6s ease-in-out infinite alternate}
@@ -130,12 +205,18 @@ const D = [
 .m-dots i:nth-child(3){animation-delay:.4s}
 @keyframes m-bounce{from{transform:translateY(6px);opacity:.4}to{transform:translateY(-6px);opacity:1}}` },
 
-  { name: '링 스피너', cat: '로딩', desc: 'border 한 변만 색을 바꿔 돌리는 한 줄짜리 스피너.',
+  { name: '링 스피너',
+    kw: 'spinner · loading ring · rotate',
+    prompt: `원형 테두리의 한쪽만 색이 진한 링이 계속 회전하는 로딩 스피너를 만들어줘. 지름 44px, 한 바퀴 0.8초 일정한 속도(linear), 순수 CSS로. 스크린리더용 role="status"도 넣어줘.`,
+ cat: '로딩', desc: 'border 한 변만 색을 바꿔 돌리는 한 줄짜리 스피너.',
     html: `<div class="m-spin" role="status" aria-label="로딩 중"></div>`,
     css: `.m-spin{width:44px;height:44px;border-radius:50%;border:4px solid rgba(179,156,255,.2);border-top-color:#b39cff;animation:m-rot .8s linear infinite}
 @keyframes m-rot{to{transform:rotate(360deg)}}` },
 
-  { name: '스켈레톤 시머', cat: '로딩', desc: '콘텐츠 자리를 먼저 보여주는 로딩. 체감 속도가 빨라집니다.',
+  { name: '스켈레톤 시머',
+    kw: 'skeleton loading · shimmer · placeholder',
+    prompt: `데이터를 불러오는 동안 프로필 사진(원)과 글 두 줄 자리에 회색 스켈레톤을 보여줘. 밝은 빛이 가로로 계속 지나가는 시머 효과, 1.4초 주기, 순수 CSS로.`,
+ cat: '로딩', desc: '콘텐츠 자리를 먼저 보여주는 로딩. 체감 속도가 빨라집니다.',
     html: `<div class="m-skel"><div class="m-skel-av"></div><div class="m-skel-lines"><div></div><div></div></div></div>`,
     css: `.m-skel{display:flex;gap:12px;width:240px}
 .m-skel-av,.m-skel-lines div{background:linear-gradient(90deg,#2a2340 25%,#3b3258 50%,#2a2340 75%) 0 0/200% 100%;animation:m-shimmer 1.4s linear infinite}
@@ -145,31 +226,46 @@ const D = [
 .m-skel-lines div:last-child{width:60%}
 @keyframes m-shimmer{to{background-position:-200% 0}}` },
 
-  { name: '무한 진행 바', cat: '로딩', desc: '끝을 모를 때 쓰는 indeterminate 프로그레스 바.',
+  { name: '무한 진행 바',
+    kw: 'indeterminate progress bar · loading bar',
+    prompt: `진행률을 알 수 없을 때 쓰는 로딩 바를 만들어줘. 얇은 트랙 위를 짧은 막대가 왼쪽에서 오른쪽으로 계속 지나가게. 1.2초 주기 ease-in-out, 순수 CSS로.`,
+ cat: '로딩', desc: '끝을 모를 때 쓰는 indeterminate 프로그레스 바.',
     html: `<div class="m-bar"></div>`,
     css: `.m-bar{width:220px;height:6px;border-radius:3px;background:rgba(143,227,208,.15);overflow:hidden}
 .m-bar::after{content:"";display:block;width:40%;height:100%;border-radius:3px;background:#8fe3d0;animation:m-slide 1.2s ease-in-out infinite}
 @keyframes m-slide{from{transform:translateX(-100%)}to{transform:translateX(250%)}}` },
 
   // ── 텍스트 ──
-  { name: '타이핑 커서', cat: '텍스트', desc: 'steps()로 한 글자씩. 글자 수만큼 steps(N), width:Nch로 맞추세요.',
+  { name: '타이핑 커서',
+    kw: 'typewriter effect · steps() · blinking caret',
+    prompt: `제목이 타자기처럼 한 글자씩 나타나고 끝에 커서가 깜빡이게 해줘. 고정폭 글꼴, 2초 동안 타이핑, 순수 CSS(steps)로.`,
+ cat: '텍스트', desc: 'steps()로 한 글자씩. 글자 수만큼 steps(N), width:Nch로 맞추세요.',
     html: `<p class="m-type">Hello, oddz.</p>`,
     css: `.m-type{margin:0;font:500 22px "JetBrains Mono",monospace;color:#f2eefc;width:12ch;white-space:nowrap;overflow:hidden;border-right:2px solid #8fe3d0;animation:m-typing 2s steps(12) infinite alternate,m-caret .5s step-end infinite}
 @keyframes m-typing{from{width:0}}
 @keyframes m-caret{50%{border-color:transparent}}` },
 
-  { name: '흐르는 그라디언트', cat: '텍스트', desc: 'background-clip:text 위에서 그라디언트가 계속 흐릅니다.',
+  { name: '흐르는 그라디언트',
+    kw: 'animated gradient text · background-clip: text',
+    prompt: `제목 글자에 민트→보라→핑크 그라디언트를 입히고, 색이 가로로 계속 흐르게 해줘. 4초 주기로 끊김 없이 반복, 순수 CSS로.`,
+ cat: '텍스트', desc: 'background-clip:text 위에서 그라디언트가 계속 흐릅니다.',
     html: `<p class="m-grad">Gradient Flow</p>`,
     css: `.m-grad{margin:0;font-size:34px;font-weight:800;background:linear-gradient(90deg,#8fe3d0,#b39cff,#ff9ecd,#8fe3d0) 0 0/200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:m-flow 4s linear infinite}
 @keyframes m-flow{to{background-position:200% 0}}` },
 
-  { name: '글자 순차 등장', cat: '텍스트', desc: '각 글자에 --i 인덱스를 주고 delay를 계산하는 스태거.',
+  { name: '글자 순차 등장',
+    kw: 'stagger animation · text reveal · letter by letter',
+    prompt: `제목이 페이지 로드 시 한 글자씩 아래에서 위로 떠오르며 나타나게 해줘. 글자마다 0.08초 시차(stagger), 살짝 튀어 오르는 느낌(overshoot)으로.`,
+ cat: '텍스트', desc: '각 글자에 --i 인덱스를 주고 delay를 계산하는 스태거.',
     html: `<p class="m-stagger"><span style="--i:0">M</span><span style="--i:1">O</span><span style="--i:2">T</span><span style="--i:3">I</span><span style="--i:4">O</span><span style="--i:5">N</span></p>`,
     css: `.m-stagger{margin:0;display:flex;gap:2px;font-size:40px;font-weight:800;color:#f2eefc}
 .m-stagger span{display:inline-block;animation:m-rise .6s cubic-bezier(.2,.8,.2,1.2) both;animation-delay:calc(var(--i) * 80ms)}
 @keyframes m-rise{from{opacity:0;transform:translateY(24px) rotate(8deg)}}` },
 
-  { name: '글리치', cat: '텍스트', desc: '::before/::after 복제본을 clip-path로 잘라 흔듭니다.',
+  { name: '글리치',
+    kw: 'glitch effect · RGB split · clip-path',
+    prompt: `제목에 글리치 효과를 넣어줘. 핑크·하늘색 복제본이 가끔 좌우로 어긋나며 지직거리게. 2초에 한 번 짧게, 순수 CSS(가상 요소 + clip-path)로.`,
+ cat: '텍스트', desc: '::before/::after 복제본을 clip-path로 잘라 흔듭니다.',
     html: `<p class="m-glitch" data-text="GLITCH">GLITCH</p>`,
     css: `.m-glitch{position:relative;margin:0;font:800 40px/1 "JetBrains Mono",monospace;color:#f2eefc}
 .m-glitch::before,.m-glitch::after{content:attr(data-text);position:absolute;inset:0}
@@ -178,7 +274,10 @@ const D = [
 @keyframes m-g1{0%,100%{clip-path:inset(0 0 100% 0)}10%{clip-path:inset(10% 0 60% 0);transform:translate(-3px)}20%{clip-path:inset(50% 0 20% 0);transform:translate(3px)}30%{clip-path:inset(0 0 100% 0)}}
 @keyframes m-g2{0%,100%{clip-path:inset(0 0 100% 0)}15%{clip-path:inset(70% 0 5% 0);transform:translate(3px)}25%{clip-path:inset(30% 0 40% 0);transform:translate(-3px)}35%{clip-path:inset(0 0 100% 0)}}` },
 
-  { name: '숫자 카운트업', cat: '텍스트', desc: '@property로 정수를 애니메이션하고 counter()로 출력. JS 없음.',
+  { name: '숫자 카운트업',
+    kw: 'count up · number animation · @property',
+    prompt: `숫자가 0에서 2026까지 빠르게 올라가다 끝에서 천천히 멈추는 카운트업을 만들어줘. 2초, 페이지 로드 시 한 번만 재생.`,
+ cat: '텍스트', desc: '@property로 정수를 애니메이션하고 counter()로 출력. JS 없음.',
     html: `<div class="m-count"></div>`,
     css: `@property --m-n{syntax:"<integer>";initial-value:0;inherits:false}
 .m-count{font:800 48px "JetBrains Mono",monospace;color:#8fe3d0;counter-reset:n var(--m-n);animation:m-cnt 2s cubic-bezier(.2,.8,.2,1) forwards}
@@ -186,7 +285,10 @@ const D = [
 @keyframes m-cnt{to{--m-n:2026}}` },
 
   // ── 카드 ──
-  { name: '3D 틸트 카드', cat: '카드', desc: '마우스 위치에 따라 카드가 기울어집니다.',
+  { name: '3D 틸트 카드',
+    kw: '3D tilt card · perspective · mousemove',
+    prompt: `카드에 마우스를 올리면 커서 위치를 따라 3D로 기울어지게 해줘. 최대 10도, 살짝 확대(1.04배), 마우스가 나가면 부드럽게 원위치. 라이브러리 없이 JS로.`,
+ cat: '카드', desc: '마우스 위치에 따라 카드가 기울어집니다.',
     html: `<div class="m-tilt"><b>3D Tilt</b><small>마우스를 올려 보세요</small></div>`,
     css: `.m-tilt{width:200px;height:130px;border-radius:16px;display:grid;place-content:center;gap:4px;text-align:center;color:#14101f;background:linear-gradient(135deg,#8fe3d0,#b39cff);transform:perspective(600px);transition:transform .15s ease-out}`,
     js: root => {
@@ -200,7 +302,10 @@ const D = [
       c.addEventListener('mouseleave', () => c.style.transform = '');
     } },
 
-  { name: '카드 뒤집기', cat: '카드', desc: 'preserve-3d + backface-visibility로 앞뒤 면 만들기.',
+  { name: '카드 뒤집기',
+    kw: 'flip card · rotateY · backface-visibility',
+    prompt: `카드에 마우스를 올리면 180도 뒤집혀 뒷면 내용이 보이게 해줘. 0.7초, 3D 원근감 있게, 순수 CSS로.`,
+ cat: '카드', desc: 'preserve-3d + backface-visibility로 앞뒤 면 만들기.',
     html: `<div class="m-flip"><div class="m-flip-in"><div>앞면</div><div>뒷면 ✦</div></div></div>`,
     css: `.m-flip{width:180px;height:120px;perspective:800px}
 .m-flip-in{position:relative;height:100%;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.4,.2,.2,1)}
@@ -209,14 +314,20 @@ const D = [
 .m-flip-in div:first-child{background:#2a2340;color:#f2eefc;border:1px solid #3b3258}
 .m-flip-in div:last-child{background:#ff9ecd;color:#14101f;transform:rotateY(180deg)}` },
 
-  { name: '회전 보더', cat: '카드', desc: '@property 각도를 돌리는 conic-gradient 테두리.',
+  { name: '회전 보더',
+    kw: 'rotating gradient border · conic-gradient · @property',
+    prompt: `카드 테두리를 따라 민트·보라·핑크 그라디언트가 계속 회전하게 해줘. 테두리 2px, 한 바퀴 3초, 순수 CSS(conic-gradient)로.`,
+ cat: '카드', desc: '@property 각도를 돌리는 conic-gradient 테두리.',
     html: `<div class="m-border"><div>Rotating border</div></div>`,
     css: `@property --m-angle{syntax:"<angle>";initial-value:0deg;inherits:false}
 .m-border{width:200px;height:120px;padding:2px;border-radius:16px;background:conic-gradient(from var(--m-angle),#8fe3d0,#b39cff,#ff9ecd,#8fe3d0);animation:m-turn 3s linear infinite}
 .m-border div{height:100%;border-radius:14px;background:#17121f;display:grid;place-items:center;color:#f2eefc;font-weight:700}
 @keyframes m-turn{to{--m-angle:360deg}}` },
 
-  { name: '글래스모피즘', cat: '카드', desc: 'backdrop-filter 블러 유리 카드. 뒤에 움직이는 색이 있어야 살아납니다.',
+  { name: '글래스모피즘',
+    kw: 'glassmorphism · backdrop-filter · frosted glass',
+    prompt: `반투명 유리 느낌(글래스모피즘) 카드를 만들어줘. 뒤 배경이 흐리게 비치고(blur 14px) 얇은 흰색 테두리. 카드 뒤에는 색 원 두 개가 천천히 떠다니게.`,
+ cat: '카드', desc: 'backdrop-filter 블러 유리 카드. 뒤에 움직이는 색이 있어야 살아납니다.',
     html: `<div class="m-glass-wrap"><i></i><i></i><div class="m-glass">Glass</div></div>`,
     css: `.m-glass-wrap{position:relative;width:240px;height:150px;display:grid;place-items:center}
 .m-glass-wrap i{position:absolute;width:90px;height:90px;border-radius:50%;animation:m-float 4s ease-in-out infinite alternate}
@@ -226,7 +337,10 @@ const D = [
 @keyframes m-float{to{transform:translate(20px,-14px)}}` },
 
   // ── 인터랙션 ──
-  { name: '토글 스위치', cat: '인터랙션', desc: '체크박스 + 형제 선택자. 오버슈트 이징으로 톡 튀게.',
+  { name: '토글 스위치',
+    kw: 'toggle switch · checkbox · overshoot',
+    prompt: `체크박스를 iOS 스타일 토글 스위치로 만들어줘. 켜면 손잡이가 오른쪽으로 톡 튀듯(overshoot) 이동하고 배경이 민트색으로. 키보드 포커스 표시 포함, 순수 CSS로.`,
+ cat: '인터랙션', desc: '체크박스 + 형제 선택자. 오버슈트 이징으로 톡 튀게.',
     html: `<label class="m-toggle"><input type="checkbox" aria-label="토글"><span></span></label>`,
     css: `.m-toggle input{position:absolute;opacity:0}
 .m-toggle span{position:relative;display:block;width:56px;height:30px;border-radius:15px;background:#3b3258;cursor:pointer;transition:background .3s}
@@ -235,7 +349,10 @@ const D = [
 .m-toggle input:checked+span::after{transform:translateX(26px)}
 .m-toggle input:focus-visible+span{outline:2px solid #b39cff;outline-offset:3px}` },
 
-  { name: '좋아요 팝', cat: '인터랙션', desc: 'aria-pressed 상태로 스타일과 접근성을 동시에.',
+  { name: '좋아요 팝',
+    kw: 'like button · pop animation · micro-interaction',
+    prompt: `하트 버튼을 누르면 빨갛게 바뀌면서 살짝 커졌다 돌아오는 팝 애니메이션을 넣어줘. 0.45초, 통통 튀는 이징. 다시 누르면 해제, aria-pressed로 상태 관리.`,
+ cat: '인터랙션', desc: 'aria-pressed 상태로 스타일과 접근성을 동시에.',
     html: `<button class="m-heart" aria-label="좋아요" aria-pressed="false">♥</button>`,
     css: `.m-heart{border:0;background:none;font-size:48px;line-height:1;color:#4a4060;cursor:pointer;transition:color .2s}
 .m-heart[aria-pressed="true"]{color:#ff4f7b;animation:m-pop .45s cubic-bezier(.3,1.6,.5,1)}
@@ -245,7 +362,10 @@ const D = [
       b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true');
     }) },
 
-  { name: '체크 그리기', cat: '인터랙션', desc: 'SVG stroke-dashoffset으로 체크 표시를 그립니다.',
+  { name: '체크 그리기',
+    kw: 'animated checkbox · SVG draw · stroke-dashoffset',
+    prompt: `체크박스를 체크하면 체크 표시가 펜으로 그리듯 그려지게 해줘. 박스 배경이 먼저 채워지고 이어서 선이 0.35초 동안 그려지게. SVG로, JS 없이.`,
+ cat: '인터랙션', desc: 'SVG stroke-dashoffset으로 체크 표시를 그립니다.',
     html: `<label class="m-check"><input type="checkbox"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>할 일 완료</label>`,
     css: `.m-check{display:flex;align-items:center;gap:10px;color:#f2eefc;font-size:18px;cursor:pointer}
 .m-check input{position:absolute;opacity:0}
@@ -255,7 +375,10 @@ const D = [
 .m-check input:checked+svg path{stroke-dashoffset:0}
 .m-check input:focus-visible+svg{outline:2px solid #b39cff;outline-offset:2px}` },
 
-  { name: '햄버거 → X', cat: '인터랙션', desc: '세 줄이 X로 변신. aria-expanded로 상태 관리.',
+  { name: '햄버거 → X',
+    kw: 'hamburger menu · morph to X · aria-expanded',
+    prompt: `햄버거 메뉴 버튼(세 줄)을 누르면 X 모양으로 변신하게 해줘. 위아래 줄은 회전해서 교차하고 가운데 줄은 사라지게. 0.35초, aria-expanded로 상태 관리.`,
+ cat: '인터랙션', desc: '세 줄이 X로 변신. aria-expanded로 상태 관리.',
     html: `<button class="m-burger" aria-label="메뉴" aria-expanded="false"><span></span><span></span><span></span></button>`,
     css: `.m-burger{width:48px;height:48px;border:0;background:none;cursor:pointer;display:grid;place-content:center;gap:6px}
 .m-burger span{display:block;width:28px;height:3px;border-radius:2px;background:#f2eefc;transition:transform .35s,opacity .2s}
@@ -267,7 +390,10 @@ const D = [
       b.setAttribute('aria-expanded', b.getAttribute('aria-expanded') !== 'true');
     }) },
 
-  { name: '알림 핑', cat: '인터랙션', desc: '점 뒤에서 같은 점이 커지며 사라지는 레이더 효과.',
+  { name: '알림 핑',
+    kw: 'notification badge · ping · pulse',
+    prompt: `알림 아이콘 오른쪽 위에 빨간 점을 달고, 점에서 원이 퍼지며 사라지는 핑(레이더) 효과를 계속 반복해줘. 1.2초 주기, 순수 CSS로.`,
+ cat: '인터랙션', desc: '점 뒤에서 같은 점이 커지며 사라지는 레이더 효과.',
     html: `<div class="m-ping">🔔<i></i></div>`,
     css: `.m-ping{position:relative;font-size:36px}
 .m-ping i,.m-ping i::after{position:absolute;top:2px;right:-2px;width:12px;height:12px;border-radius:50%;background:#ff4f7b}
@@ -275,14 +401,20 @@ const D = [
 @keyframes m-pingk{75%,100%{transform:scale(2.4);opacity:0}}` },
 
   // ── 배경 ──
-  { name: '오로라', cat: '배경', desc: '블러 준 radial-gradient 덩어리를 천천히 회전.',
+  { name: '오로라',
+    kw: 'aurora background · gradient blur · mesh gradient',
+    prompt: `히어로 섹션 배경에 오로라 효과를 넣어줘. 보라·민트·핑크 빛 덩어리가 흐릿하게 섞이면서 아주 천천히 움직이게(10초 주기). 글자는 그 위에 또렷하게, 순수 CSS로.`,
+ cat: '배경', desc: '블러 준 radial-gradient 덩어리를 천천히 회전.',
     html: `<div class="m-aurora"><span>Aurora</span></div>`,
     css: `.m-aurora{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;background:#100c1a;color:#fff;font-size:28px;font-weight:800}
 .m-aurora::before{content:"";position:absolute;inset:-50%;background:radial-gradient(circle at 30% 40%,#6c4bd8 0,transparent 35%),radial-gradient(circle at 70% 60%,#2fb39a 0,transparent 35%),radial-gradient(circle at 50% 30%,#ff6fae 0,transparent 30%);filter:blur(30px);animation:m-aur 10s linear infinite}
 .m-aurora span{position:relative}
 @keyframes m-aur{to{transform:rotate(360deg)}}` },
 
-  { name: '무한 마퀴', cat: '배경', desc: '같은 줄을 두 번 놓고 -50% 이동하면 끊김 없이 돕니다. 호버 시 정지.',
+  { name: '무한 마퀴',
+    kw: 'marquee · infinite ticker · scrolling text',
+    prompt: `문구가 오른쪽에서 왼쪽으로 끊김 없이 계속 흐르는 마퀴(전광판)를 만들어줘. 양 끝은 페이드로 사라지게, 마우스를 올리면 멈추게. 순수 CSS로.`,
+ cat: '배경', desc: '같은 줄을 두 번 놓고 -50% 이동하면 끊김 없이 돕니다. 호버 시 정지.',
     html: `<div class="m-marquee"><div><span>MOTION · ELEMENT · INTERACTION ·</span><span aria-hidden="true">MOTION · ELEMENT · INTERACTION ·</span></div></div>`,
     css: `.m-marquee{width:100%;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 15%,#000 85%,transparent);mask-image:linear-gradient(90deg,transparent,#000 15%,#000 85%,transparent)}
 .m-marquee div{display:flex;width:max-content;animation:m-mq 8s linear infinite}
@@ -291,21 +423,30 @@ const D = [
 @keyframes m-mq{to{transform:translateX(-50%)}}` },
 
   // ── 스크롤 ──
-  { name: '스크롤 진행 바', cat: '스크롤', desc: 'animation-timeline: scroll() — JS 없이 스크롤 위치에 연동. (Chrome·Edge·Safari 26+)',
+  { name: '스크롤 진행 바',
+    kw: 'scroll progress bar · reading indicator · animation-timeline: scroll()',
+    prompt: `페이지 맨 위에 스크롤 진행률을 보여주는 얇은 바를 고정해줘. 스크롤한 만큼 왼쪽에서 오른쪽으로 차오르게. JS 없이 CSS scroll-driven animation으로.`,
+ cat: '스크롤', desc: 'animation-timeline: scroll() — JS 없이 스크롤 위치에 연동. (Chrome·Edge·Safari 26+)',
     html: `<div class="m-sp"><div class="m-sp-bar"></div><p>안을 스크롤해 보세요 ↓</p><p>바가 스크롤 양만큼 차요.</p><p>페이지 전체에 쓰려면 body 바로 아래에 두면 됩니다.</p><p>끝! 🎉</p></div>`,
     css: `.m-sp{position:absolute;inset:0;overflow-y:auto;padding:0 20px 20px;color:#cfc6e6}
 .m-sp-bar{position:sticky;top:0;height:4px;margin:0 -20px 16px;background:#8fe3d0;transform-origin:left;animation:m-grow linear both;animation-timeline:scroll()}
 .m-sp p{margin:0 0 80px}
 @keyframes m-grow{from{transform:scaleX(0)}}` },
 
-  { name: '스크롤 등장', cat: '스크롤', desc: 'animation-timeline: view() — 화면에 들어올 때 등장. IntersectionObserver가 필요 없어요.',
+  { name: '스크롤 등장',
+    kw: 'scroll reveal · fade in up · animation-timeline: view()',
+    prompt: `스크롤해서 각 카드가 화면에 들어올 때 아래에서 위로 떠오르며 서서히 나타나게 해줘. JS 없이 CSS view() 타임라인으로. 지원 안 되는 브라우저에선 그냥 보이게.`,
+ cat: '스크롤', desc: 'animation-timeline: view() — 화면에 들어올 때 등장. IntersectionObserver가 필요 없어요.',
     html: `<div class="m-reveal"><div></div><div></div><div></div><div></div><div></div><div></div></div>`,
     css: `.m-reveal{position:absolute;inset:0;overflow-y:auto;padding:20px;display:grid;gap:16px}
 .m-reveal div{height:70px;border-radius:12px;background:linear-gradient(135deg,#8fe3d0,#b39cff);animation:m-in linear both;animation-timeline:view();animation-range:entry 0% cover 40%}
 @keyframes m-in{from{opacity:0;transform:translateY(40px) scale(.9)}}` },
 
   // ── 이징 ──
-  { name: '이징 비교', cat: '이징', desc: '같은 거리, 다른 느낌. 모션의 성격은 대부분 이징이 결정합니다.',
+  { name: '이징 비교',
+    kw: 'easing · cubic-bezier · ease-out',
+    prompt: `이 애니메이션의 이징을 바꿔줘. 지금은 일정한 속도(linear)라 기계적이니까, 빠르게 출발해서 부드럽게 멈추는 expo-out — cubic-bezier(.16,1,.3,1) — 으로.`,
+ cat: '이징', desc: '같은 거리, 다른 느낌. 모션의 성격은 대부분 이징이 결정합니다.',
     html: `<div class="m-ease"><i style="--e:linear">linear</i><i style="--e:ease-in-out">ease-in-out</i><i style="--e:cubic-bezier(.68,-.6,.32,1.6)">back (오버슈트)</i><i style="--e:cubic-bezier(.16,1,.3,1)">expo-out</i></div>`,
     css: `.m-ease{width:260px;display:grid;gap:12px}
 .m-ease i{position:relative;display:block;height:16px;border-radius:8px;background:rgba(255,255,255,.05);font:normal 10px/16px "JetBrains Mono",monospace;color:#8a80a6;text-align:center}
@@ -350,33 +491,44 @@ const REFS = [
 
 const $ = s => document.querySelector(s);
 const grid = $('#grid');
+if (matchMedia('(max-width:700px)').matches) $('.guide').open = false; // 모바일은 갤러리가 먼저 보이게 접어서 시작
 $('#demo-css').textContent = D.map(d => d.css).join('\n');
 
 const codeOf = d => `<!-- HTML -->\n${d.html}\n\n/* CSS */\n${d.css}` +
   (d.js ? `\n\n// JS\n(${d.js})(document.body);` : '');
 const mount = (el, d) => { el.innerHTML = d.html; d.js?.(el); };
+const copy = (btn, text) => {
+  const label = btn.dataset.label ??= btn.textContent;
+  const flash = msg => { btn.textContent = msg; setTimeout(() => btn.textContent = label, 1200); };
+  navigator.clipboard.writeText(text).then(() => flash('복사됨 ✓'), () => flash('복사 실패'));
+};
 
 D.forEach(d => {
   const card = document.createElement('article');
   card.className = 'card';
   card.dataset.cat = d.cat;
-  card.dataset.search = `${d.name} ${d.cat} ${d.desc}`.toLowerCase();
+  card.dataset.search = `${d.name} ${d.cat} ${d.desc} ${d.kw} ${d.prompt}`.toLowerCase();
   card.innerHTML = `<div class="preview"></div>
     <div class="body">
       <div class="meta"><h3></h3><span class="tag"></span></div>
       <p class="desc"></p>
-      <div class="actions"><button data-a="replay">↻ 다시</button><button data-a="code" aria-expanded="false">코드</button><button data-a="copy">복사</button></div>
+      <div class="kw"></div>
+      <div class="prompt"><div class="prompt-head"><span>프롬프트</span><button data-a="pcopy">복사</button></div><p></p></div>
+      <div class="actions"><button data-a="replay">↻ 다시</button><button data-a="code" aria-expanded="false">코드 보기</button><button data-a="copy">코드 복사</button></div>
       <pre hidden><code></code></pre>
     </div>`;
   card.querySelector('h3').textContent = d.name;
   card.querySelector('.tag').textContent = d.cat;
   card.querySelector('.desc').textContent = d.desc;
-  card.querySelector('code').textContent = codeOf(d);
+  card.querySelector('.prompt p').textContent = d.prompt;
+  card.querySelector('.kw').append(...d.kw.split(' · ').map(k =>
+    Object.assign(document.createElement('code'), { textContent: k })));
+  card.querySelector('pre code').textContent = codeOf(d);
   const preview = card.querySelector('.preview');
   mount(preview, d);
 
-  card.querySelector('.actions').addEventListener('click', e => {
-    const btn = e.target.closest('button');
+  card.addEventListener('click', e => {
+    const btn = e.target.closest('button[data-a]');
     if (!btn) return;
     if (btn.dataset.a === 'replay') mount(preview, d);
     if (btn.dataset.a === 'code') {
@@ -384,11 +536,8 @@ D.forEach(d => {
       pre.hidden = !pre.hidden;
       btn.setAttribute('aria-expanded', !pre.hidden);
     }
-    if (btn.dataset.a === 'copy') {
-      navigator.clipboard.writeText(codeOf(d)).then(
-        () => { btn.textContent = '복사됨 ✓'; setTimeout(() => btn.textContent = '복사', 1200); },
-        () => { btn.textContent = '실패 — 코드 보기에서 복사'; });
-    }
+    if (btn.dataset.a === 'copy') copy(btn, codeOf(d));
+    if (btn.dataset.a === 'pcopy') copy(btn, d.prompt);
   });
   grid.appendChild(card);
 });
