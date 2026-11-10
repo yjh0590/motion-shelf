@@ -81,10 +81,9 @@ pre{margin:0;max-height:320px;overflow:auto;padding:14px;background:#0f0c17;bord
 .row-head{display:flex;align-items:center;gap:6px;margin-bottom:10px}
 .row-head h2{flex:1;margin:0;font-size:20px}
 .row-head small{margin-left:8px;font:500 13px "JetBrains Mono",monospace;color:var(--muted)}
-.row-head button{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--text);font:inherit;cursor:pointer}
-.row-head button:hover{border-color:var(--accent)}
 .row-head .more{padding:6px 12px;font-size:14px;font-weight:700;text-decoration:none;white-space:nowrap}
-.row-track{display:grid;grid-auto-flow:column;grid-auto-columns:min(260px,80%);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.row-track{display:grid;grid-auto-flow:column;grid-auto-columns:min(260px,80%);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;cursor:grab}
+.row-track.drag{scroll-snap-type:none;cursor:grabbing;user-select:none}
 .row-track .card{scroll-snap-align:start}
 .row-track .body{padding:12px 14px}
 .row-track .body > :not(.meta),.row-track .tag{display:none}
@@ -1016,10 +1015,32 @@ let cat = HOME;
 const rows = cats.slice(1).map(c => {
   const sec = document.createElement('section');
   sec.className = 'row';
-  sec.innerHTML = `<div class="row-head"><h2></h2><button aria-label="이전">‹</button><button aria-label="다음">›</button><a class="more" href="#shelf">더보기 →</a></div><div class="row-track"></div>`;
+  sec.innerHTML = `<div class="row-head"><h2></h2><a class="more" href="#shelf">더보기 →</a></div><div class="row-track"></div>`;
   sec.querySelector('h2').append(c, Object.assign(document.createElement('small'), { textContent: cards.filter(k => k.dataset.cat === c).length }));
   const track = sec.querySelector('.row-track');
-  sec.querySelectorAll('button').forEach((b, i) => b.onclick = () => track.scrollBy({ left: (i ? 1 : -1) * track.clientWidth * .8, behavior: 'smooth' }));
+  // 마우스로 끌어서 넘기기(터치·트랙패드는 원래 된다). 6px 넘게 끌었을 때만 드래그로 보고, 그 뒤의 클릭은 막는다.
+  track.addEventListener('pointerdown', e => {
+    if (e.pointerType !== 'mouse' || e.button) return;
+    const x0 = e.clientX, s0 = track.scrollLeft;
+    let moved = false;
+    const move = e => {
+      if (!moved && Math.abs(e.clientX - x0) < 6) return;
+      if (!moved) {
+        moved = true;
+        track.setPointerCapture(e.pointerId);
+        track.classList.add('drag');
+        getSelection().removeAllRanges();
+      }
+      track.scrollLeft = s0 - (e.clientX - x0);
+    };
+    track.addEventListener('pointermove', move);
+    track.addEventListener('pointerup', () => {
+      track.removeEventListener('pointermove', move);
+      if (!moved) return;
+      track.addEventListener('click', e => e.stopPropagation(), { capture: true, once: true });
+      track.classList.remove('drag'); // 스냅이 다시 켜지며 가까운 카드에 붙는다
+    }, { once: true });
+  });
   sec.querySelector('.more').onclick = e => { e.preventDefault(); pick(c); scrollTo(0, $('#v-shelf').offsetTop); };
   $('#rows').appendChild(sec);
   return [c, track];
