@@ -5116,6 +5116,607 @@ const D = [
 .m-plx i:nth-child(3){top:240px;left:40%;width:26px;height:26px;background:#8fe3d0;--d:50px}
 @keyframes m-plx{to{transform:translateY(var(--d))}}` },
 
+  { name: '원형 진행 버튼',
+    kw: 'scroll progress ring · back to top · named scroll-timeline',
+    prompt: `오른쪽 아래 "맨 위로" 버튼 둘레의 링이 스크롤한 만큼 채워지게 해줘. 링은 conic-gradient와 @property 숫자 변수, 스크롤 연동은 named scroll-timeline과 timeline-scope로 JS 없이, 누르면 맨 위로 부드럽게 올라가는 것만 바닐라 JS로.`,
+    cat: '스크롤', desc: '버튼 링이 읽은 만큼 차고, 누르면 맨 위로 갑니다. 상자 안을 스크롤해 보세요. (Firefox 미지원)',
+    html: `<div class="m-sc-ring"><div tabindex="0" aria-label="스크롤 영역"><p>↓ 스크롤해 보세요</p><p>링이 차오릅니다</p><p>계속…</p><p>거의 다 왔어요</p><p>끝!</p></div><button aria-label="맨 위로">↑</button></div>`,
+    css: `@property --m-sc-p{syntax:"<number>";inherits:false;initial-value:0}
+.m-sc-ring{position:absolute;inset:0;timeline-scope:--m-sc-ring}
+.m-sc-ring>div{height:100%;overflow-y:auto;padding:16px 20px;color:#cfc6e6;scroll-timeline:--m-sc-ring y;scrollbar-width:none}
+.m-sc-ring p{margin:0 0 90px}
+.m-sc-ring button{position:absolute;right:14px;bottom:14px;width:46px;height:46px;border:0;border-radius:50%;background:radial-gradient(closest-side,#241d33 78%,transparent 80%),conic-gradient(#8fe3d0 calc(var(--m-sc-p) * 1%),#3a3152 0);color:#f2eefc;font-weight:900;cursor:pointer;animation:m-sc-ring linear both;animation-timeline:--m-sc-ring}
+@keyframes m-sc-ring{to{--m-sc-p:100}}`,
+    js: root => {
+      const box = root.querySelector('.m-sc-ring>div');
+      root.querySelector('.m-sc-ring button').onclick = () => box.scrollTo({ top: 0, behavior: 'smooth' });
+    } },
+
+  { name: '읽은 퍼센트',
+    kw: 'reading percentage · scroll counter · @property integer',
+    prompt: `글 상단에 붙은 작은 띠에 "읽음 37%"처럼 스크롤 비율이 숫자로 실시간 표시되게 해줘. 숫자는 @property 정수 변수를 scroll() 타임라인으로 0→100 움직이고 counter로 보여 주기, JS 없이.`,
+    cat: '스크롤', desc: '스크롤 비율이 숫자로 올라갑니다. JS 없이 counter로. (Firefox 미지원)',
+    html: `<div class="m-sc-pct"><b></b><p>↓ 스크롤해 보세요</p><p>숫자가 올라가요</p><p>…</p><p>…</p><p>끝</p></div>`,
+    css: `@property --m-sc-q{syntax:"<integer>";inherits:false;initial-value:0}
+.m-sc-pct{position:absolute;inset:0;overflow-y:auto;padding:0 20px 20px;color:#cfc6e6;scrollbar-width:none}
+.m-sc-pct b{position:sticky;top:0;display:block;margin:0 -20px 16px;padding:8px 20px;background:#241d33;color:#8fe3d0;font:700 13px ui-monospace,monospace;counter-reset:q var(--m-sc-q);animation:m-sc-pct linear both;animation-timeline:scroll()}
+.m-sc-pct b::after{content:"읽음 " counter(q) "%"}
+.m-sc-pct p{margin:0 0 90px}
+@keyframes m-sc-pct{to{--m-sc-q:100}}` },
+
+  { name: '스크롤 스파이 목차',
+    kw: 'scroll spy · table of contents · IntersectionObserver',
+    prompt: `옆에 세로 목차 점 세 개를 두고, 스크롤해서 보고 있는 섹션의 점이 길쭉하게 늘어나며 민트색이 되게 해줘. 점을 누르면 그 섹션으로 부드럽게 이동, 지금 섹션은 IntersectionObserver로 알아내서 바닐라 JS로.`,
+    cat: '스크롤', desc: '보고 있는 섹션이 목차에 표시됩니다. 상자 안을 스크롤하거나 점을 눌러 보세요.',
+    html: `<div class="m-sc-spy"><div tabindex="0" aria-label="스크롤 영역"><section id="m-sc-s1"><b>01 소개</b></section><section id="m-sc-s2"><b>02 기능</b></section><section id="m-sc-s3"><b>03 요금</b></section></div><nav aria-label="목차"><a href="#m-sc-s1" aria-label="소개"></a><a href="#m-sc-s2" aria-label="기능"></a><a href="#m-sc-s3" aria-label="요금"></a></nav></div>`,
+    css: `.m-sc-spy{position:absolute;inset:0}
+.m-sc-spy>div{height:100%;overflow-y:auto;scrollbar-width:none;scroll-behavior:smooth}
+.m-sc-spy section{display:grid;place-items:center;height:180px;color:#f2eefc;font-size:18px}
+.m-sc-spy section:nth-child(2){background:#241d33}
+.m-sc-spy nav{position:absolute;right:12px;top:50%;display:grid;gap:6px;transform:translateY(-50%)}
+.m-sc-spy a{width:6px;height:6px;border-radius:3px;background:#4a3f66;transition:height .3s cubic-bezier(.16,1,.3,1),background .3s}
+.m-sc-spy a.on{height:22px;background:#8fe3d0}`,
+    js: root => {
+      const box = root.querySelector('.m-sc-spy>div'), links = root.querySelectorAll('.m-sc-spy a');
+      const io = new IntersectionObserver(es => es.forEach(e => {
+        if (e.isIntersecting) links.forEach(a => a.classList.toggle('on', a.hash === '#' + e.target.id));
+      }), { root: box, threshold: .6 });
+      box.querySelectorAll('section').forEach(s => io.observe(s));
+      links.forEach(a => a.onclick = e => { e.preventDefault(); box.querySelector(a.hash).scrollIntoView({ block: 'start' }); });
+    } },
+
+  { name: '스크롤 헤더 축소',
+    kw: 'shrinking header · scroll-driven · animation-range',
+    prompt: `처음엔 키가 크고 제목이 큰 헤더가 스크롤 0~80px 구간에서 점점 납작해지고 제목이 작아지며 아래 그림자가 생기게 해줘. scroll() 타임라인에 animation-range: 0 80px로, JS 없이.`,
+    cat: '스크롤', desc: '스크롤 양에 딱 맞춰 헤더가 줄어듭니다. JS 없는 버전. (Firefox 미지원)',
+    html: `<div class="m-sc-hdr"><header>Motion</header><p>↓ 스크롤해 보세요</p><p>헤더가 줄어요</p><p>…</p><p>끝</p></div>`,
+    css: `.m-sc-hdr{position:absolute;inset:0;overflow-y:auto;color:#cfc6e6;scrollbar-width:none}
+.m-sc-hdr header{position:sticky;top:0;padding:30px 18px;background:#2e2642;color:#f2eefc;font:900 28px/1 system-ui,sans-serif;animation:m-sc-hdr linear both;animation-timeline:scroll();animation-range:0 80px}
+.m-sc-hdr p{margin:16px 18px 90px}
+@keyframes m-sc-hdr{to{padding:10px 18px;font-size:16px;box-shadow:0 6px 14px rgba(0,0,0,.4)}}` },
+
+  { name: '헤더 배경 전환',
+    kw: 'transparent to solid header · scroll-driven · hero overlay',
+    prompt: `히어로 사진 위에 투명하게 떠 있던 헤더가 스크롤 0~100px 동안 점점 어두운 배경과 블러가 생기며 불투명해지게 해줘. scroll() 타임라인과 animation-range로 JS 없이.`,
+    cat: '스크롤', desc: '사진 위 투명 헤더가 내리면 불투명해집니다. (Firefox 미지원)',
+    html: `<div class="m-sc-solid"><header>☰ &nbsp;Travel</header><div class="hero">여름 바다</div><p>본문이 시작돼요 ↓</p><p>…</p><p>…</p></div>`,
+    css: `.m-sc-solid{position:absolute;inset:0;overflow-y:auto;color:#cfc6e6;scrollbar-width:none}
+.m-sc-solid header{position:sticky;top:0;z-index:1;margin-bottom:-40px;padding:12px 16px;color:#fff;font-weight:800;animation:m-sc-solid linear both;animation-timeline:scroll();animation-range:0 100px}
+.m-sc-solid .hero{display:grid;place-items:end start;height:170px;padding:16px;background:radial-gradient(circle at 70% 30%,#ffd479 0 10%,transparent 11%),linear-gradient(transparent 62%,#2a6b5f 62%),linear-gradient(160deg,#ff9ecd,#7cc4ff);color:#fff;font:900 22px system-ui,sans-serif}
+.m-sc-solid p{margin:16px 16px 90px}
+@keyframes m-sc-solid{to{background:rgba(20,16,31,.85);backdrop-filter:blur(8px);box-shadow:0 4px 12px rgba(0,0,0,.35)}}` },
+
+  { name: '이미지 확대 리빌',
+    kw: 'image scale reveal · view timeline · rounded to full',
+    prompt: `사진이 화면에 들어오기 시작할 때 0.7배 크기에 모서리가 많이 둥근 상태였다가, 화면 중간에 올 때까지 원래 크기로 커지며 모서리가 덜 둥글어지게 해줘. view() 타임라인, animation-range: entry 0% cover 50%로 JS 없이.`,
+    cat: '스크롤', desc: '사진이 다가오며 커집니다. 애플 제품 페이지 느낌. (Firefox 미지원)',
+    html: `<div class="m-sc-grow"><p>↓ 스크롤해 보세요</p><i></i><i></i><p>끝</p></div>`,
+    css: `.m-sc-grow{position:absolute;inset:0;overflow-y:auto;padding:20px;color:#cfc6e6;scrollbar-width:none}
+.m-sc-grow p{margin:0 0 120px}
+.m-sc-grow i{display:block;height:150px;margin-bottom:30px;background:radial-gradient(circle at 70% 30%,#ffd479 0 10%,transparent 11%),linear-gradient(transparent 62%,#2a6b5f 62%),linear-gradient(160deg,#ff9ecd,#7cc4ff);animation:m-sc-grow linear both;animation-timeline:view();animation-range:entry 0% cover 50%}
+@keyframes m-sc-grow{from{transform:scale(.7);border-radius:60px}to{transform:none;border-radius:12px}}` },
+
+  { name: '읽는 줄 강조',
+    kw: 'scroll text highlight · line by line opacity · view()',
+    prompt: `긴 문단의 각 줄이 화면 가운데 근처를 지날 때 흐린 회색에서 또렷한 흰색으로 밝아지게 해줘(읽고 있는 줄 강조). 줄마다 view() 타임라인, animation-range: cover 25% cover 45%로 JS 없이.`,
+    cat: '스크롤', desc: '읽는 위치의 줄이 밝아집니다. 긴 소개 글·선언문에. (Firefox 미지원)',
+    html: `<div class="m-sc-read"><p>↓ 천천히 스크롤해 보세요</p><span>좋은 모션은</span><span>눈길을 이끌고</span><span>상태를 알려 주며</span><span>화면에 성격을 더해요.</span><span>그리고 꼭 필요한 곳에만</span><span>짧게 쓰는 게 좋아요.</span><p></p></div>`,
+    css: `.m-sc-read{position:absolute;inset:0;overflow-y:auto;padding:80px 20px 100px;scrollbar-width:none}
+.m-sc-read p{margin:0 0 60px;color:#a59bc2;font-size:13px}
+.m-sc-read span{display:block;color:#f2eefc;font:800 22px/1.5 system-ui,sans-serif;animation:m-sc-read linear both;animation-timeline:view();animation-range:cover 25% cover 45%}
+@keyframes m-sc-read{from{opacity:.15}}` },
+
+  { name: '가로 스크롤 구간',
+    kw: 'horizontal scroll section · sticky pin · view-timeline',
+    prompt: `아래로 스크롤하는 동안 한 구간이 화면에 고정되고 그 안의 카드 줄이 옆으로 흘러가다가, 끝까지 가면 다시 아래로 스크롤되게 해줘. 구간은 높게 만들고 안쪽을 sticky로, 카드 줄은 구간의 view-timeline에 animation-range: contain으로 연동, JS 없이.`,
+    cat: '스크롤', desc: '세로 스크롤이 가로 이동으로 바뀌는 구간. 포트폴리오 단골. (Firefox 미지원)',
+    html: `<div class="m-sc-hz"><p>↓ 스크롤해 보세요</p><section><div><ul><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li></ul></div></section><p>구간이 끝났어요</p></div>`,
+    css: `.m-sc-hz{position:absolute;inset:0;overflow-y:auto;color:#cfc6e6;scrollbar-width:none}
+.m-sc-hz p{margin:0;padding:20px}
+.m-sc-hz section{height:600px;view-timeline:--m-sc-hz block}
+.m-sc-hz section div{position:sticky;top:0;height:200px;display:flex;align-items:center;overflow:hidden;container-type:inline-size;background:#241d33}
+.m-sc-hz ul{display:flex;gap:12px;margin:0;padding:0 16px;list-style:none;animation:m-sc-hz linear both;animation-timeline:--m-sc-hz;animation-range:contain 0% contain 100%}
+.m-sc-hz li{display:grid;place-items:center;flex:none;width:130px;height:120px;border-radius:14px;background:linear-gradient(135deg,#6c4bd8,#ff9ecd);color:#fff;font:900 28px system-ui,sans-serif}
+@keyframes m-sc-hz{to{transform:translateX(calc(-100% + 100cqw))}}` },
+
+  { name: '스크롤리텔링',
+    kw: 'scrollytelling · sticky visual · step changes',
+    prompt: `위쪽에 고정된 그림이 있고, 아래 설명 단계 세 개를 스크롤할 때마다 그림의 색과 숫자가 그 단계에 맞게 0.4초 동안 바뀌게 해줘. 고정은 sticky, 지금 단계는 IntersectionObserver로 알아내 바닐라 JS로.`,
+    cat: '스크롤', desc: '글을 내리면 고정된 그림이 단계별로 바뀝니다. 데이터 기사·제품 설명에.',
+    html: `<div class="m-sc-story"><div class="pic" aria-live="polite">1</div><p data-s="1" data-c="#8fe3d0">① 아이디어를 적고</p><p data-s="2" data-c="#b39cff">② 디자인을 다듬고</p><p data-s="3" data-c="#ff9ecd">③ 세상에 내놓아요</p><div class="end"></div></div>`,
+    css: `.m-sc-story{position:absolute;inset:0;overflow-y:auto;padding:0 16px;scrollbar-width:none}
+.m-sc-story .pic{position:sticky;top:10px;z-index:1;display:grid;place-items:center;width:70px;height:70px;margin:10px auto 0;border-radius:18px;background:var(--c,#8fe3d0);color:#14101f;font:900 30px system-ui,sans-serif;transition:background .4s,transform .4s cubic-bezier(.3,1.5,.5,1)}
+.m-sc-story .pic.pop{transform:scale(1.12) rotate(-6deg)}
+.m-sc-story p{margin:0;padding:70px 0;color:#f2eefc;font-size:15px;font-weight:700;text-align:center}
+.m-sc-story .end{height:60px}`,
+    js: root => {
+      const box = root.querySelector('.m-sc-story'), pic = box.querySelector('.pic');
+      const io = new IntersectionObserver(es => es.forEach(e => {
+        if (!e.isIntersecting || pic.textContent === e.target.dataset.s) return;
+        pic.textContent = e.target.dataset.s;
+        pic.style.setProperty('--c', e.target.dataset.c);
+        pic.classList.remove('pop'); void pic.offsetWidth; pic.classList.add('pop');
+      }), { root: box, rootMargin: '-45% 0px -45% 0px' });
+      box.querySelectorAll('p').forEach(p => io.observe(p));
+    } },
+
+  { name: '쌓이는 카드',
+    kw: 'stacking cards · sticky offsets · card deck scroll',
+    prompt: `스크롤하면 카드들이 위에 하나씩 차곡차곡 쌓이게 해줘. 카드마다 sticky top을 10px, 20px, 30px…로 조금씩 다르게 줘서 앞 카드의 윗부분이 살짝 보이게, 그림자로 층을 구분, 순수 CSS로(모든 브라우저).`,
+    cat: '스크롤', desc: 'sticky만으로 카드가 쌓입니다. 모든 브라우저에서 동작합니다.',
+    html: `<div class="m-sc-stack"><p>↓ 스크롤해 보세요</p><i style="--i:0;--c:#8fe3d0">기획</i><i style="--i:1;--c:#b39cff">디자인</i><i style="--i:2;--c:#ff9ecd">개발</i><i style="--i:3;--c:#ffd479">출시</i><p></p></div>`,
+    css: `.m-sc-stack{position:absolute;inset:0;overflow-y:auto;padding:0 20px 140px;scrollbar-width:none}
+.m-sc-stack p{margin:0;padding:16px 0;color:#a59bc2;font-size:13px}
+.m-sc-stack i{position:sticky;top:calc(10px + var(--i) * 12px);display:grid;place-items:center;height:110px;margin-bottom:60px;border-radius:16px;background:var(--c);color:#14101f;font:900 20px system-ui,sans-serif;font-style:normal;box-shadow:0 -6px 16px rgba(0,0,0,.35)}` },
+
+  { name: '회전 등장',
+    kw: 'rotate in on scroll · tilt reveal · view()',
+    prompt: `목록 항목들이 화면에 들어올 때 왼쪽으로 40px 밀리고 -8도 기운 채 투명하다가, 화면 안으로 들어오며 똑바로 서게 해줘. view() 타임라인, animation-range: entry 0% entry 100%로 JS 없이.`,
+    cat: '스크롤', desc: '항목이 기운 채 들어와 똑바로 섭니다. (Firefox 미지원)',
+    html: `<div class="m-sc-rot"><p>↓ 스크롤해 보세요</p><i></i><i></i><i></i><i></i><i></i></div>`,
+    css: `.m-sc-rot{position:absolute;inset:0;overflow-y:auto;padding:20px 20px 60px;display:grid;gap:14px;scrollbar-width:none}
+.m-sc-rot p{margin:0 0 80px;color:#a59bc2;font-size:13px}
+.m-sc-rot i{height:64px;border-radius:12px;background:linear-gradient(135deg,#ffd479,#ff9ecd);transform-origin:0 100%;animation:m-sc-rot linear both;animation-timeline:view();animation-range:entry 0% entry 100%}
+@keyframes m-sc-rot{from{opacity:0;transform:translateX(-40px) rotate(-8deg)}}` },
+
+  { name: '좌우 번갈아 등장',
+    kw: 'alternate slide in · zigzag reveal · view()',
+    prompt: `지그재그로 놓인 항목들이 화면에 들어올 때 홀수 번째는 왼쪽에서, 짝수 번째는 오른쪽에서 60px 밀려 들어오며 나타나게 해줘. view() 타임라인, animation-range: entry 10% cover 35%로 JS 없이.`,
+    cat: '스크롤', desc: '항목이 좌우에서 번갈아 들어옵니다. 연혁·특징 소개에. (Firefox 미지원)',
+    html: `<div class="m-sc-zig"><p>↓ 스크롤해 보세요</p><i>왼쪽에서</i><i>오른쪽에서</i><i>왼쪽에서</i><i>오른쪽에서</i></div>`,
+    css: `.m-sc-zig{position:absolute;inset:0;overflow-x:hidden;overflow-y:auto;padding:20px 20px 60px;display:grid;gap:16px;scrollbar-width:none}
+.m-sc-zig p{margin:0 0 80px;color:#a59bc2;font-size:13px}
+.m-sc-zig i{justify-self:start;width:65%;padding:16px;border-radius:12px;background:#2a2240;color:#f2eefc;font-size:13px;font-style:normal;animation:m-sc-zl linear both;animation-timeline:view();animation-range:entry 10% cover 35%}
+.m-sc-zig i:nth-of-type(even){justify-self:end;background:#3a3152;animation-name:m-sc-zr}
+@keyframes m-sc-zl{from{opacity:0;transform:translateX(-60px)}}
+@keyframes m-sc-zr{from{opacity:0;transform:translateX(60px)}}` },
+
+  { name: '블러 해제',
+    kw: 'blur to focus on scroll · soft reveal · view()',
+    prompt: `카드가 화면에 들어올 때 10px 흐리고 반투명했다가, 화면 안쪽으로 올라오며 또렷해지게 해줘. view() 타임라인, animation-range: entry 0% cover 40%로 JS 없이.`,
+    cat: '스크롤', desc: '흐릿한 카드가 다가오며 초점이 맞습니다. (Firefox 미지원)',
+    html: `<div class="m-sc-blur"><p>↓ 스크롤해 보세요</p><i></i><i></i><i></i><i></i></div>`,
+    css: `.m-sc-blur{position:absolute;inset:0;overflow-y:auto;padding:20px 20px 60px;display:grid;gap:14px;scrollbar-width:none}
+.m-sc-blur p{margin:0 0 80px;color:#a59bc2;font-size:13px}
+.m-sc-blur i{height:80px;border-radius:14px;background:linear-gradient(135deg,#8fe3d0,#7cc4ff);animation:m-sc-blur linear both;animation-timeline:view();animation-range:entry 0% cover 40%}
+@keyframes m-sc-blur{from{filter:blur(10px);opacity:.3}}` },
+
+  { name: '클립 와이프',
+    kw: 'clip-path wipe on scroll · reveal left to right · view()',
+    prompt: `사진이 화면에 들어올 때 왼쪽부터 가림막이 걷히듯 드러나게 해줘. clip-path: inset(0 100% 0 0)에서 inset(0)으로, view() 타임라인에 animation-range: entry 20% cover 50%, JS 없이.`,
+    cat: '스크롤', desc: '사진이 왼쪽부터 쓸려 드러납니다. (Firefox 미지원)',
+    html: `<div class="m-sc-wipe"><p>↓ 스크롤해 보세요</p><i></i><i></i><p></p></div>`,
+    css: `.m-sc-wipe{position:absolute;inset:0;overflow-y:auto;padding:20px;scrollbar-width:none}
+.m-sc-wipe p{margin:0 0 100px;color:#a59bc2;font-size:13px}
+.m-sc-wipe i{display:block;height:130px;margin-bottom:24px;border-radius:12px;background:radial-gradient(circle at 70% 30%,#ffd479 0 10%,transparent 11%),linear-gradient(transparent 62%,#2a6b5f 62%),linear-gradient(160deg,#ff9ecd,#7cc4ff);animation:m-sc-wipe linear both;animation-timeline:view();animation-range:entry 20% cover 50%}
+.m-sc-wipe i+i{animation-name:m-sc-wipe2}
+@keyframes m-sc-wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}
+@keyframes m-sc-wipe2{from{clip-path:inset(0 0 0 100%)}to{clip-path:inset(0)}}` },
+
+  { name: '스크롤 숫자',
+    kw: 'scroll-linked counter · number scrub · @property',
+    prompt: `"누적 사용자 0명" 숫자가 그 섹션을 스크롤해 지나가는 동안 0에서 12000까지 스크롤 양에 맞춰 올라가고, 거꾸로 올리면 내려가게 해줘. @property 정수 변수를 view() 타임라인에 연결해 counter로 표시, JS 없이.`,
+    cat: '스크롤', desc: '숫자가 스크롤에 따라 오르내립니다. 시간이 아닌 스크롤에 묶여 있습니다. (Firefox 미지원)',
+    html: `<div class="m-sc-num"><p>↓ 스크롤해 보세요</p><section><small>누적 사용자</small><b></b></section><p>…</p></div>`,
+    css: `@property --m-sc-n{syntax:"<integer>";inherits:false;initial-value:0}
+.m-sc-num{position:absolute;inset:0;overflow-y:auto;padding:20px;color:#a59bc2;font-size:13px;scrollbar-width:none}
+.m-sc-num p{margin:0 0 160px}
+.m-sc-num section{display:grid;justify-items:center;margin-bottom:160px}
+.m-sc-num b{color:#8fe3d0;font:900 40px ui-monospace,monospace;counter-reset:n var(--m-sc-n);animation:m-sc-num linear both;animation-timeline:view();animation-range:entry 20% cover 60%}
+.m-sc-num b::after{content:counter(n) "명"}
+@keyframes m-sc-num{to{--m-sc-n:12000}}` },
+
+  { name: '막대 성장',
+    kw: 'bar chart on scroll · scaleY · view()',
+    prompt: `막대 그래프의 막대들이 그래프가 화면에 들어오는 동안 바닥에서부터 각자 높이까지 자라나게 해줘. 막대마다 animation-range를 조금씩 늦춰 시차처럼 보이게, view() 타임라인으로 JS 없이.`,
+    cat: '스크롤', desc: '그래프가 보이는 만큼 막대가 자랍니다. (Firefox 미지원)',
+    html: `<div class="m-sc-bars"><p>↓ 스크롤해 보세요</p><div><i style="--h:40%;--k:0"></i><i style="--h:70%;--k:1"></i><i style="--h:55%;--k:2"></i><i style="--h:90%;--k:3"></i><i style="--h:65%;--k:4"></i></div><p></p></div>`,
+    css: `.m-sc-bars{position:absolute;inset:0;overflow-y:auto;padding:20px;color:#a59bc2;font-size:13px;scrollbar-width:none}
+.m-sc-bars p{margin:0 0 140px}
+.m-sc-bars div{display:flex;align-items:flex-end;gap:10px;height:120px;padding:10px;border-radius:12px;background:#241d33}
+.m-sc-bars i{flex:1;height:var(--h);border-radius:4px 4px 0 0;background:linear-gradient(#8fe3d0,#2a8f7a);transform-origin:bottom;animation:m-sc-bar linear both;animation-timeline:view();animation-range:entry calc(var(--k) * 8%) cover calc(40% + var(--k) * 6%)}
+@keyframes m-sc-bar{from{transform:scaleY(0)}}` },
+
+  { name: '선 그리기',
+    kw: 'SVG path draw on scroll · pathLength · scroll()',
+    prompt: `스크롤을 내리는 만큼 지그재그 SVG 선이 위에서 아래로 그려지고, 올리면 지워지게 해줘. path에 pathLength="1"을 주고 stroke-dashoffset을 1→0으로 scroll() 타임라인에 연결, JS 없이.`,
+    cat: '스크롤', desc: '스크롤한 만큼 선이 그려집니다. 로드맵·여정 페이지에. (Firefox 미지원)',
+    html: `<div class="m-sc-draw"><svg viewBox="0 0 100 500" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M50 0C90 60 10 120 50 180S90 300 50 360 10 440 50 500"/></svg></div>`,
+    css: `.m-sc-draw{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none}
+.m-sc-draw svg{display:block;width:100%;height:600px}
+.m-sc-draw path{fill:none;stroke:#ffd479;stroke-width:3;stroke-linecap:round;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:1;animation:m-sc-draw linear both;animation-timeline:scroll()}
+@keyframes m-sc-draw{to{stroke-dashoffset:0}}` },
+
+  { name: '배경색 전환',
+    kw: 'scroll color change · section themes · scroll(self)',
+    prompt: `스크롤 영역의 배경색이 내려가는 동안 남색 → 보라 → 자주 → 갈색으로 스크롤 양에 맞춰 자연스럽게 바뀌게 해줘. 스크롤 상자 자신의 scroll(self) 타임라인으로 JS 없이.`,
+    cat: '스크롤', desc: '섹션마다 분위기 색이 스르륵 바뀝니다. (Firefox 미지원)',
+    html: `<div class="m-sc-color"><section>밤</section><section>새벽</section><section>노을</section><section>저녁</section></div>`,
+    css: `.m-sc-color{position:absolute;inset:0;overflow-y:auto;background:#141a3a;scrollbar-width:none;animation:m-sc-color linear both;animation-timeline:scroll(self)}
+.m-sc-color section{display:grid;place-items:center;height:200px;color:#f2eefc;font:900 26px system-ui,sans-serif}
+@keyframes m-sc-color{33%{background:#3a2470}66%{background:#7a2456}100%{background:#5a3a1e}}` },
+
+  { name: '큰 글자 채우기',
+    kw: 'text fill on scroll · outline to solid · background-clip',
+    prompt: `외곽선만 있는 큰 제목이 화면을 지나가는 동안 왼쪽부터 색으로 채워지게 해줘. background-clip:text에 배경 크기 0→100%를 view() 타임라인(cover 20%~60%)으로, JS 없이.`,
+    cat: '스크롤', desc: '스크롤하는 만큼 큰 제목이 채워집니다. (Firefox 미지원)',
+    html: `<div class="m-sc-tfill"><p>↓ 스크롤해 보세요</p><h4>SCROLL<br>TO FILL</h4><p></p></div>`,
+    css: `.m-sc-tfill{position:absolute;inset:0;overflow-y:auto;padding:20px;scrollbar-width:none}
+.m-sc-tfill p{margin:0 0 140px;color:#a59bc2;font-size:13px}
+.m-sc-tfill h4{margin:0 0 140px;color:transparent;font:900 44px/1 system-ui,sans-serif;-webkit-text-stroke:1px #ff9ecd;background:linear-gradient(#ff9ecd,#ff9ecd) 0 0/0 100% no-repeat;-webkit-background-clip:text;background-clip:text;animation:m-sc-tfill linear both;animation-timeline:view();animation-range:cover 20% cover 60%}
+@keyframes m-sc-tfill{to{background-size:100% 100%}}` },
+
+  { name: '가로로 흐르는 글자',
+    kw: 'scroll-linked marquee · horizontal text shift · view()',
+    prompt: `아래로 스크롤하는 동안 큰 글자 두 줄이 서로 반대 방향으로 옆으로 밀려가게 해줘(스크롤을 멈추면 글자도 멈춤). 윗줄은 왼쪽, 아랫줄은 오른쪽으로, view() 타임라인에 연결해 JS 없이.`,
+    cat: '스크롤', desc: '스크롤에 맞춰 두 줄 글자가 엇갈려 밀립니다. 시간 기반 마퀴와 달리 스크롤을 멈추면 멈춥니다. (Firefox 미지원)',
+    html: `<div class="m-sc-slide"><p>↓ 스크롤해 보세요</p><h4>CREATIVE · MOTION · CREATIVE</h4><h4>DESIGN · STUDIO · DESIGN</h4><p></p></div>`,
+    css: `.m-sc-slide{position:absolute;inset:0;overflow-x:hidden;overflow-y:auto;padding:20px 0;scrollbar-width:none}
+.m-sc-slide p{margin:0 20px 140px;color:#a59bc2;font-size:13px}
+.m-sc-slide h4{margin:0;color:#f2eefc;font:900 40px/1.1 system-ui,sans-serif;white-space:nowrap;animation:m-sc-left linear both;animation-timeline:view()}
+.m-sc-slide h4+h4{margin-bottom:140px;color:transparent;-webkit-text-stroke:1px #b39cff;animation-name:m-sc-right}
+@keyframes m-sc-left{from{transform:translateX(10%)}to{transform:translateX(-60%)}}
+@keyframes m-sc-right{from{transform:translateX(-60%)}to{transform:translateX(10%)}}` },
+
+  { name: '히어로 줌아웃',
+    kw: 'hero shrink on scroll · scale fade · scroll() range',
+    prompt: `맨 위 히어로 사진이 스크롤 0~200px 동안 0.85배로 줄고 모서리가 둥글어지며 어두워져, 본문이 그 위로 올라오는 느낌이 나게 해줘. 히어로는 sticky, scroll() 타임라인과 animation-range로 JS 없이.`,
+    cat: '스크롤', desc: '내리면 히어로가 작아지며 뒤로 물러납니다. (Firefox 미지원)',
+    html: `<div class="m-sc-hero"><div class="hero">Summer</div><article><p>본문이 히어로 위로 올라와요.</p><p>…</p><p>…</p></article></div>`,
+    css: `.m-sc-hero{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none}
+.m-sc-hero .hero{position:sticky;top:0;display:grid;place-items:center;height:200px;background:radial-gradient(circle at 70% 30%,#ffd479 0 10%,transparent 11%),linear-gradient(transparent 62%,#2a6b5f 62%),linear-gradient(160deg,#ff9ecd,#7cc4ff);color:#fff;font:900 30px system-ui,sans-serif;animation:m-sc-hero linear both;animation-timeline:scroll();animation-range:0 200px}
+.m-sc-hero article{position:relative;padding:16px 20px;border-radius:18px 18px 0 0;background:#1d1729;color:#cfc6e6;font-size:13px}
+.m-sc-hero p{margin:0 0 80px}
+@keyframes m-sc-hero{to{transform:scale(.85);border-radius:24px;filter:brightness(.5)}}` },
+
+  { name: '3D 기울기 해제',
+    kw: '3D tilt on scroll · rotateX flatten · perspective',
+    prompt: `화면 아래쪽 카드는 뒤로 40도 눕혀져 있다가, 위로 올라오며 똑바로 서서 정면을 보게 해줘. perspective와 rotateX, view() 타임라인(entry 0% ~ cover 40%)으로 JS 없이.`,
+    cat: '스크롤', desc: '누워 있던 카드가 올라오며 일어섭니다. (Firefox 미지원)',
+    html: `<div class="m-sc-tilt"><p>↓ 스크롤해 보세요</p><i></i><i></i><i></i></div>`,
+    css: `.m-sc-tilt{position:absolute;inset:0;overflow-y:auto;padding:20px 20px 60px;display:grid;gap:16px;perspective:600px;scrollbar-width:none}
+.m-sc-tilt p{margin:0 0 80px;color:#a59bc2;font-size:13px}
+.m-sc-tilt i{height:90px;border-radius:14px;background:linear-gradient(135deg,#b39cff,#6c4bd8);transform-origin:50% 100%;animation:m-sc-tilt linear both;animation-timeline:view();animation-range:entry 0% cover 40%}
+@keyframes m-sc-tilt{from{transform:rotateX(40deg);opacity:.4}}` },
+
+  { name: '사진 패럴랙스',
+    kw: 'image parallax in frame · inner translate · view()',
+    prompt: `사진 틀은 그대로 스크롤되는데, 틀 안의 사진은 더 느리게 움직여 창문 너머 풍경처럼 보이게 해줘. 사진을 틀보다 40% 크게 하고 틀이 화면을 지나는 동안 -20%에서 0으로 옮기기, view() 타임라인으로 JS 없이.`,
+    cat: '스크롤', desc: '틀 안의 사진이 틀보다 느리게 움직입니다. (Firefox 미지원)',
+    html: `<div class="m-sc-frame"><p>↓ 스크롤해 보세요</p><div><i></i></div><div><i></i></div><p></p></div>`,
+    css: `.m-sc-frame{position:absolute;inset:0;overflow-y:auto;padding:20px;scrollbar-width:none}
+.m-sc-frame p{margin:0 0 100px;color:#a59bc2;font-size:13px}
+.m-sc-frame div{height:120px;margin-bottom:24px;overflow:hidden;border-radius:12px}
+.m-sc-frame i{display:block;height:140%;background:radial-gradient(circle at 70% 25%,#ffd479 0 7%,transparent 8%),linear-gradient(transparent 55%,#3b2f5c 55% 70%,#2a6b5f 70%),linear-gradient(#ffb38a,#ff9ecd);animation:m-sc-frame linear both;animation-timeline:view()}
+@keyframes m-sc-frame{from{transform:translateY(-28%)}to{transform:none}}` },
+
+  { name: '섹션 스냅',
+    kw: 'full-page snap · scroll-snap · section fade',
+    prompt: `스크롤하면 섹션이 한 화면씩 착착 넘어가 맞춰지게 하고(scroll-snap), 각 섹션의 제목은 화면 가운데 들어올 때 아래에서 떠오르게 해줘. 스냅은 scroll-snap-type: y mandatory, 제목은 view() 타임라인, JS 없이.`,
+    cat: '스크롤', desc: '한 화면씩 착착 넘어가는 섹션. 스냅은 모든 브라우저, 제목 움직임은 Firefox 미지원.',
+    html: `<div class="m-sc-snap"><section style="--c:#2a2240"><h4>하나</h4></section><section style="--c:#3a2470"><h4>둘</h4></section><section style="--c:#5a2456"><h4>셋</h4></section></div>`,
+    css: `.m-sc-snap{position:absolute;inset:0;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none}
+.m-sc-snap section{display:grid;place-items:center;height:100%;background:var(--c);scroll-snap-align:start}
+.m-sc-snap h4{margin:0;color:#f2eefc;font:900 32px system-ui,sans-serif;animation:m-sc-snap linear both;animation-timeline:view();animation-range:entry 30% cover 50%}
+@keyframes m-sc-snap{from{transform:translateY(30px);opacity:0}}` },
+
+  { name: '가로 진행 바',
+    kw: 'horizontal scroll progress · inline scroll-timeline · timeline-scope',
+    prompt: `옆으로 넘기는 카드 목록 아래에 얇은 진행 바를 두고, 목록을 옆으로 스크롤한 만큼 바가 차게 해줘. 목록에 scroll-timeline: --이름 x, 공통 부모에 timeline-scope를 줘서 형제인 바가 쓰게, JS 없이.`,
+    cat: '스크롤', desc: '가로 목록을 넘긴 만큼 아래 바가 찹니다. (Firefox 미지원)',
+    html: `<div class="m-sc-hbar"><ul tabindex="0" aria-label="카드 목록"><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li></ul><i aria-hidden="true"></i></div>`,
+    css: `.m-sc-hbar{width:250px;timeline-scope:--m-sc-hbar}
+.m-sc-hbar ul{display:flex;gap:10px;margin:0;padding:0 0 10px;overflow-x:auto;list-style:none;scroll-timeline:--m-sc-hbar x;scrollbar-width:none}
+.m-sc-hbar li{display:grid;place-items:center;flex:none;width:90px;height:100px;border-radius:12px;background:linear-gradient(135deg,#3a2f5c,#6c4bd8);color:#fff;font:900 22px system-ui,sans-serif}
+.m-sc-hbar i{display:block;height:4px;border-radius:2px;background:linear-gradient(#8fe3d0,#8fe3d0) 0/0 100% no-repeat,#3a3152;animation:m-sc-hbar linear both;animation-timeline:--m-sc-hbar}
+@keyframes m-sc-hbar{to{background-size:100% 100%}}` },
+
+  { name: '무한 스크롤',
+    kw: 'infinite scroll · sentinel · IntersectionObserver',
+    prompt: `목록 끝에 보이지 않는 감지 요소를 두고, 거기까지 스크롤하면 스피너가 0.6초 돈 뒤 새 항목 다섯 개가 시차를 두고 떠오르며 붙게 해줘. 30개가 되면 "끝" 표시, IntersectionObserver와 바닐라 JS로.`,
+    cat: '스크롤', desc: '끝에 닿으면 저절로 더 불러옵니다. 상자 안을 끝까지 스크롤해 보세요.',
+    html: `<div class="m-sc-inf" tabindex="0" aria-label="스크롤 영역"><ul aria-live="polite"><li>글 1</li><li>글 2</li><li>글 3</li><li>글 4</li><li>글 5</li></ul><b>불러오는 중</b></div>`,
+    css: `.m-sc-inf{position:absolute;inset:0;overflow-y:auto;padding:12px 16px;scrollbar-width:none}
+.m-sc-inf ul{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.m-sc-inf li{padding:14px;border-radius:10px;background:#241d33;color:#f2eefc;font-size:13px;animation:m-sc-inf .4s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--i,0) * .06s)}
+.m-sc-inf b{display:flex;justify-content:center;align-items:center;gap:8px;padding:16px;color:#a59bc2;font-size:12px;font-weight:400}
+.m-sc-inf b::before{content:"";width:14px;height:14px;border:2px solid #3a3152;border-top-color:#8fe3d0;border-radius:50%;animation:m-sc-spin .7s linear infinite}
+.m-sc-inf b.end::before{display:none}
+@keyframes m-sc-inf{from{transform:translateY(10px);opacity:0}}
+@keyframes m-sc-spin{to{transform:rotate(360deg)}}`,
+    js: root => {
+      const box = root.querySelector('.m-sc-inf'), ul = box.querySelector('ul'), s = box.querySelector('b');
+      let busy = false;
+      const io = new IntersectionObserver(([e]) => {
+        if (!e.isIntersecting || busy) return;
+        busy = true;
+        setTimeout(() => {
+          for (let k = 0; k < 5; k++) {
+            const li = Object.assign(document.createElement('li'), { textContent: '글 ' + (ul.children.length + 1) });
+            li.style.setProperty('--i', k);
+            ul.append(li);
+          }
+          busy = false;
+          if (ul.children.length >= 30) { io.disconnect(); s.className = 'end'; s.textContent = '모두 불러왔어요'; }
+        }, 600);
+      }, { root: box });
+      io.observe(s);
+    } },
+
+  { name: '스크롤 방향 표시',
+    kw: 'scroll direction · arrow flip · scroll delta',
+    prompt: `스크롤하는 방향에 따라 모서리의 화살표가 아래(↓)나 위(↑)를 가리키도록 0.3초 동안 뒤집히고, 멈추면 0.8초 뒤 흐려지게 해줘. 방향은 이전 scrollTop과 비교해 바닐라 JS로.`,
+    cat: '스크롤', desc: '스크롤 방향을 화살표가 따라 돕니다. 상자 안을 위아래로 스크롤해 보세요.',
+    html: `<div class="m-sc-dir"><div tabindex="0" aria-label="스크롤 영역"><p>위아래로 스크롤해 보세요</p><p>…</p><p>…</p><p>…</p><p>끝</p></div><i aria-hidden="true">↓</i></div>`,
+    css: `.m-sc-dir{position:absolute;inset:0}
+.m-sc-dir>div{height:100%;overflow-y:auto;padding:16px 20px;color:#cfc6e6;font-size:13px;scrollbar-width:none}
+.m-sc-dir p{margin:0 0 90px}
+.m-sc-dir i{position:absolute;right:14px;top:14px;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:#8fe3d0;color:#14101f;font-style:normal;font-weight:900;opacity:.25;transition:transform .3s cubic-bezier(.3,1.5,.5,1),opacity .3s}
+.m-sc-dir i.on{opacity:1}
+.m-sc-dir i.up{transform:rotate(180deg)}`,
+    js: root => {
+      const box = root.querySelector('.m-sc-dir>div'), arrow = root.querySelector('.m-sc-dir i');
+      let last = 0, t;
+      box.addEventListener('scroll', () => {
+        arrow.classList.toggle('up', box.scrollTop < last);
+        arrow.classList.add('on');
+        last = box.scrollTop;
+        clearTimeout(t);
+        t = setTimeout(() => arrow.classList.remove('on'), 800);
+      });
+    } },
+
+  { name: '속도 기울기',
+    kw: 'scroll velocity skew · inertia feel · lerp',
+    prompt: `빠르게 스크롤할수록 카드들이 스크롤 방향으로 비스듬히(skewY 최대 8도) 기울고, 멈추면 0.3초 동안 똑바로 돌아오게 해줘. 속도는 스크롤 이벤트 사이 이동 거리로, 바닐라 JS로 CSS 변수에.`,
+    cat: '스크롤', desc: '빠르게 스크롤할수록 카드가 휘청입니다. 세게 휠을 굴려 보세요.',
+    html: `<div class="m-sc-skew" tabindex="0" aria-label="스크롤 영역"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>`,
+    css: `.m-sc-skew{position:absolute;inset:0;overflow-y:auto;padding:16px 24px;display:grid;gap:12px;scrollbar-width:none}
+.m-sc-skew i{height:80px;border-radius:12px;background:linear-gradient(135deg,#ff9ecd,#b39cff);transform:skewY(calc(var(--v,0) * 1deg));transition:transform .3s ease-out}`,
+    js: root => {
+      const box = root.querySelector('.m-sc-skew');
+      let last = 0, t;
+      box.addEventListener('scroll', () => {
+        const v = Math.max(-8, Math.min(8, (box.scrollTop - last) * .4));
+        last = box.scrollTop;
+        box.style.setProperty('--v', v);
+        clearTimeout(t);
+        t = setTimeout(() => box.style.setProperty('--v', 0), 80);
+      });
+    } },
+
+  { name: '스크롤 회전',
+    kw: 'rotate on scroll · spinning logo · scroll()',
+    prompt: `가운데 고정된 로고 배지가 스크롤을 내리는 만큼 시계 방향으로 돌고, 올리면 거꾸로 돌게 해줘(끝까지 내리면 두 바퀴). sticky와 scroll() 타임라인으로 JS 없이.`,
+    cat: '스크롤', desc: '스크롤이 곧 회전 손잡이입니다. (Firefox 미지원)',
+    html: `<div class="m-sc-spin2"><div><b>✺</b></div><p></p></div>`,
+    css: `.m-sc-spin2{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none}
+.m-sc-spin2 div{position:sticky;top:0;display:grid;place-items:center;height:100%}
+.m-sc-spin2 b{color:#ffd479;font-size:80px;line-height:1;animation:m-sc-rotate linear both;animation-timeline:scroll()}
+.m-sc-spin2 p{height:500px;margin:0}
+@keyframes m-sc-rotate{to{transform:rotate(720deg)}}` },
+
+  { name: '경로 따라 이동',
+    kw: 'motion path on scroll · offset-distance · scroll()',
+    prompt: `고정된 화면에 구불구불한 길을 흐리게 그려 두고, 스크롤하는 만큼 점이 그 길을 따라 이동하게 해줘. 점은 offset-path로 같은 길을 따르고 offset-distance 0→100%를 scroll() 타임라인에 연결, JS 없이.`,
+    cat: '스크롤', desc: '스크롤한 만큼 점이 길을 따라 갑니다. 여정·배송 단계 표현에. (Firefox 미지원)',
+    html: `<div class="m-sc-path"><div><svg viewBox="0 0 240 160" aria-hidden="true"><path d="M20 140C60 140 40 30 100 30S160 130 220 20"/></svg><i></i></div><p></p></div>`,
+    css: `.m-sc-path{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none}
+.m-sc-path div{position:sticky;top:0;display:grid;place-items:center;height:100%}
+.m-sc-path svg,.m-sc-path i{grid-area:1/1}
+.m-sc-path svg{width:240px;height:160px}
+.m-sc-path path{fill:none;stroke:#3a3152;stroke-width:3;stroke-dasharray:6 6}
+.m-sc-path i{justify-self:center;align-self:center;width:240px;height:160px;position:relative}
+.m-sc-path i::after{content:"";position:absolute;left:0;top:0;width:16px;height:16px;border-radius:50%;background:#8fe3d0;box-shadow:0 0 10px #8fe3d0;offset-path:path("M20 140C60 140 40 30 100 30S160 130 220 20");animation:m-sc-path linear both;animation-timeline:scroll(nearest)}
+.m-sc-path p{height:500px;margin:0}
+@keyframes m-sc-path{from{offset-distance:0%}to{offset-distance:100%}}` },
+
+  { name: '커튼 리빌',
+    kw: 'curtain reveal · split doors · view()',
+    prompt: `사진 위를 덮은 두 장의 커튼이 사진이 화면에 들어오는 동안 가운데에서 좌우로 갈라지며 열리게 해줘. 커튼은 ::before/::after, view() 타임라인(entry 30% ~ cover 50%)으로 JS 없이.`,
+    cat: '스크롤', desc: '사진 위 커튼이 양쪽으로 걷힙니다. (Firefox 미지원)',
+    html: `<div class="m-sc-curtain"><p>↓ 스크롤해 보세요</p><div></div><p></p></div>`,
+    css: `.m-sc-curtain{position:absolute;inset:0;overflow-y:auto;padding:20px;scrollbar-width:none}
+.m-sc-curtain p{margin:0 0 120px;color:#a59bc2;font-size:13px}
+.m-sc-curtain div{position:relative;height:140px;margin-bottom:120px;overflow:hidden;border-radius:12px;background:radial-gradient(circle at 70% 30%,#ffd479 0 10%,transparent 11%),linear-gradient(transparent 62%,#2a6b5f 62%),linear-gradient(160deg,#ff9ecd,#7cc4ff)}
+.m-sc-curtain div::before,.m-sc-curtain div::after{content:"";position:absolute;top:0;bottom:0;width:50%;background:repeating-linear-gradient(90deg,#6b1d3a 0 10px,#862648 10px 20px);animation:m-sc-curl linear both;animation-timeline:view();animation-range:entry 30% cover 50%}
+.m-sc-curtain div::before{left:0}
+.m-sc-curtain div::after{right:0;animation-name:m-sc-curr}
+@keyframes m-sc-curl{to{transform:translateX(-100%)}}
+@keyframes m-sc-curr{to{transform:translateX(100%)}}` },
+
+  { name: '제목 밑줄',
+    kw: 'heading underline draw · section title · view()',
+    prompt: `섹션 제목이 화면에 들어오면 아래 굵은 민트 밑줄이 왼쪽부터 그어지게 해줘. ::after의 scaleX 0→1을 view() 타임라인(entry 50% ~ cover 35%)에, JS 없이.`,
+    cat: '스크롤', desc: '섹션 제목에 밑줄이 그어집니다. (Firefox 미지원)',
+    html: `<div class="m-sc-uline"><p>↓ 스크롤해 보세요</p><h4>우리가 하는 일</h4><p>…</p><h4>함께한 팀</h4><p></p></div>`,
+    css: `.m-sc-uline{position:absolute;inset:0;overflow-y:auto;padding:20px;scrollbar-width:none}
+.m-sc-uline p{margin:0 0 110px;color:#a59bc2;font-size:13px}
+.m-sc-uline h4{position:relative;display:inline-block;margin:0 0 110px;color:#f2eefc;font:900 24px system-ui,sans-serif}
+.m-sc-uline h4::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:5px;border-radius:3px;background:#8fe3d0;transform-origin:left;animation:m-sc-uline linear both;animation-timeline:view();animation-range:entry 50% cover 35%}
+@keyframes m-sc-uline{from{transform:scaleX(0)}}` },
+
+  { name: '스크롤 힌트',
+    kw: 'scroll indicator · mouse wheel icon · fade on scroll',
+    prompt: `히어로 아래에 마우스 모양 아이콘을 두고 안의 휠 점이 1.6초마다 아래로 굴러 내려가게 해서 스크롤을 유도하고, 사용자가 60px만 스크롤하면 아이콘이 사라지게 해줘. 휠은 시간 애니메이션, 사라짐은 scroll() 타임라인(0~60px)으로 JS 없이.`,
+    cat: '스크롤', desc: '"아래로 내려 보세요" 아이콘. 스크롤을 시작하면 사라집니다.',
+    html: `<div class="m-sc-hint"><div class="hero"><b>Welcome</b><i aria-label="아래로 스크롤"></i></div><p>본문</p></div>`,
+    css: `.m-sc-hint{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none}
+.m-sc-hint .hero{position:relative;display:grid;place-items:center;height:100%;color:#f2eefc;font:900 26px system-ui,sans-serif}
+.m-sc-hint i{position:absolute;left:50%;bottom:14px;width:22px;height:34px;margin-left:-11px;border:2px solid #a59bc2;border-radius:12px;animation:m-sc-hintout linear both;animation-timeline:scroll();animation-range:0 60px}
+.m-sc-hint i::after{content:"";position:absolute;left:50%;top:6px;width:4px;height:7px;margin-left:-2px;border-radius:2px;background:#8fe3d0;animation:m-sc-wheel 1.6s ease-in-out infinite}
+.m-sc-hint p{height:300px;margin:0;padding:20px;color:#a59bc2}
+@keyframes m-sc-hintout{to{opacity:0;transform:translateY(10px)}}
+@keyframes m-sc-wheel{0%{transform:none;opacity:1}70%{transform:translateY(10px);opacity:0}100%{opacity:0}}` },
+
+  { name: '스크롤 그림자',
+    kw: 'scroll shadows · background-attachment local · overflow cue',
+    prompt: `스크롤 상자 위아래에 "내용이 더 있다"는 그림자를 넣어줘. 맨 위에선 위 그림자가 없고, 맨 아래에선 아래 그림자가 없게. background-attachment: local과 scroll을 섞는 그라디언트 트릭으로 JS 없이(모든 브라우저).`,
+    cat: '스크롤', desc: '더 내릴 게 있을 때만 가장자리에 그림자가 생깁니다. 배경 트릭이라 모든 브라우저에서 동작.',
+    html: `<ul class="m-sc-shadow" tabindex="0" aria-label="목록"><li>사과</li><li>바나나</li><li>체리</li><li>포도</li><li>키위</li><li>레몬</li><li>망고</li><li>복숭아</li><li>수박</li><li>자두</li></ul>`,
+    css: `.m-sc-shadow{width:200px;height:160px;margin:0;padding:0;overflow-y:auto;list-style:none;border-radius:12px;background:linear-gradient(#241d33 30%,transparent) top/100% 40px no-repeat local,linear-gradient(transparent,#241d33 70%) bottom/100% 40px no-repeat local,radial-gradient(farthest-side at 50% 0,rgba(0,0,0,.7),transparent) top/100% 14px no-repeat scroll,radial-gradient(farthest-side at 50% 100%,rgba(0,0,0,.7),transparent) bottom/100% 14px no-repeat scroll,#241d33;scrollbar-width:none}
+.m-sc-shadow li{padding:10px 16px;border-bottom:1px solid #2e2642;color:#f2eefc;font-size:13px}` },
+
+  { name: '프레임 넘김',
+    kw: 'scroll flipbook · steps animation · shape frames',
+    prompt: `스크롤할 때마다 가운데 도형이 원 → 사각형 → 삼각형 → 별 → 하트처럼 프레임이 뚝뚝 바뀌는 플립북이 되게 해줘. clip-path 키프레임을 steps(1)로 끊고 scroll() 타임라인에 연결, JS 없이.`,
+    cat: '스크롤', desc: '스크롤이 플립북을 넘깁니다. 이미지 시퀀스 대신 도형으로. (Firefox 미지원)',
+    html: `<div class="m-sc-flip"><div><i></i></div><p></p></div>`,
+    css: `.m-sc-flip{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none}
+.m-sc-flip div{position:sticky;top:0;display:grid;place-items:center;height:100%}
+.m-sc-flip i{width:90px;height:90px;background:linear-gradient(135deg,#ffd479,#ff9ecd);animation:m-sc-flip steps(1) both;animation-timeline:scroll()}
+.m-sc-flip p{height:500px;margin:0}
+@keyframes m-sc-flip{0%{clip-path:circle(50%)}20%{clip-path:inset(5% round 10px)}40%{clip-path:polygon(50% 0,100% 100%,0 100%)}60%{clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}80%,100%{clip-path:polygon(50% 25%,65% 5%,95% 10%,100% 40%,50% 95%,0 40%,5% 10%,35% 5%)}}` },
+
+  { name: '3D 큐브',
+    kw: 'scroll-driven 3D cube · rotateX rotateY · preserve-3d',
+    prompt: `여섯 면에 색을 칠한 정육면체가 화면 가운데 고정된 채, 스크롤하는 만큼 X축과 Y축으로 함께 돌아 여러 면을 보여 주게 해줘. transform-style: preserve-3d, scroll() 타임라인으로 JS 없이.`,
+    cat: '스크롤', desc: '스크롤에 맞춰 큐브가 굴러갑니다. (Firefox 미지원)',
+    html: `<div class="m-sc-cube"><div><b><i style="--t:rotateY(0)">1</i><i style="--t:rotateY(90deg)">2</i><i style="--t:rotateY(180deg)">3</i><i style="--t:rotateY(-90deg)">4</i><i style="--t:rotateX(90deg)">5</i><i style="--t:rotateX(-90deg)">6</i></b></div><p></p></div>`,
+    css: `.m-sc-cube{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none}
+.m-sc-cube div{position:sticky;top:0;display:grid;place-items:center;height:100%;perspective:500px}
+.m-sc-cube b{position:relative;width:70px;height:70px;transform-style:preserve-3d;animation:m-sc-cube linear both;animation-timeline:scroll()}
+.m-sc-cube i{position:absolute;inset:0;display:grid;place-items:center;border-radius:8px;color:#14101f;font:900 24px system-ui,sans-serif;font-style:normal;opacity:.92;transform:var(--t) translateZ(35px)}
+.m-sc-cube i:nth-child(1){background:#8fe3d0}
+.m-sc-cube i:nth-child(2){background:#b39cff}
+.m-sc-cube i:nth-child(3){background:#ff9ecd}
+.m-sc-cube i:nth-child(4){background:#ffd479}
+.m-sc-cube i:nth-child(5){background:#7cc4ff}
+.m-sc-cube i:nth-child(6){background:#ff7a7a}
+.m-sc-cube p{height:500px;margin:0}
+@keyframes m-sc-cube{from{transform:rotateX(-20deg) rotateY(-30deg)}to{transform:rotateX(340deg) rotateY(330deg)}}` },
+
+  { name: '부채 펼침',
+    kw: 'fan out on scroll · card spread · scroll()',
+    prompt: `화면 가운데 고정된 카드 세 장이 겹쳐 있다가, 스크롤하는 만큼 부채처럼 -20도·0도·20도로 펼쳐지며 벌어지게 해줘. 거꾸로 올리면 다시 접히게, sticky와 scroll() 타임라인으로 JS 없이.`,
+    cat: '스크롤', desc: '스크롤하면 카드가 손패처럼 펼쳐집니다. (Firefox 미지원)',
+    html: `<div class="m-sc-fan"><div><i style="--r:-20deg;--x:-60px;--c:#ff9ecd"></i><i style="--r:20deg;--x:60px;--c:#ffd479"></i><i style="--r:0deg;--x:0px;--c:#8fe3d0"></i></div><p></p></div>`,
+    css: `.m-sc-fan{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none}
+.m-sc-fan div{position:sticky;top:0;display:grid;place-items:center;height:100%}
+.m-sc-fan i{grid-area:1/1;width:70px;height:100px;border-radius:10px;background:var(--c);box-shadow:0 6px 14px rgba(0,0,0,.4);transform-origin:50% 120%;animation:m-sc-fan linear both;animation-timeline:scroll()}
+.m-sc-fan p{height:400px;margin:0}
+@keyframes m-sc-fan{to{transform:translateX(var(--x)) rotate(var(--r))}}` },
+
+  { name: '가운데 확대 단어',
+    kw: 'center focus list · scale at center · view() cover',
+    prompt: `세로로 늘어선 단어 목록에서 화면 가운데를 지나는 단어만 1.6배 커지며 민트색이 되고, 위아래로 멀어질수록 작고 흐려지게 해줘. 단어마다 view() 타임라인 전체 구간에 0%·50%·100% 키프레임으로, JS 없이.`,
+    cat: '스크롤', desc: '가운데 온 단어만 크게 강조됩니다. iOS 피커·가사 화면 느낌. (Firefox 미지원)',
+    html: `<div class="m-sc-focus"><b>기획</b><b>리서치</b><b>디자인</b><b>프로토타입</b><b>개발</b><b>테스트</b><b>출시</b><b>회고</b></div>`,
+    css: `.m-sc-focus{position:absolute;inset:0;overflow-y:auto;padding:90px 0;display:grid;justify-items:center;gap:14px;scrollbar-width:none}
+.m-sc-focus b{color:#f2eefc;font:800 20px system-ui,sans-serif;animation:m-sc-focus linear both;animation-timeline:view()}
+@keyframes m-sc-focus{0%,100%{transform:scale(.8);opacity:.25}50%{transform:scale(1.6);opacity:1;color:#8fe3d0}}` },
+
+  { name: '반전 헤더',
+    kw: 'mix-blend-mode difference · adaptive header · light dark sections',
+    prompt: `흰 섹션과 검은 섹션이 번갈아 나오는 페이지에서, 위에 고정된 로고 글자가 아래 섹션 색에 따라 자동으로 검정·흰색으로 반전되게 해줘. mix-blend-mode: difference로 JS 없이(모든 브라우저).`,
+    cat: '스크롤', desc: '고정 헤더가 아래 배경에 맞춰 색이 반전됩니다. 모든 브라우저.',
+    html: `<div class="m-sc-invert"><header>MOTION SHELF</header><section></section><section></section><section></section><section></section></div>`,
+    css: `.m-sc-invert{position:absolute;inset:0;overflow-y:auto;isolation:isolate;background:#fff;scrollbar-width:none}
+.m-sc-invert header{position:sticky;top:0;z-index:1;padding:14px 18px;color:#fff;font:900 20px system-ui,sans-serif;letter-spacing:.06em;mix-blend-mode:difference}
+.m-sc-invert section{height:120px;background:#fff}
+.m-sc-invert section:nth-of-type(odd){background:#14101f}` },
+
+  { name: '스티키 섹션 제목',
+    kw: 'sticky headers · section titles push · contacts list',
+    prompt: `연락처 목록처럼 각 묶음의 제목(ㄱ, ㄴ, ㄷ…)이 스크롤하는 동안 위에 붙어 있다가 다음 묶음 제목이 올라오면 밀려나게 해줘. 제목마다 position: sticky; top: 0, 순수 CSS로(모든 브라우저).`,
+    cat: '스크롤', desc: '묶음 제목이 위에 붙어 있다 다음 제목에 밀려납니다. 모든 브라우저.',
+    html: `<div class="m-sc-sticky"><section><h4>ㄱ</h4><p>가람</p><p>건우</p><p>규리</p></section><section><h4>ㄴ</h4><p>나래</p><p>누리</p></section><section><h4>ㄷ</h4><p>다온</p><p>도윤</p><p>동하</p></section></div>`,
+    css: `.m-sc-sticky{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none}
+.m-sc-sticky h4{position:sticky;top:0;margin:0;padding:6px 16px;background:#3a3152;color:#8fe3d0;font:800 13px system-ui,sans-serif}
+.m-sc-sticky p{margin:0;padding:14px 16px;border-bottom:1px solid #2e2642;color:#f2eefc;font-size:13px}` },
+
+  { name: '지연 로딩',
+    kw: 'lazy load images · IntersectionObserver · blur-up fade',
+    prompt: `사진들이 화면 근처(100px 전)에 오면 그때 불러오기 시작해, 회색 자리표시에서 흐린 사진이 나타났다가 0.6초 동안 또렷해지게 해줘. IntersectionObserver의 rootMargin으로, 불러오기는 0.4초 뒤에 끝난 것으로 흉내 내서 바닐라 JS로.`,
+    cat: '스크롤', desc: '보일 때가 돼야 사진을 불러옵니다. 실제로는 img의 src를 그때 넣으세요.',
+    html: `<div class="m-sc-lazy" tabindex="0" aria-label="스크롤 영역"><i data-c="#ff9ecd"></i><i data-c="#8fe3d0"></i><i data-c="#7cc4ff"></i><i data-c="#ffd479"></i><i data-c="#b39cff"></i></div>`,
+    css: `.m-sc-lazy{position:absolute;inset:0;overflow-y:auto;padding:16px;display:grid;gap:14px;scrollbar-width:none}
+.m-sc-lazy i{position:relative;height:110px;overflow:hidden;border-radius:12px;background:#2e2642}
+.m-sc-lazy i::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 70% 30%,#fff8 0 9%,transparent 10%),linear-gradient(135deg,var(--c),#3b2f5c);opacity:0;filter:blur(14px);transform:scale(1.1);transition:opacity .3s,filter .6s,transform .6s}
+.m-sc-lazy i.loaded::after{opacity:1;filter:none;transform:none}`,
+    js: root => {
+      const box = root.querySelector('.m-sc-lazy');
+      const io = new IntersectionObserver(es => es.forEach(e => {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        e.target.style.setProperty('--c', e.target.dataset.c);
+        setTimeout(() => e.target.classList.add('loaded'), 400);
+      }), { root: box, rootMargin: '0px 0px 100px 0px' });
+      box.querySelectorAll('i').forEach(i => io.observe(i));
+    } },
+
+  { name: '끝까지 읽음',
+    kw: 'end of article · completion badge · view() entry',
+    prompt: `글 맨 끝의 "다 읽었어요 ✓" 배지가, 글 끝이 화면에 들어오는 순간 작게 시작해 톡 튀며 커지게 해줘. 거꾸로 올리면 다시 작아지게, view() 타임라인(entry 0% ~ entry 100%)으로 JS 없이.`,
+    cat: '스크롤', desc: '글 끝에 닿으면 완료 배지가 튀어나옵니다. (Firefox 미지원)',
+    html: `<div class="m-sc-done"><p>↓ 끝까지 스크롤해 보세요</p><p>…</p><p>…</p><b>다 읽었어요 ✓</b></div>`,
+    css: `.m-sc-done{position:absolute;inset:0;overflow-y:auto;padding:20px 20px 30px;display:grid;justify-items:center;color:#a59bc2;font-size:13px;scrollbar-width:none}
+.m-sc-done p{margin:0 0 110px}
+.m-sc-done b{padding:10px 18px;border-radius:999px;background:#8fe3d0;color:#14101f;animation:m-sc-done linear both;animation-timeline:view();animation-range:entry 0% entry 100%}
+@keyframes m-sc-done{0%{transform:scale(0)}80%{transform:scale(1.15)}100%{transform:none}}` },
+
+  { name: '제목 패럴랙스',
+    kw: 'hero title parallax · slower text · fade out',
+    prompt: `히어로 배경은 그대로 스크롤되는데 가운데 제목은 절반 속도로 내려가며(0~200px 동안 100px 아래로) 흐려지게 해서 깊이감을 줘. scroll() 타임라인과 animation-range로 JS 없이.`,
+    cat: '스크롤', desc: '제목이 배경보다 느리게 움직이며 사라집니다. (Firefox 미지원)',
+    html: `<div class="m-sc-title"><div class="hero"><h4>Deep<br>Ocean</h4></div><p>본문</p></div>`,
+    css: `.m-sc-title{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none}
+.m-sc-title .hero{display:grid;place-items:center;height:220px;overflow:hidden;background:linear-gradient(#1b6d8a,#0d2c4a)}
+.m-sc-title h4{margin:0;color:#fff;font:900 34px/1 system-ui,sans-serif;text-align:center;animation:m-sc-title linear both;animation-timeline:scroll();animation-range:0 200px}
+.m-sc-title p{height:300px;margin:0;padding:20px;color:#a59bc2}
+@keyframes m-sc-title{to{transform:translateY(100px);opacity:0}}` },
+
+  { name: '휠 가로 변환',
+    kw: 'wheel to horizontal scroll · deltaY · horizontal list',
+    prompt: `가로로 긴 카드 줄 위에서 마우스 휠을 위아래로 굴리면 줄이 옆으로 스크롤되게 해줘. 줄의 끝에 닿으면 원래대로 페이지가 스크롤되게 막지 않고, 부드럽게, 바닐라 JS wheel 이벤트로.`,
+    cat: '스크롤', desc: '휠만 있는 마우스로도 가로 목록을 넘길 수 있습니다. 목록 위에서 휠을 굴려 보세요.',
+    html: `<ul class="m-sc-wheel" tabindex="0" aria-label="가로 목록"><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li></ul>`,
+    css: `.m-sc-wheel{display:flex;gap:10px;width:250px;margin:0;padding:0 0 6px;overflow-x:auto;list-style:none;scroll-behavior:smooth;scrollbar-width:thin}
+.m-sc-wheel li{display:grid;place-items:center;flex:none;width:90px;height:110px;border-radius:12px;background:linear-gradient(135deg,#2a8f7a,#8fe3d0);color:#14101f;font:900 22px system-ui,sans-serif}`,
+    js: root => {
+      const ul = root.querySelector('.m-sc-wheel');
+      ul.addEventListener('wheel', e => {
+        if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+        const max = ul.scrollWidth - ul.clientWidth;
+        if ((e.deltaY < 0 && ul.scrollLeft <= 0) || (e.deltaY > 0 && ul.scrollLeft >= max - 1)) return; // 끝이면 페이지 스크롤로
+        e.preventDefault();
+        ul.scrollLeft += e.deltaY;
+      }, { passive: false });
+    } },
+
+  { name: '타임라인 채우기',
+    kw: 'scroll timeline fill · progress line · milestone dots',
+    prompt: `세로 연혁에서 왼쪽 선이 스크롤한 만큼 위에서부터 민트색으로 채워지고, 각 연도 점은 화면 가운데를 지날 때 켜지게 해줘. 선은 scroll() 타임라인, 점은 view() 타임라인(cover 40%~50%)으로 JS 없이.`,
+    cat: '스크롤', desc: '읽은 만큼 연혁 선이 채워지고 지나간 해가 켜집니다. (Firefox 미지원)',
+    html: `<div class="m-sc-tl"><div><i></i><p>2021 · 첫 시작</p><p>2022 · 첫 제품</p><p>2023 · 1만 명</p><p>2024 · 해외 진출</p><p>2025 · 100만 명</p></div></div>`,
+    css: `.m-sc-tl{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none}
+.m-sc-tl>div{position:relative;padding:80px 20px 120px 44px}
+.m-sc-tl i{position:absolute;left:24px;top:0;bottom:0;width:3px;background:linear-gradient(#8fe3d0,#8fe3d0) 0 0/100% 0 no-repeat,#3a3152;animation:m-sc-tlfill linear both;animation-timeline:scroll()}
+.m-sc-tl p{position:relative;margin:0 0 70px;color:#f2eefc;font-size:14px}
+.m-sc-tl p::before{content:"";position:absolute;left:-26px;top:3px;width:12px;height:12px;border-radius:50%;background:#3a3152;animation:m-sc-tldot linear both;animation-timeline:view();animation-range:cover 40% cover 50%}
+@keyframes m-sc-tlfill{to{background-size:100% 100%}}
+@keyframes m-sc-tldot{to{background:#8fe3d0;box-shadow:0 0 8px #8fe3d0}}` },
+
+  { name: '세로 스냅 카드',
+    kw: 'vertical snap carousel · center scale · view()',
+    prompt: `세로로 쌓인 카드가 스크롤할 때 한 장씩 가운데에 착 맞춰지고(scroll-snap: center), 가운데 카드만 크고 또렷하며 위아래 카드는 0.85배로 작고 흐리게 해줘. 크기는 view() 타임라인 0%·50%·100% 키프레임으로 JS 없이.`,
+    cat: '스크롤', desc: '가운데 카드만 커지는 세로 스냅 목록. 스냅은 모든 브라우저, 크기 변화는 Firefox 미지원.',
+    html: `<div class="m-sc-vsnap"><i style="--c:#ff9ecd"></i><i style="--c:#ffd479"></i><i style="--c:#8fe3d0"></i><i style="--c:#7cc4ff"></i><i style="--c:#b39cff"></i></div>`,
+    css: `.m-sc-vsnap{position:absolute;inset:0;overflow-y:auto;padding:55px 40px;display:grid;gap:12px;scroll-snap-type:y mandatory;scrollbar-width:none}
+.m-sc-vsnap i{height:90px;border-radius:16px;background:var(--c);scroll-snap-align:center;animation:m-sc-vsnap linear both;animation-timeline:view()}
+@keyframes m-sc-vsnap{0%,100%{transform:scale(.85);opacity:.4}50%{transform:none;opacity:1}}` },
+
+  { name: '떠오르는 CTA',
+    kw: 'sticky CTA on scroll · appear after threshold · scroll() range',
+    prompt: `글을 30%쯤 읽은 시점부터 아래에서 "무료로 시작하기" 버튼 띠가 미끄러져 올라와 붙어 있게 해줘. 0~30%에선 숨어 있고 30~40% 구간에서 올라오도록 scroll() 타임라인의 animation-range: 30% 40%로 JS 없이.`,
+    cat: '스크롤', desc: '어느 정도 읽은 사람에게만 행동 버튼을 보여 줍니다. (Firefox 미지원)',
+    html: `<div class="m-sc-cta"><p>↓ 스크롤해 보세요</p><p>…</p><p>…</p><p>…</p><p>끝</p><div><button>무료로 시작하기</button></div></div>`,
+    css: `.m-sc-cta{position:absolute;inset:0;overflow-y:auto;padding:16px 20px 0;color:#a59bc2;font-size:13px;scrollbar-width:none}
+.m-sc-cta p{margin:0 0 90px}
+.m-sc-cta div{position:sticky;bottom:0;margin:0 -20px;padding:10px 20px;background:rgba(20,16,31,.9);animation:m-sc-cta linear both;animation-timeline:scroll();animation-range:30% 40%}
+.m-sc-cta button{width:100%;padding:10px;border:0;border-radius:10px;background:#8fe3d0;color:#14101f;font-weight:800;cursor:pointer}
+@keyframes m-sc-cta{from{transform:translateY(110%)}}` },
+
   // ── 이징 ──
   { name: '이징 비교',
     kw: 'easing · cubic-bezier · ease-out',
