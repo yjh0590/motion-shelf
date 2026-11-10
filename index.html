@@ -840,6 +840,470 @@ const D = [
 .m-bar::after{content:"";display:block;width:40%;height:100%;border-radius:3px;background:#8fe3d0;animation:m-slide 1.2s ease-in-out infinite}
 @keyframes m-slide{from{transform:translateX(-100%)}to{transform:translateX(250%)}}` },
 
+  { name: '듀얼 링 스피너',
+    kw: 'dual ring spinner · border spinner · rotate',
+    prompt: `원형 테두리의 위쪽은 민트, 아래쪽은 보라로만 칠하고 나머지는 투명하게 해서 두 호가 마주 보며 1초에 한 바퀴 도는 스피너를 만들어줘. 등속, 순수 CSS로.`,
+    cat: '로딩', desc: '두 색 호가 마주 보며 돕니다. 테두리 색만으로 만듭니다.',
+    html: `<div class="m-ld-dual" role="status" aria-label="불러오는 중"></div>`,
+    css: `.m-ld-dual{width:48px;height:48px;border:4px solid transparent;border-top-color:#8fe3d0;border-bottom-color:#b39cff;border-radius:50%;animation:m-ld-dual 1s linear infinite}
+@keyframes m-ld-dual{to{transform:rotate(360deg)}}` },
+
+  { name: '그라디언트 링',
+    kw: 'conic gradient spinner · mask ring · tail fade',
+    prompt: `꼬리로 갈수록 투명해지는 민트색 그라디언트 고리가 0.9초에 한 바퀴 도는 스피너를 만들어줘. conic-gradient와 mask로 가운데를 뚫고, 순수 CSS로.`,
+    cat: '로딩', desc: '꼬리가 흐려지는 고리가 돕니다. conic-gradient + mask.',
+    html: `<div class="m-ld-cring" role="status" aria-label="불러오는 중"></div>`,
+    css: `.m-ld-cring{width:52px;height:52px;border-radius:50%;background:conic-gradient(transparent 10%,#8fe3d0);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 5px));mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 5px));animation:m-ld-cring .9s linear infinite}
+@keyframes m-ld-cring{to{transform:rotate(360deg)}}` },
+
+  { name: '막대 스피너',
+    kw: 'iOS spinner · activity indicator · radial bars',
+    prompt: `iOS처럼 짧은 막대 12개를 시계 방향으로 둘러 세우고, 막대가 차례로 진해졌다 흐려지며 빙글 도는 것처럼 보이게 해줘. 한 바퀴 1.2초, 순수 CSS로.`,
+    cat: '로딩', desc: '애플 기기의 그 막대 스피너. 막대 12개가 차례로 밝아집니다.',
+    html: `<div class="m-ld-ios" role="status" aria-label="불러오는 중"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i><i style="--i:5"></i><i style="--i:6"></i><i style="--i:7"></i><i style="--i:8"></i><i style="--i:9"></i><i style="--i:10"></i><i style="--i:11"></i></div>`,
+    css: `.m-ld-ios{position:relative;width:48px;height:48px}
+.m-ld-ios i{position:absolute;left:22px;top:0;width:4px;height:13px;border-radius:2px;background:#f2eefc;transform-origin:2px 24px;transform:rotate(calc(var(--i) * 30deg));animation:m-ld-ios 1.2s linear infinite;animation-delay:calc(var(--i) * .1s - 1.2s)}
+@keyframes m-ld-ios{from{opacity:1}to{opacity:.15}}` },
+
+  { name: '점 원형 스피너',
+    kw: 'dot ring spinner · circular dots · stagger scale',
+    prompt: `점 8개를 원형으로 놓고, 점이 하나씩 차례로 커졌다 작아지며 원을 따라 도는 것처럼 보이게 해줘. 한 바퀴 1초, 순수 CSS로.`,
+    cat: '로딩', desc: '원을 따라 점이 차례로 부풀어 오릅니다.',
+    html: `<div class="m-ld-ring8" role="status" aria-label="불러오는 중"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i><i style="--i:5"></i><i style="--i:6"></i><i style="--i:7"></i></div>`,
+    css: `.m-ld-ring8{position:relative;width:52px;height:52px}
+.m-ld-ring8 i{position:absolute;inset:0;transform:rotate(calc(var(--i) * 45deg))}
+.m-ld-ring8 i::before{content:"";position:absolute;left:50%;top:0;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;background:#b39cff;animation:m-ld-ring8 1s ease-in-out infinite;animation-delay:calc(var(--i) * .125s - 1s)}
+@keyframes m-ld-ring8{0%,100%{transform:scale(.3);opacity:.3}50%{transform:scale(1);opacity:1}}` },
+
+  { name: '펄스 원',
+    kw: 'pulse loader · scale fade · ping',
+    prompt: `민트색 원이 점에서 시작해 커지면서 투명해져 사라지는 걸 1.2초마다 반복하는 로더를 만들어줘. 감속 이징, 순수 CSS로.`,
+    cat: '로딩', desc: '원이 퍼지며 사라지길 반복합니다. 가장 단순한 로더.',
+    html: `<div class="m-ld-pulse" role="status" aria-label="불러오는 중"></div>`,
+    css: `.m-ld-pulse{width:52px;height:52px;border-radius:50%;background:#8fe3d0;animation:m-ld-pulse 1.2s ease-out infinite}
+@keyframes m-ld-pulse{from{transform:scale(0);opacity:1}to{transform:scale(1);opacity:0}}` },
+
+  { name: '이중 바운스',
+    kw: 'double bounce · breathing · alternating scale',
+    prompt: `반투명한 분홍 원 두 개를 같은 자리에 겹쳐 두고, 하나가 커질 때 다른 하나는 작아지며 숨 쉬듯 번갈아 움직이게 해줘. 2초 주기, 순수 CSS로.`,
+    cat: '로딩', desc: '겹친 두 원이 번갈아 부풀며 숨 쉬듯 움직입니다.',
+    html: `<div class="m-ld-double" role="status" aria-label="불러오는 중"><i></i><i></i></div>`,
+    css: `.m-ld-double{position:relative;width:52px;height:52px}
+.m-ld-double i{position:absolute;inset:0;border-radius:50%;background:#ff9ecd;opacity:.6;animation:m-ld-double 2s ease-in-out infinite}
+.m-ld-double i+i{animation-delay:-1s}
+@keyframes m-ld-double{0%,100%{transform:scale(0)}50%{transform:scale(1)}}` },
+
+  { name: '레이더 스윕',
+    kw: 'radar sweep · conic gradient · scanning',
+    prompt: `동심원 눈금이 있는 원 안에서 레이더 빛줄기가 2초에 한 바퀴씩 쓸고 지나가게 해줘. 빛줄기는 앞쪽만 밝고 뒤로 갈수록 흐려지게, 순수 CSS로.`,
+    cat: '로딩', desc: '레이더처럼 빛이 원을 쓸고 돕니다. 검색·탐색 중 표시에.',
+    html: `<div class="m-ld-radar" role="status" aria-label="찾는 중"></div>`,
+    css: `.m-ld-radar{position:relative;width:80px;height:80px;overflow:hidden;border:1px solid rgba(143,227,208,.4);border-radius:50%;background:repeating-radial-gradient(transparent 0 12px,rgba(143,227,208,.18) 13px 14px)}
+.m-ld-radar::after{content:"";position:absolute;inset:0;background:conic-gradient(rgba(143,227,208,.65),transparent 25%);animation:m-ld-radar 2s linear infinite}
+@keyframes m-ld-radar{to{transform:rotate(360deg)}}` },
+
+  { name: '궤도',
+    kw: 'orbit loader · planet · rotating container',
+    prompt: `가운데 노란 해가 있고, 점선 궤도를 따라 파란 행성이 1.6초에 한 바퀴 도는 로더를 만들어줘. 등속, 순수 CSS로.`,
+    cat: '로딩', desc: '행성이 점선 궤도를 따라 돕니다.',
+    html: `<div class="m-ld-orbit" role="status" aria-label="불러오는 중"></div>`,
+    css: `.m-ld-orbit{position:relative;width:72px;height:72px;border:1px dashed #4a3f66;border-radius:50%;animation:m-ld-orbit 1.6s linear infinite}
+.m-ld-orbit::before{content:"";position:absolute;inset:26px;border-radius:50%;background:#ffd479;box-shadow:0 0 14px rgba(255,212,121,.6)}
+.m-ld-orbit::after{content:"";position:absolute;top:-6px;left:50%;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#7cc4ff}
+@keyframes m-ld-orbit{to{transform:rotate(360deg)}}` },
+
+  { name: '원자',
+    kw: 'atom loader · 3D orbit rings · rotateX',
+    prompt: `원자 모형처럼 60도씩 기울어진 고리 세 개가 각자 3D로 회전하고 가운데에 핵이 있는 로더를 만들어줘. 고리마다 색을 다르게, 1.2초 주기, 순수 CSS로.`,
+    cat: '로딩', desc: '세 궤도 고리가 입체로 회전하는 원자 모형.',
+    html: `<div class="m-ld-atom" role="status" aria-label="불러오는 중"><i style="--r:0deg;--c:#8fe3d0"></i><i style="--r:60deg;--c:#b39cff"></i><i style="--r:120deg;--c:#ff9ecd"></i></div>`,
+    css: `.m-ld-atom{position:relative;width:72px;height:72px}
+.m-ld-atom::after{content:"";position:absolute;inset:31px;border-radius:50%;background:#f2eefc}
+.m-ld-atom i{position:absolute;inset:0;border-radius:50%;border-top:3px solid var(--c);animation:m-ld-atom 1.2s linear infinite}
+@keyframes m-ld-atom{from{transform:rotateZ(var(--r)) rotateX(70deg) rotateZ(0)}to{transform:rotateZ(var(--r)) rotateX(70deg) rotateZ(360deg)}}` },
+
+  { name: '이퀄라이저',
+    kw: 'equalizer bars · audio loader · scaleY stagger',
+    prompt: `세로 막대 5개가 음악 이퀄라이저처럼 시차를 두고 늘었다 줄었다 하는 로더를 만들어줘. 1초 주기, 막대마다 0.15초 시차, 순수 CSS로.`,
+    cat: '로딩', desc: '막대가 이퀄라이저처럼 오르내립니다. 음악·음성 처리 중에.',
+    html: `<div class="m-ld-eq" role="status" aria-label="재생 중"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i></div>`,
+    css: `.m-ld-eq{display:flex;gap:5px;align-items:center;height:44px}
+.m-ld-eq i{width:6px;height:100%;border-radius:3px;background:#b39cff;animation:m-ld-eq 1s ease-in-out infinite;animation-delay:calc(var(--i) * -.15s)}
+@keyframes m-ld-eq{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}` },
+
+  { name: '물결 점',
+    kw: 'wave dots · sine wave · stagger translateY',
+    prompt: `점 5개가 물결처럼 차례로 14px 튀어 올랐다 내려오게 해줘. 1.2초 주기, 점마다 0.1초 시차, 색은 민트에서 파랑으로 점점 바뀌게, 순수 CSS로.`,
+    cat: '로딩', desc: '점들이 물결을 그리며 차례로 튀어 오릅니다.',
+    html: `<div class="m-ld-wave" role="status" aria-label="불러오는 중"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i></div>`,
+    css: `.m-ld-wave{display:flex;gap:8px}
+.m-ld-wave i{width:10px;height:10px;border-radius:50%;background:color-mix(in srgb,#8fe3d0,#7cc4ff calc(var(--i) * 25%));animation:m-ld-wave 1.2s ease-in-out infinite;animation-delay:calc(var(--i) * .1s)}
+@keyframes m-ld-wave{0%,60%,100%{transform:none}30%{transform:translateY(-14px)}}` },
+
+  { name: '튀는 공',
+    kw: 'bouncing ball · squash and stretch · gravity',
+    prompt: `노란 공이 바닥에 튀는 로더를 만들어줘. 떨어질 땐 점점 빨라지고 올라갈 땐 느려지게(중력), 바닥에 닿으면 납작하게 찌그러지고, 바닥 그림자는 공이 가까울수록 진하고 크게. 0.6초 왕복, 순수 CSS로.`,
+    cat: '로딩', desc: '중력처럼 가속·감속하며 튀고, 닿을 때 찌그러집니다.',
+    html: `<div class="m-ld-ball" role="status" aria-label="불러오는 중"></div>`,
+    css: `.m-ld-ball{position:relative;width:60px;height:84px}
+.m-ld-ball::before{content:"";position:absolute;left:18px;top:0;width:24px;height:24px;border-radius:50%;background:#ffd479;transform-origin:50% 100%;animation:m-ld-ball .6s cubic-bezier(.55,0,1,.45) infinite alternate}
+.m-ld-ball::after{content:"";position:absolute;left:16px;bottom:0;width:28px;height:6px;border-radius:50%;background:rgba(0,0,0,.55);animation:m-ld-ballsh .6s cubic-bezier(.55,0,1,.45) infinite alternate}
+@keyframes m-ld-ball{80%{transform:translateY(54px)}100%{transform:translateY(56px) scale(1.3,.7)}}
+@keyframes m-ld-ballsh{from{transform:scale(.4);opacity:.3}to{transform:none;opacity:1}}` },
+
+  { name: '플립 사각형',
+    kw: 'flipping square · rotateX rotateY · perspective',
+    prompt: `분홍 정사각형이 원근감 있게 위아래로 한 번, 좌우로 한 번 번갈아 뒤집히는 로더를 만들어줘. 1.2초 주기, 가속 후 감속, 순수 CSS로.`,
+    cat: '로딩', desc: '사각형이 위아래, 좌우로 번갈아 뒤집힙니다.',
+    html: `<div class="m-ld-flip" role="status" aria-label="불러오는 중"></div>`,
+    css: `.m-ld-flip{width:40px;height:40px;border-radius:4px;background:#ff9ecd;animation:m-ld-flip 1.2s ease-in-out infinite}
+@keyframes m-ld-flip{0%{transform:perspective(120px) rotateX(0) rotateY(0)}50%{transform:perspective(120px) rotateX(-180deg) rotateY(0)}100%{transform:perspective(120px) rotateX(-180deg) rotateY(-180deg)}}` },
+
+  { name: '큐브 그리드',
+    kw: 'cube grid · diagonal stagger · 3x3',
+    prompt: `3×3 작은 사각형 격자가 왼쪽 위에서 오른쪽 아래로 대각선 물결처럼 작아졌다 커지는 로더를 만들어줘. 1.3초 주기, 대각선 한 칸마다 0.1초 시차, 순수 CSS로.`,
+    cat: '로딩', desc: '격자가 대각선 물결로 접혔다 펴집니다.',
+    html: `<div class="m-ld-grid" role="status" aria-label="불러오는 중"><i style="--d:0"></i><i style="--d:1"></i><i style="--d:2"></i><i style="--d:1"></i><i style="--d:2"></i><i style="--d:3"></i><i style="--d:2"></i><i style="--d:3"></i><i style="--d:4"></i></div>`,
+    css: `.m-ld-grid{display:grid;grid-template-columns:repeat(3,14px);gap:3px}
+.m-ld-grid i{height:14px;border-radius:2px;background:#8fe3d0;animation:m-ld-grid 1.3s ease-in-out infinite;animation-delay:calc(var(--d) * .1s)}
+@keyframes m-ld-grid{0%,70%,100%{transform:scale(1)}35%{transform:scale(0)}}` },
+
+  { name: '점 순서대로',
+    kw: 'sequential dots · chase · step highlight',
+    prompt: `가로로 놓인 점 5개가 왼쪽부터 하나씩 밝게 커졌다가 다시 흐려지며 불빛이 옆으로 지나가는 것처럼 보이게 해줘. 1.5초 주기, 점마다 0.2초 시차, 순수 CSS로.`,
+    cat: '로딩', desc: '불빛이 점을 따라 옆으로 지나갑니다.',
+    html: `<div class="m-ld-seq" role="status" aria-label="불러오는 중"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i></div>`,
+    css: `.m-ld-seq{display:flex;gap:10px}
+.m-ld-seq i{width:10px;height:10px;border-radius:50%;background:#ffd479;opacity:.2;animation:m-ld-seq 1.5s ease-in-out infinite;animation-delay:calc(var(--i) * .2s)}
+@keyframes m-ld-seq{0%,60%,100%{opacity:.2;transform:scale(.8)}20%{opacity:1;transform:scale(1.25)}}` },
+
+  { name: '무한대 경로',
+    kw: 'infinity loader · offset-path · motion path',
+    prompt: `점 4개가 꼬리처럼 줄지어 ∞(무한대) 모양 경로를 따라 계속 달리는 로더를 만들어줘. 한 바퀴 2초, 뒤의 점일수록 흐리게, offset-path로 순수 CSS만.`,
+    cat: '로딩', desc: '점들이 ∞ 모양 길을 따라 달립니다. offset-path(모션 패스).',
+    html: `<div class="m-ld-inf" role="status" aria-label="불러오는 중"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i></div>`,
+    css: `.m-ld-inf{position:relative;width:100px;height:50px}
+.m-ld-inf i{position:absolute;left:0;top:0;width:10px;height:10px;border-radius:50%;background:#8fe3d0;opacity:calc(1 - var(--i) * .22);offset-path:path("M50 25C70 0 100 0 100 25S70 50 50 25S0 0 0 25S30 50 50 25");animation:m-ld-inf 2s linear infinite;animation-delay:calc(var(--i) * -.08s)}
+@keyframes m-ld-inf{from{offset-distance:0%}to{offset-distance:100%}}` },
+
+  { name: '심전도 선',
+    kw: 'heartbeat line · ECG · stroke-dashoffset',
+    prompt: `심전도처럼 평평하다가 뾰족하게 튀는 선을 SVG로 그리고, 빛나는 짧은 구간만 왼쪽에서 오른쪽으로 계속 지나가게 해줘. 1.6초 주기, stroke-dashoffset으로 순수 CSS만.`,
+    cat: '로딩', desc: '심전도 파형을 따라 빛이 지나갑니다. 연결·상태 확인 중에.',
+    html: `<svg class="m-ld-ecg" viewBox="0 0 120 40" role="img" aria-label="연결 확인 중"><polyline points="0,20 34,20 40,10 46,32 54,4 62,26 68,20 120,20"/></svg>`,
+    css: `.m-ld-ecg{width:180px}
+.m-ld-ecg polyline{fill:none;stroke:#ff6b8b;stroke-width:2;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:50 200;filter:drop-shadow(0 0 3px #ff6b8b);animation:m-ld-ecg 1.6s linear infinite}
+@keyframes m-ld-ecg{from{stroke-dashoffset:50}to{stroke-dashoffset:-150}}` },
+
+  { name: '머티리얼 스피너',
+    kw: 'material spinner · indeterminate circle · dasharray',
+    prompt: `구글 머티리얼 스피너처럼 원호가 늘어났다 줄어들면서 동시에 빙글 돌게 해줘. 회전 2초, 늘고 줄기 1.5초, SVG circle의 stroke-dasharray로 순수 CSS만.`,
+    cat: '로딩', desc: '원호가 늘었다 줄며 도는 머티리얼 스타일 스피너.',
+    html: `<svg class="m-ld-mat" viewBox="0 0 50 50" role="status" aria-label="불러오는 중"><circle cx="25" cy="25" r="20"/></svg>`,
+    css: `.m-ld-mat{width:52px;animation:m-ld-matr 2s linear infinite}
+.m-ld-mat circle{fill:none;stroke:#7cc4ff;stroke-width:4;stroke-linecap:round;animation:m-ld-matd 1.5s ease-in-out infinite}
+@keyframes m-ld-matr{to{transform:rotate(360deg)}}
+@keyframes m-ld-matd{0%{stroke-dasharray:1 150;stroke-dashoffset:0}50%{stroke-dasharray:90 150;stroke-dashoffset:-35}100%{stroke-dasharray:90 150;stroke-dashoffset:-124}}` },
+
+  { name: '원형 진행률',
+    kw: 'circular progress · percentage · @property counter',
+    prompt: `원형 게이지가 0%에서 100%까지 차오르고 가운데 숫자도 같이 올라가게 해줘. 차는 데 2.4초 감속, 다 차면 잠깐 멈췄다 다시. @property로 숫자 변수를 애니메이션해서 순수 CSS로.`,
+    cat: '로딩', desc: '게이지와 숫자가 함께 차오릅니다. @property + counter로 JS 없이.',
+    html: `<div class="m-ld-cprog" role="progressbar" aria-label="진행률"></div>`,
+    css: `@property --m-ld-p{syntax:"<integer>";inherits:false;initial-value:0}
+.m-ld-cprog{display:grid;place-items:center;width:84px;height:84px;border-radius:50%;background:radial-gradient(closest-side,#1d1729 78%,transparent 80%),conic-gradient(#8fe3d0 calc(var(--m-ld-p) * 1%),#2e2642 0);counter-reset:p var(--m-ld-p);color:#f2eefc;font:700 16px ui-monospace,monospace;animation:m-ld-cprog 3s ease-out infinite}
+.m-ld-cprog::after{content:counter(p) "%"}
+@keyframes m-ld-cprog{0%{--m-ld-p:0}80%,100%{--m-ld-p:100}}` },
+
+  { name: '줄무늬 진행 바',
+    kw: 'striped progress bar · barber pole · repeating gradient',
+    prompt: `진행 바 채워진 부분에 사선 줄무늬를 넣고, 줄무늬가 오른쪽으로 계속 흘러가 작업 중인 느낌이 나게 해줘. 0.6초 주기, 등속, 순수 CSS로.`,
+    cat: '로딩', desc: '채워진 부분의 사선 줄무늬가 흘러갑니다(이발소 기둥).',
+    html: `<div class="m-ld-stripe" role="progressbar" aria-label="진행률" aria-valuenow="70"><i></i></div>`,
+    css: `.m-ld-stripe{width:220px;height:14px;border-radius:7px;background:#241d33;overflow:hidden}
+.m-ld-stripe i{display:block;width:70%;height:100%;border-radius:inherit;background:repeating-linear-gradient(45deg,#b39cff 0 10px,#8b6fe8 10px 20px) 0 0/28.28px 100%;animation:m-ld-stripe .6s linear infinite}
+@keyframes m-ld-stripe{to{background-position:28.28px 0}}` },
+
+  { name: '단계 진행',
+    kw: 'step progress · stepper · multi-step',
+    prompt: `점 4개를 선으로 이은 단계 표시기를 만들고, 0.7초마다 다음 단계 점이 켜지면서 사이 선이 채워지게 해줘. 끝까지 가면 처음부터. 선은 0.4초 동안 부드럽게, 바닐라 JS로 단계만 올리기.`,
+    cat: '로딩', desc: '단계 점이 하나씩 켜지며 선이 채워집니다. 결제·가입처럼 여러 단계 작업에.',
+    html: `<div class="m-ld-steps" role="status" aria-label="단계 진행"><i></i><i></i><i></i><i></i></div>`,
+    css: `.m-ld-steps{position:relative;display:flex;justify-content:space-between;width:200px}
+.m-ld-steps::before,.m-ld-steps::after{content:"";position:absolute;left:7px;top:6px;height:2px;background:#2e2642}
+.m-ld-steps::before{right:7px}
+.m-ld-steps::after{width:calc((100% - 14px) * max(var(--n, 0) - 1, 0) / 3);background:#8fe3d0;transition:width .4s}
+.m-ld-steps i{position:relative;z-index:1;width:14px;height:14px;border:2px solid #2e2642;border-radius:50%;background:#1d1729;transition:background .3s .2s,border-color .3s .2s,transform .3s .2s}
+.m-ld-steps i.on{border-color:#8fe3d0;background:#8fe3d0;transform:scale(1.15)}`,
+    js: root => {
+      const s = root.querySelector('.m-ld-steps');
+      let n = 0;
+      const t = setInterval(() => {
+        if (!root.contains(s)) return clearInterval(t); // ↻ 다시로 새로 그려지면 이전 타이머 정리
+        n = (n + 1) % 5;
+        s.style.setProperty('--n', n);
+        s.querySelectorAll('i').forEach((d, i) => d.classList.toggle('on', i < n));
+      }, 700);
+    } },
+
+  { name: '버퍼링 바',
+    kw: 'buffer bar · video progress · loaded vs played',
+    prompt: `동영상 재생 바처럼 회색 '불러온 구간'이 앞서 나가고 빨간 '재생 구간'이 뒤따라가게 해줘. 불러온 구간은 감속, 재생은 등속, 4초 주기, 순수 CSS로.`,
+    cat: '로딩', desc: '불러온 구간이 앞서고 재생 구간이 따라갑니다(동영상 플레이어).',
+    html: `<div class="m-ld-buffer" role="progressbar" aria-label="재생 위치"></div>`,
+    css: `.m-ld-buffer{position:relative;width:220px;height:6px;overflow:hidden;border-radius:3px;background:#2e2642}
+.m-ld-buffer::before,.m-ld-buffer::after{content:"";position:absolute;inset:0 auto 0 0;border-radius:inherit}
+.m-ld-buffer::before{background:rgba(242,238,252,.3);animation:m-ld-buf 4s ease-out infinite}
+.m-ld-buffer::after{background:#ff4d6d;animation:m-ld-play 4s linear infinite}
+@keyframes m-ld-buf{from{width:10%}to{width:100%}}
+@keyframes m-ld-play{from{width:0}to{width:90%}}` },
+
+  { name: '상단 로딩 바',
+    kw: 'top loading bar · NProgress · page transition',
+    prompt: `페이지 맨 위에 3px 민트색 선이 빠르게 85%까지 갔다가 천천히 끝까지 채운 뒤 사라지는 로딩 바를 만들어줘(NProgress 스타일). 끝에 은은한 빛, 2.4초 주기, 순수 CSS로. 실제로는 화면 맨 위에 고정.`,
+    cat: '로딩', desc: '페이지 이동 중 맨 위에 흐르는 얇은 선. 미리보기에선 작은 창 안에 그렸습니다.',
+    html: `<div class="m-ld-top" role="status" aria-label="페이지 불러오는 중"></div>`,
+    css: `.m-ld-top{position:relative;width:220px;height:120px;overflow:hidden;border-radius:10px;background:#241d33}
+.m-ld-top::before{content:"";position:absolute;top:0;left:0;height:3px;background:#8fe3d0;box-shadow:0 0 8px #8fe3d0;animation:m-ld-top 2.4s cubic-bezier(.1,.7,.3,1) infinite}
+@keyframes m-ld-top{0%{width:0;opacity:1}70%{width:85%}85%{width:100%;opacity:1}100%{width:100%;opacity:0}}` },
+
+  { name: '말줄임표 로딩',
+    kw: 'loading ellipsis · animated dots text · content steps',
+    prompt: `"불러오는 중" 글자 뒤에 점이 하나, 둘, 셋 붙었다가 다시 사라지길 반복하게 해줘. 1.2초 주기로 뚝뚝 끊어서, 점이 늘어도 글자 위치는 흔들리지 않게, 순수 CSS로.`,
+    cat: '로딩', desc: '글자 뒤에 점이 하나씩 붙습니다. 자리를 미리 잡아 글자가 흔들리지 않습니다.',
+    html: `<p class="m-ld-dots" role="status">불러오는 중</p>`,
+    css: `.m-ld-dots{margin:0;color:#f2eefc;font-size:18px;font-weight:700}
+.m-ld-dots::after{content:"";display:inline-block;width:1.2em;text-align:left;animation:m-ld-dots 1.2s steps(1) infinite}
+@keyframes m-ld-dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}` },
+
+  { name: '글자 웨이브',
+    kw: 'letter wave · LOADING text · stagger bounce',
+    prompt: `"LOADING" 글자가 한 글자씩 차례로 10px 튀어 오르며 파도타기를 하게 해줘. 1.4초 주기, 글자마다 0.1초 시차, 순수 CSS로.`,
+    cat: '로딩', desc: '글자가 차례로 튀어 오르며 파도를 탑니다.',
+    html: `<p class="m-ld-letters" role="status" aria-label="불러오는 중"><span style="--i:0">L</span><span style="--i:1">O</span><span style="--i:2">A</span><span style="--i:3">D</span><span style="--i:4">I</span><span style="--i:5">N</span><span style="--i:6">G</span></p>`,
+    css: `.m-ld-letters{display:flex;gap:2px;margin:0;color:#b39cff;font:800 22px/1 ui-monospace,monospace}
+.m-ld-letters span{animation:m-ld-letters 1.4s ease-in-out infinite;animation-delay:calc(var(--i) * .1s)}
+@keyframes m-ld-letters{0%,40%,100%{transform:none}20%{transform:translateY(-10px);color:#8fe3d0}}` },
+
+  { name: '글자 채우기',
+    kw: 'text fill loader · background-clip text · outline text',
+    prompt: `외곽선만 있는 큰 글자 안이 왼쪽부터 민트색으로 차오르는 로더를 만들어줘. 2초 동안 차고 반복, background-clip:text로 순수 CSS만.`,
+    cat: '로딩', desc: '외곽선 글자 안이 물감처럼 차오릅니다.',
+    html: `<p class="m-ld-tfill" role="status" aria-label="불러오는 중">LOADING</p>`,
+    css: `.m-ld-tfill{margin:0;font:900 36px/1 system-ui,sans-serif;letter-spacing:.04em;color:transparent;-webkit-text-stroke:1px #8fe3d0;background:linear-gradient(#8fe3d0,#8fe3d0) 0 0/0 100% no-repeat;-webkit-background-clip:text;background-clip:text;animation:m-ld-tfill 2s ease-in-out infinite}
+@keyframes m-ld-tfill{to{background-size:100% 100%}}` },
+
+  { name: '모래시계',
+    kw: 'hourglass · rotate flip · wait',
+    prompt: `테두리 두 개로 만든 노란 모래시계가 잠시 멈췄다가 180도 휙 뒤집히길 반복하게 해줘. 1.2초 주기, 앞 40%는 멈춤, 뒤집을 땐 가속 후 감속, 순수 CSS로.`,
+    cat: '로딩', desc: '모래시계가 멈췄다 휙 뒤집힙니다. 삼각형 두 개는 테두리 트릭.',
+    html: `<div class="m-ld-hour" role="status" aria-label="기다리는 중"></div>`,
+    css: `.m-ld-hour{width:0;height:0;border:22px solid transparent;border-top-color:#ffd479;border-bottom-color:#ffd479;animation:m-ld-hour 1.2s cubic-bezier(.6,0,.4,1) infinite}
+@keyframes m-ld-hour{0%,40%{transform:none}100%{transform:rotate(180deg)}}` },
+
+  { name: '시계',
+    kw: 'clock loader · rotating hands · time',
+    prompt: `원 안에서 긴 바늘은 0.5초, 짧은 바늘은 6초에 한 바퀴씩 도는 시계 로더를 만들어줘. 바늘은 가운데를 축으로, 순수 CSS로.`,
+    cat: '로딩', desc: '시곗바늘이 빠르게 돌아갑니다. 예약·대기 화면에.',
+    html: `<div class="m-ld-clock" role="status" aria-label="기다리는 중"></div>`,
+    css: `.m-ld-clock{position:relative;width:56px;height:56px;border:3px solid #f2eefc;border-radius:50%}
+.m-ld-clock::before,.m-ld-clock::after{content:"";position:absolute;left:50%;bottom:50%;width:3px;margin-left:-1.5px;border-radius:2px;background:#f2eefc;transform-origin:50% 100%}
+.m-ld-clock::before{height:15px;animation:m-ld-clock 6s linear infinite}
+.m-ld-clock::after{height:21px;background:#8fe3d0;animation:m-ld-clock .5s linear infinite}
+@keyframes m-ld-clock{to{transform:rotate(360deg)}}` },
+
+  { name: '블롭 모핑',
+    kw: 'blob morph · border-radius animation · organic shape',
+    prompt: `민트·보라 그라디언트 덩어리가 젤리처럼 모양을 바꾸며 천천히 한 바퀴 도는 로더를 만들어줘. 3초 주기, border-radius 8개 값을 바꿔서 순수 CSS로.`,
+    cat: '로딩', desc: '말랑한 덩어리가 모양을 바꾸며 돕니다. border-radius 여덟 값 트릭.',
+    html: `<div class="m-ld-blob" role="status" aria-label="불러오는 중"></div>`,
+    css: `.m-ld-blob{width:60px;height:60px;background:linear-gradient(135deg,#8fe3d0,#b39cff);animation:m-ld-blob 3s ease-in-out infinite}
+@keyframes m-ld-blob{0%{border-radius:42% 58% 70% 30%/45% 45% 55% 55%;transform:rotate(0)}33%{border-radius:70% 30% 46% 54%/30% 29% 71% 70%}66%{border-radius:28% 72% 44% 56%/49% 40% 60% 51%}100%{border-radius:42% 58% 70% 30%/45% 45% 55% 55%;transform:rotate(360deg)}}` },
+
+  { name: '끈적한 점',
+    kw: 'gooey effect · metaball · SVG filter',
+    prompt: `분홍 점 두 개가 좌우로 엇갈려 지나갈 때 물방울처럼 끈적하게 붙었다 떨어지게 해줘(메타볼). 1.6초 왕복, SVG 블러+색 행렬 필터로.`,
+    cat: '로딩', desc: '점이 스칠 때 물방울처럼 달라붙습니다. SVG goo 필터.',
+    html: `<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="m-ld-goo"><feGaussianBlur stdDeviation="6"/><feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 20 -9"/></filter></svg><div class="m-ld-goo" role="status" aria-label="불러오는 중"><i></i><i></i></div>`,
+    css: `.m-ld-goo{position:relative;width:130px;height:44px;filter:url(#m-ld-goo)}
+.m-ld-goo i{position:absolute;top:10px;left:53px;width:24px;height:24px;border-radius:50%;background:#ff9ecd;animation:m-ld-goo 1.6s ease-in-out infinite alternate}
+.m-ld-goo i+i{animation-direction:alternate-reverse}
+@keyframes m-ld-goo{from{transform:translateX(-40px)}to{transform:translateX(40px)}}` },
+
+  { name: '스켈레톤 펄스',
+    kw: 'skeleton pulse · placeholder · opacity breathing',
+    prompt: `글 카드 모양의 회색 자리표시(썸네일, 제목 줄, 본문 두 줄)가 빛줄기 없이 전체가 은은하게 밝아졌다 어두워지길 반복하게 해줘. 1.6초 주기, 순수 CSS로.`,
+    cat: '로딩', desc: '반짝임 대신 통째로 숨 쉬는 스켈레톤. 시머보다 차분합니다.',
+    html: `<div class="m-ld-skel" aria-busy="true" aria-label="불러오는 중"><i></i><b></b><b></b><b></b></div>`,
+    css: `.m-ld-skel{display:grid;gap:8px;width:200px;animation:m-ld-skel 1.6s ease-in-out infinite}
+.m-ld-skel i,.m-ld-skel b{display:block;border-radius:6px;background:#2e2642}
+.m-ld-skel i{height:70px;border-radius:10px}
+.m-ld-skel b{height:10px}
+.m-ld-skel b:nth-of-type(1){width:70%;height:14px}
+.m-ld-skel b:nth-of-type(3){width:55%}
+@keyframes m-ld-skel{50%{opacity:.45}}` },
+
+  { name: '이미지 블러업',
+    kw: 'blur-up · LQIP · progressive image',
+    prompt: `이미지가 처음엔 흐릿하고 살짝 확대된 상태로 보이다가 0.8초 동안 또렷해지며 원래 크기로 돌아오게 해줘(블러업). 순수 CSS로, 넘친 블러는 잘라서.`,
+    cat: '로딩', desc: '흐린 미리보기가 또렷한 이미지로 바뀝니다. 미리보기에선 3초마다 반복.',
+    html: `<div class="m-ld-blurup" role="img" aria-label="이미지"><i></i></div>`,
+    css: `.m-ld-blurup{width:200px;height:120px;overflow:hidden;border-radius:12px}
+.m-ld-blurup i{display:block;height:100%;background:radial-gradient(circle at 70% 30%,#ffd479 0 14%,transparent 15%),linear-gradient(transparent 62%,#2a6b5f 62%),linear-gradient(135deg,#ff9ecd,#7cc4ff);animation:m-ld-blurup 3s ease-out infinite}
+@keyframes m-ld-blurup{0%{filter:blur(16px);transform:scale(1.1)}27%,100%{filter:blur(0);transform:none}}` },
+
+  { name: '접히는 큐브',
+    kw: 'folding cube · spinkit · rotateX fold',
+    prompt: `45도 돌린 2×2 사각형 네 조각이 시계 방향으로 하나씩 종이처럼 접혀 나타났다가 다시 접혀 사라지게 해줘. 2.4초 주기, 조각마다 0.3초 시차, 순수 CSS로.`,
+    cat: '로딩', desc: '네 조각이 종이접기처럼 차례로 펴졌다 접힙니다.',
+    html: `<div class="m-ld-fold" role="status" aria-label="불러오는 중"><i style="--r:0deg;--d:0s"></i><i style="--r:90deg;--d:.3s"></i><i style="--r:270deg;--d:.9s"></i><i style="--r:180deg;--d:.6s"></i></div>`,
+    css: `.m-ld-fold{display:grid;grid-template-columns:20px 20px;transform:rotateZ(45deg)}
+.m-ld-fold i{position:relative;height:20px;transform:rotateZ(var(--r))}
+.m-ld-fold i::before{content:"";position:absolute;inset:0;background:#8fe3d0;transform-origin:100% 100%;animation:m-ld-fold 2.4s linear infinite both;animation-delay:var(--d)}
+@keyframes m-ld-fold{0%,10%{transform:perspective(140px) rotateX(-180deg);opacity:0}25%,75%{transform:perspective(140px) rotateX(0);opacity:1}90%,100%{transform:perspective(140px) rotateY(180deg);opacity:0}}` },
+
+  { name: '핑퐁',
+    kw: 'ping pong loader · bouncing ball · paddles',
+    prompt: `양쪽 막대 사이로 공이 핑퐁처럼 오가는 로더를 만들어줘. 공은 좌우 1초, 위아래 0.7초로 따로 움직여 대각선으로 튀고, 막대는 공 높이를 대충 따라가게. 순수 CSS로.`,
+    cat: '로딩', desc: '공이 막대 사이를 오가며 튑니다. 가로·세로 움직임을 따로 줘서 대각선이 됩니다.',
+    html: `<div class="m-ld-pong" role="status" aria-label="불러오는 중"><i></i></div>`,
+    css: `.m-ld-pong{position:relative;width:130px;height:64px}
+.m-ld-pong::before,.m-ld-pong::after{content:"";position:absolute;width:5px;height:22px;border-radius:3px;background:#f2eefc;animation:m-ld-pongy .7s ease-in-out infinite alternate}
+.m-ld-pong::before{left:0}
+.m-ld-pong::after{right:0;animation-delay:-.35s}
+.m-ld-pong i{position:absolute;width:10px;height:10px;border-radius:50%;background:#ffd479;animation:m-ld-pongx 1s linear infinite alternate,m-ld-pongy .7s ease-in-out infinite alternate}
+@keyframes m-ld-pongx{from{left:7px}to{left:113px}}
+@keyframes m-ld-pongy{from{top:4px}to{top:42px}}` },
+
+  { name: 'DNA 나선',
+    kw: 'DNA helix · double helix · depth scale',
+    prompt: `두 줄의 점이 서로 엇갈려 오르내리고 앞에 올 땐 커지고 뒤로 갈 땐 작아져 DNA 이중 나선이 도는 것처럼 보이게 해줘. 기둥 8개, 1.6초 주기, 기둥마다 0.15초 시차, 순수 CSS로.`,
+    cat: '로딩', desc: '두 줄 점이 엇갈리며 입체 나선처럼 돕니다. 과학·데이터 분석 화면에.',
+    html: `<div class="m-ld-dna" role="status" aria-label="분석 중"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i><i style="--i:5"></i><i style="--i:6"></i><i style="--i:7"></i></div>`,
+    css: `.m-ld-dna{display:flex;gap:8px}
+.m-ld-dna i{position:relative;width:8px;height:48px}
+.m-ld-dna i::before,.m-ld-dna i::after{content:"";position:absolute;left:0;width:8px;height:8px;border-radius:50%;background:#8fe3d0;animation:m-ld-dna 1.6s ease-in-out infinite;animation-delay:calc(var(--i) * -.15s)}
+.m-ld-dna i::after{background:#b39cff;animation-delay:calc(var(--i) * -.15s - .8s)}
+@keyframes m-ld-dna{0%,100%{top:0;transform:scale(1)}25%{transform:scale(1.4)}50%{top:40px;transform:scale(1)}75%{transform:scale(.5)}}` },
+
+  { name: '삼각 점',
+    kw: 'triangle dots · rotating triad · pulse',
+    prompt: `점 세 개를 삼각형 꼭짓점에 두고 전체가 1.6초에 한 바퀴 돌면서, 점들은 차례로 커졌다 작아지게 해줘. 순수 CSS로.`,
+    cat: '로딩', desc: '삼각형으로 놓인 점들이 돌며 차례로 부풉니다.',
+    html: `<div class="m-ld-tri" role="status" aria-label="불러오는 중"><i style="--i:0;left:21px;top:2px"></i><i style="--i:1;left:40px;top:36px"></i><i style="--i:2;left:2px;top:36px"></i></div>`,
+    css: `.m-ld-tri{position:relative;width:52px;height:50px;animation:m-ld-tri 1.6s linear infinite}
+.m-ld-tri i{position:absolute;width:10px;height:10px;border-radius:50%;background:#7cc4ff;animation:m-ld-tridot 1.6s ease-in-out infinite;animation-delay:calc(var(--i) * .53s)}
+@keyframes m-ld-tri{to{transform:rotate(360deg)}}
+@keyframes m-ld-tridot{0%,100%{transform:scale(.6)}30%{transform:scale(1.4)}}` },
+
+  { name: '채팅 입력 중',
+    kw: 'typing indicator · chat bubble · fading dots',
+    prompt: `채팅 말풍선 안에서 점 세 개가 차례로 진해졌다 흐려지며 상대가 입력 중임을 알려 주게 해줘. 1.2초 주기, 점마다 0.2초 시차, 말풍선 왼쪽 아래 모서리만 덜 둥글게, 순수 CSS로.`,
+    cat: '로딩', desc: '메신저의 "입력 중…" 말풍선.',
+    html: `<div class="m-ld-typing" role="status" aria-label="상대가 입력 중"><i></i><i></i><i></i></div>`,
+    css: `.m-ld-typing{display:flex;gap:5px;padding:14px 16px;border-radius:18px 18px 18px 4px;background:#2a2240}
+.m-ld-typing i{width:8px;height:8px;border-radius:50%;background:#f2eefc;opacity:.3;animation:m-ld-typing 1.2s ease-in-out infinite}
+.m-ld-typing i:nth-child(2){animation-delay:.2s}
+.m-ld-typing i:nth-child(3){animation-delay:.4s}
+@keyframes m-ld-typing{30%{opacity:1;transform:translateY(-2px)}60%,100%{opacity:.3;transform:none}}` },
+
+  { name: '업로드 진행',
+    kw: 'upload progress · file progress · percentage counter',
+    prompt: `파일 이름 옆에 퍼센트 숫자가 있고 아래 진행 바가 0%에서 100%까지 차는 업로드 표시를 만들어줘. 숫자와 바가 같이 오르게, 빠르게 시작해 끝에서 느려지게, @property로 순수 CSS만. 실제로는 업로드 이벤트의 값으로 바꾸기.`,
+    cat: '로딩', desc: '퍼센트 숫자와 진행 바가 함께 오릅니다. 실제로는 --m-ld-u 값만 JS로 넣으면 됩니다.',
+    html: `<div class="m-ld-up" role="progressbar" aria-label="업로드"><b>📄 report.pdf</b><span></span><i></i></div>`,
+    css: `@property --m-ld-u{syntax:"<integer>";inherits:true;initial-value:0}
+.m-ld-up{display:grid;grid-template-columns:1fr auto;gap:8px 12px;width:220px;color:#f2eefc;font-size:13px;counter-reset:u var(--m-ld-u);animation:m-ld-up 3s cubic-bezier(.3,.6,.4,1) infinite}
+.m-ld-up b{font-weight:600}
+.m-ld-up span::after{content:counter(u) "%";color:#a59bc2;font:600 12px ui-monospace,monospace}
+.m-ld-up i{grid-column:1/-1;height:6px;border-radius:3px;background:linear-gradient(#7cc4ff,#7cc4ff) 0/calc(var(--m-ld-u) * 1%) 100% no-repeat,#2e2642}
+@keyframes m-ld-up{0%{--m-ld-u:0}85%,100%{--m-ld-u:100}}` },
+
+  { name: '배터리 충전',
+    kw: 'battery charging · steps · cells',
+    prompt: `배터리 아이콘 안의 칸 네 개가 하나씩 뚝뚝 채워졌다가 비워지길 반복하는 충전 표시를 만들어줘. 2.4초 주기, steps로 끊어서, 순수 CSS로.`,
+    cat: '로딩', desc: '배터리 칸이 하나씩 채워집니다. steps()로 끊어 움직입니다.',
+    html: `<div class="m-ld-batt" role="status" aria-label="충전 중"><i></i></div>`,
+    css: `.m-ld-batt{position:relative;width:60px;height:26px;padding:3px;border:2px solid #f2eefc;border-radius:5px}
+.m-ld-batt::after{content:"";position:absolute;right:-7px;top:7px;width:4px;height:10px;border-radius:0 2px 2px 0;background:#f2eefc}
+.m-ld-batt i{display:block;height:100%;background:repeating-linear-gradient(90deg,#8fe3d0 0 12px,transparent 12px 15px);animation:m-ld-batt 2.4s steps(4,jump-start) infinite}
+@keyframes m-ld-batt{from{width:0}to{width:60px}}` },
+
+  { name: '커피 김',
+    kw: 'coffee steam · rising wisps · cozy loader',
+    prompt: `커피잔 위로 김 세 줄이 흔들리며 피어올라 흩어지는 로더를 만들어줘. 김마다 0.4초 시차, 2초 주기, 위로 갈수록 넓어지며 투명해지게, 순수 CSS로.`,
+    cat: '로딩', desc: '커피잔 위로 김이 피어오릅니다. 잠깐 기다리는 화면에 어울립니다.',
+    html: `<div class="m-ld-cup" role="status" aria-label="준비 중"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i></div>`,
+    css: `.m-ld-cup{position:relative;width:46px;height:36px;margin-top:34px;border-radius:0 0 14px 14px;background:#f2eefc}
+.m-ld-cup::after{content:"";position:absolute;right:-14px;top:6px;width:10px;height:14px;border:4px solid #f2eefc;border-left:0;border-radius:0 10px 10px 0}
+.m-ld-cup i{position:absolute;bottom:calc(100% + 4px);left:calc(9px + var(--i) * 12px);width:4px;height:18px;border-radius:2px;background:rgba(242,238,252,.55);opacity:0;animation:m-ld-steam 2s ease-out infinite;animation-delay:calc(var(--i) * .4s)}
+@keyframes m-ld-steam{0%{transform:translateY(4px) scaleY(.6);opacity:0}40%{opacity:.9}100%{transform:translateY(-16px) scaleX(1.8) skewX(12deg);opacity:0}}` },
+
+  { name: '스캔 라인',
+    kw: 'scan line · laser sweep · document scanning',
+    prompt: `문서 모양 상자 위로 빛나는 민트색 가로선이 위아래로 오가며 스캔하는 것처럼 보이게 해줘. 1.5초 편도, 끝에서 부드럽게 돌아서게, 선 아래로 빛이 번지게, 순수 CSS로.`,
+    cat: '로딩', desc: '레이저 선이 문서를 위아래로 훑습니다. 인식·분석 중 표시에.',
+    html: `<div class="m-ld-scan" role="status" aria-label="스캔 중"></div>`,
+    css: `.m-ld-scan{position:relative;width:110px;height:140px;overflow:hidden;border-radius:8px;background:repeating-linear-gradient(transparent 0 14px,#3a3152 14px 18px) 14px 18px/70% 100% no-repeat,#241d33}
+.m-ld-scan::after{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:#8fe3d0;box-shadow:0 0 12px 2px #8fe3d0;animation:m-ld-scan 1.5s ease-in-out infinite alternate}
+@keyframes m-ld-scan{to{top:calc(100% - 2px)}}` },
+
+  { name: '뉴턴 진자',
+    kw: "Newton's cradle · pendulum · swing",
+    prompt: `구슬 다섯 개가 실에 매달린 뉴턴 진자를 만들어줘. 맨 왼쪽 구슬이 35도 튕겨 나갔다 돌아오면 맨 오른쪽 구슬이 튕겨 나가길 번갈아. 나갈 땐 감속, 돌아올 땐 가속, 1.2초 주기, 순수 CSS로.`,
+    cat: '로딩', desc: '양 끝 구슬이 번갈아 튕기는 뉴턴 진자.',
+    html: `<div class="m-ld-newton" role="status" aria-label="불러오는 중"><i></i><i></i><i></i><i></i><i></i></div>`,
+    css: `.m-ld-newton{display:flex;padding-top:6px;border-top:3px solid #4a3f66}
+.m-ld-newton i{position:relative;width:16px;height:60px;transform-origin:50% 0}
+.m-ld-newton i::before{content:"";position:absolute;left:7.5px;top:0;width:1px;height:46px;background:#a59bc2}
+.m-ld-newton i::after{content:"";position:absolute;left:0;bottom:0;width:16px;height:16px;border-radius:50%;background:#ffd479}
+.m-ld-newton i:first-child{animation:m-ld-newl 1.2s infinite}
+.m-ld-newton i:last-child{animation:m-ld-newr 1.2s infinite}
+@keyframes m-ld-newl{0%{transform:none;animation-timing-function:ease-out}25%{transform:rotate(35deg);animation-timing-function:ease-in}50%,100%{transform:none}}
+@keyframes m-ld-newr{0%,50%{transform:none;animation-timing-function:ease-out}75%{transform:rotate(-35deg);animation-timing-function:ease-in}100%{transform:none}}` },
+
+  { name: '완료 체크 전환',
+    kw: 'loading to success · spinner to checkmark · SVG',
+    prompt: `원호 스피너가 돌다가 원이 꽉 차면서 그 안에 체크 표시가 그려지는 "불러오기 → 완료" 전환을 만들어줘. 돌기 1.5초, 원 채우기 0.45초, 체크 그리기 0.45초, 잠깐 보여 준 뒤 반복. SVG 선 그리기로 순수 CSS만.`,
+    cat: '로딩', desc: '스피너가 완료 체크로 바뀝니다. 실제로는 완료 시점에 클래스를 바꿔 쓰세요.',
+    html: `<svg class="m-ld-done" viewBox="0 0 52 52" role="status" aria-label="처리 중"><circle cx="26" cy="26" r="22"/><path d="M15 27l7 7 15-15"/></svg>`,
+    css: `.m-ld-done{width:60px}
+.m-ld-done circle{fill:none;stroke:#8fe3d0;stroke-width:3;stroke-linecap:round;stroke-dasharray:139;transform-box:fill-box;transform-origin:center;animation:m-ld-donec 3s ease-in-out infinite}
+.m-ld-done path{fill:none;stroke:#8fe3d0;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:36;stroke-dashoffset:36;animation:m-ld-donep 3s ease-out infinite}
+@keyframes m-ld-donec{0%{stroke-dashoffset:115;transform:rotate(0)}50%{stroke-dashoffset:100;transform:rotate(720deg)}65%,90%{stroke-dashoffset:0;opacity:1;transform:rotate(720deg)}100%{stroke-dashoffset:0;opacity:0;transform:rotate(720deg)}}
+@keyframes m-ld-donep{0%,65%{stroke-dashoffset:36;opacity:1}80%,90%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:0;opacity:0}}` },
+
+  { name: '사각 테두리 추격',
+    kw: 'border chase · rounded rect · stroke dash',
+    prompt: `둥근 사각형 테두리를 따라 짧은 빛 구간이 1.4초에 한 바퀴씩 쫓아 도는 로더를 만들어줘. SVG rect의 stroke-dashoffset으로 순수 CSS만.`,
+    cat: '로딩', desc: '빛 구간이 둥근 사각형 테두리를 따라 돕니다.',
+    html: `<svg class="m-ld-rect" viewBox="0 0 60 60" role="status" aria-label="불러오는 중"><rect x="4" y="4" width="52" height="52" rx="10"/><rect x="4" y="4" width="52" height="52" rx="10"/></svg>`,
+    css: `.m-ld-rect{width:60px}
+.m-ld-rect rect{fill:none;stroke:#2e2642;stroke-width:3}
+.m-ld-rect rect+rect{stroke:#ffd479;stroke-width:3;stroke-linecap:round;stroke-dasharray:40 151;animation:m-ld-rect 1.4s linear infinite}
+@keyframes m-ld-rect{to{stroke-dashoffset:-191}}` },
+
+  { name: '겹 물결',
+    kw: 'ripple rings · concentric · staggered scale',
+    prompt: `가운데에서 테두리만 있는 파란 원 세 개가 시차를 두고 퍼져 나가며 사라지는 물결 로더를 만들어줘. 2초 주기, 원마다 0.66초 시차, 감속, 순수 CSS로.`,
+    cat: '로딩', desc: '테두리 원 세 겹이 물결처럼 퍼집니다. 신호 찾기·연결 중에.',
+    html: `<div class="m-ld-ripples" role="status" aria-label="연결 중"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i></div>`,
+    css: `.m-ld-ripples{position:relative;width:80px;height:80px}
+.m-ld-ripples i{position:absolute;inset:0;border:2px solid #7cc4ff;border-radius:50%;opacity:0;animation:m-ld-ripples 2s ease-out infinite;animation-delay:calc(var(--i) * -.66s)}
+@keyframes m-ld-ripples{from{transform:scale(.1);opacity:1}to{transform:scale(1);opacity:0}}` },
+
+  { name: '로딩 문구 순환',
+    kw: 'rotating loading messages · vertical ticker · status text',
+    prompt: `작은 스피너 옆의 안내 문구가 "파일 확인 중 → 변환하는 중 → 거의 다 됐어요 → 마무리 중" 순서로 2초마다 위로 밀려 올라가며 바뀌게 해줘. 바뀔 땐 0.4초, 마지막 뒤엔 처음으로 자연스럽게 이어지게, 순수 CSS로.`,
+    cat: '로딩', desc: '기다리는 동안 안내 문구가 바뀌어 덜 지루합니다.',
+    html: `<div class="m-ld-msg" role="status"><b></b><span><i>파일 확인 중…</i><i>변환하는 중…</i><i>거의 다 됐어요…</i><i>마무리 중…</i><i>파일 확인 중…</i></span></div>`,
+    css: `.m-ld-msg{display:flex;align-items:center;gap:10px;color:#f2eefc;font-size:15px}
+.m-ld-msg b{width:16px;height:16px;border:2px solid #4a3f66;border-top-color:#8fe3d0;border-radius:50%;animation:m-ld-msgspin .8s linear infinite}
+.m-ld-msg span{height:24px;overflow:hidden}
+.m-ld-msg i{display:block;height:24px;line-height:24px;font-style:normal;animation:m-ld-msg 8s infinite}
+@keyframes m-ld-msgspin{to{transform:rotate(360deg)}}
+@keyframes m-ld-msg{0%,20%{transform:translateY(0)}25%,45%{transform:translateY(-100%)}50%,70%{transform:translateY(-200%)}75%,95%{transform:translateY(-300%)}100%{transform:translateY(-400%)}}` },
+
   // ── 텍스트 ──
   { name: '타이핑 커서',
     kw: 'typewriter effect · steps() · blinking caret',
