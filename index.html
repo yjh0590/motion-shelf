@@ -28,7 +28,7 @@ header p{color:var(--muted);margin:0 0 28px;max-width:640px}
 button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
 #grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:16px 0 48px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
-.preview{position:relative;height:200px;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle at 50% 0,#251d36,#17121f 70%);border-bottom:1px solid var(--line)}
+.preview{position:relative;contain:layout;height:200px;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle at 50% 0,#251d36,#17121f 70%);border-bottom:1px solid var(--line)}
 .body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
 .meta{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .meta h3{margin:0;font-size:16px}
@@ -418,6 +418,130 @@ const D = [
 .m-ping i,.m-ping i::after{position:absolute;top:2px;right:-2px;width:12px;height:12px;border-radius:50%;background:#ff4f7b}
 .m-ping i::after{content:"";top:0;right:0;animation:m-pingk 1.2s cubic-bezier(0,0,.2,1) infinite}
 @keyframes m-pingk{75%,100%{transform:scale(2.4);opacity:0}}` },
+
+  // ── 컴포넌트 ──
+  { name: '모달',
+    kw: 'modal · dialog · @starting-style · backdrop',
+    prompt: `버튼을 누르면 화면 가운데에 모달이 뜨게 해줘. 뜰 때는 12px 아래에서 올라오며 살짝 커지면서 나타나고, 닫힐 때는 같은 움직임을 거꾸로. 뒤 배경은 어둡게 깔리게. 0.25초, 네이티브 dialog 요소와 @starting-style로, Esc와 배경 클릭으로도 닫히게.`,
+    cat: '컴포넌트', desc: '네이티브 dialog라 포커스 가두기와 Esc 닫기는 브라우저가 해 줍니다. 등장은 @starting-style, 퇴장은 allow-discrete. 배경 클릭 닫기(closedby)는 Chrome·Firefox.',
+    html: `<button class="m-modal-open">모달 열기</button>
+<dialog class="m-modal" closedby="any"><h4>저장할까요?</h4><p>변경한 내용이 저장됩니다.</p><form method="dialog"><button>확인</button></form></dialog>`,
+    css: `.m-modal-open{padding:12px 22px;border:0;border-radius:12px;background:#8fe3d0;color:#14101f;font:inherit;font-weight:700;cursor:pointer}
+.m-modal{width:min(320px,calc(100% - 32px));padding:22px;border:1px solid #2e2642;border-radius:16px;background:#1d1729;color:#f2eefc;opacity:0;transform:translateY(12px) scale(.96);transition:opacity .25s,transform .25s cubic-bezier(.16,1,.3,1),overlay .25s allow-discrete,display .25s allow-discrete}
+.m-modal[open]{opacity:1;transform:none}
+.m-modal::backdrop{background:rgba(10,8,16,.6);opacity:0;transition:opacity .25s,overlay .25s allow-discrete,display .25s allow-discrete}
+.m-modal[open]::backdrop{opacity:1}
+@starting-style{.m-modal[open]{opacity:0;transform:translateY(12px) scale(.96)}.m-modal[open]::backdrop{opacity:0}}
+.m-modal h4{margin:0 0 6px;font-size:18px}
+.m-modal p{margin:0 0 16px;color:#a59bc2}
+.m-modal form{text-align:right}
+.m-modal button{padding:8px 18px;border:0;border-radius:8px;background:#8fe3d0;color:#14101f;font:inherit;font-weight:700;cursor:pointer}`,
+    js: root => root.querySelector('.m-modal-open').onclick = () => root.querySelector('.m-modal').showModal() },
+
+  { name: '토스트',
+    kw: 'toast · snackbar · auto dismiss · role="status"',
+    prompt: `저장 버튼을 누르면 화면 오른쪽 아래에 "저장했어요" 토스트가 16px 아래에서 올라오며 나타났다가 2초쯤 머문 뒤 저절로 사라지게 해줘. 스크린리더도 읽을 수 있게 role="status"로, 라이브러리 없이.`,
+    cat: '컴포넌트', desc: '키프레임 하나(2.6초)로 등장·머묾·퇴장을 처리하고, 끝나면 요소를 지웁니다.',
+    html: `<button class="m-toast-btn">저장하기</button>`,
+    css: `.m-toast-btn{padding:12px 22px;border:1px solid #2e2642;border-radius:12px;background:#241d33;color:#f2eefc;font:inherit;font-weight:700;cursor:pointer}
+.m-toast{position:fixed;right:16px;bottom:16px;padding:10px 16px;border-radius:10px;background:#f2eefc;color:#14101f;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.4);animation:m-toast 2.6s cubic-bezier(.16,1,.3,1) both}
+@keyframes m-toast{0%,100%{opacity:0;transform:translateY(16px)}10%,90%{opacity:1;transform:none}}`,
+    js: root => root.querySelector('.m-toast-btn').addEventListener('click', () => {
+      root.querySelector('.m-toast')?.remove();
+      const t = Object.assign(document.createElement('div'), { className: 'm-toast', role: 'status', textContent: '저장했어요 ✓' });
+      root.append(t);
+      t.addEventListener('animationend', () => t.remove());
+    }) },
+
+  { name: '툴팁',
+    kw: 'tooltip · hover delay · role="tooltip"',
+    prompt: `버튼에 마우스를 올리거나 키보드 포커스가 가면 0.3초 뒤에 버튼 위쪽으로 말풍선 툴팁이 6px 떠오르며 나타나게 해줘. 벗어나면 바로 사라지게. 0.15초, 순수 CSS로, role="tooltip" 포함.`,
+    cat: '컴포넌트', desc: '나타날 때만 transition-delay를 줘서 스쳐 지나갈 땐 안 뜹니다. 키보드 포커스에도 반응.',
+    html: `<button class="m-tip" aria-describedby="m-tip">호버해 보세요<span role="tooltip" id="m-tip">클릭하면 복사돼요</span></button>`,
+    css: `.m-tip{position:relative;padding:12px 20px;border:1px solid #2e2642;border-radius:10px;background:#241d33;color:#f2eefc;font:inherit;font-weight:700;cursor:pointer}
+.m-tip span{position:absolute;bottom:calc(100% + 10px);left:50%;padding:6px 10px;border-radius:8px;background:#f2eefc;color:#14101f;font-size:13px;white-space:nowrap;pointer-events:none;opacity:0;transform:translate(-50%,6px);transition:opacity .15s,transform .15s}
+.m-tip span::after{content:"";position:absolute;top:100%;left:50%;margin-left:-5px;border:5px solid transparent;border-top-color:#f2eefc}
+.m-tip:hover span,.m-tip:focus-visible span{opacity:1;transform:translate(-50%,0);transition-delay:.3s}` },
+
+  { name: '아코디언',
+    kw: 'accordion · details / summary · interpolate-size · height auto',
+    prompt: `FAQ 목록을 아코디언으로 만들어줘. 질문을 누르면 답이 0.3초 동안 높이가 부드럽게 펼쳐지고 + 아이콘이 45도 돌아 ×가 되게. 하나를 열면 다른 건 닫히게. 네이티브 details 요소로, JS 없이.`,
+    cat: '컴포넌트', desc: 'details에 같은 name을 주면 하나만 열립니다. 높이 애니메이션(interpolate-size)은 Chrome·Edge, 다른 브라우저에선 바로 열려요.',
+    html: `<div class="m-acc">
+<details name="m-acc" open><summary>배송은 얼마나 걸리나요?</summary><p>보통 2~3일 안에 도착해요.</p></details>
+<details name="m-acc"><summary>환불할 수 있나요?</summary><p>받은 뒤 7일 안에는 언제든지요.</p></details>
+<details name="m-acc"><summary>해외 배송도 되나요?</summary><p>아직은 국내만 가능해요.</p></details>
+</div>`,
+    css: `.m-acc{width:min(260px,100%);align-self:start;margin-top:12px;interpolate-size:allow-keywords}
+.m-acc details{border-bottom:1px solid #2e2642}
+.m-acc summary{display:flex;justify-content:space-between;padding:8px 4px;color:#f2eefc;font-weight:700;cursor:pointer}
+.m-acc summary::-webkit-details-marker{display:none}
+.m-acc summary::after{content:"+";color:#8fe3d0;transition:transform .3s}
+.m-acc details[open] summary::after{transform:rotate(45deg)}
+.m-acc details::details-content{height:0;overflow:hidden;transition:height .3s ease,content-visibility .3s allow-discrete}
+.m-acc details[open]::details-content{height:auto}
+.m-acc p{margin:0;padding:0 4px 12px;color:#a59bc2;font-size:14px}` },
+
+  { name: '탭 인디케이터',
+    kw: 'sliding tab indicator · segmented control · :has()',
+    prompt: `일간·주간·월간 세 칸짜리 탭에서, 선택한 탭 뒤의 민트색 알약 배경이 누른 탭으로 미끄러지듯 이동하게 해줘. 0.3초, 빠르게 출발해 부드럽게 멈추는 이징. 라디오 버튼과 :has()로 JS 없이.`,
+    cat: '컴포넌트', desc: '라디오 버튼이라 방향키로도 움직입니다. :has()로 몇 번째가 선택됐는지 읽어 배경을 옮겨요.',
+    html: `<div class="m-tabs" role="radiogroup" aria-label="기간"><label><input type="radio" name="m-tabs" checked>일간</label><label><input type="radio" name="m-tabs">주간</label><label><input type="radio" name="m-tabs">월간</label></div>`,
+    css: `.m-tabs{position:relative;display:grid;grid-template-columns:repeat(3,80px);padding:4px;border-radius:12px;background:#241d33}
+.m-tabs::before{content:"";position:absolute;top:4px;left:4px;width:80px;height:calc(100% - 8px);border-radius:9px;background:#8fe3d0;transform:translateX(calc(var(--i,0)*100%));transition:transform .3s cubic-bezier(.16,1,.3,1)}
+.m-tabs:has(label:nth-child(2) :checked){--i:1}
+.m-tabs:has(label:nth-child(3) :checked){--i:2}
+.m-tabs label{position:relative;padding:8px 0;border-radius:9px;text-align:center;color:#a59bc2;font-weight:700;cursor:pointer;transition:color .3s}
+.m-tabs label:has(:checked){color:#14101f}
+.m-tabs label:has(:focus-visible){outline:2px solid #b39cff;outline-offset:2px}
+.m-tabs input{position:absolute;opacity:0}` },
+
+  { name: '드롭다운 메뉴',
+    kw: 'dropdown menu · popover · anchor positioning · light dismiss',
+    prompt: `메뉴 버튼을 누르면 버튼 바로 아래에 드롭다운 메뉴가 6px 위에서 내려오며 살짝 커지면서 나타나게 해줘. 0.18초. 바깥을 누르거나 Esc를 누르면 닫히게. Popover API와 CSS anchor positioning으로, JS 없이.`,
+    cat: '컴포넌트', desc: 'popover 속성이라 바깥 클릭·Esc 닫기가 기본입니다. 위치는 anchor positioning(position-area)으로 버튼에 붙여요. 최신 브라우저용.',
+    html: `<button class="m-menu-btn" popovertarget="m-menu">메뉴 ▾</button>
+<div class="m-menu" id="m-menu" popover><button popovertarget="m-menu">프로필</button><button popovertarget="m-menu">설정</button><button popovertarget="m-menu">로그아웃</button></div>`,
+    css: `.m-menu-btn{padding:12px 22px;border:1px solid #2e2642;border-radius:12px;background:#241d33;color:#f2eefc;font:inherit;font-weight:700;cursor:pointer}
+.m-menu{position-area:bottom span-right;margin:6px 0 0;min-width:160px;padding:6px;border:1px solid #2e2642;border-radius:12px;background:#1d1729;box-shadow:0 12px 32px rgba(0,0,0,.45);opacity:0;transform:translateY(-6px) scale(.96);transform-origin:top left;transition:opacity .18s,transform .18s cubic-bezier(.16,1,.3,1),overlay .18s allow-discrete,display .18s allow-discrete}
+.m-menu:popover-open{opacity:1;transform:none}
+@starting-style{.m-menu:popover-open{opacity:0;transform:translateY(-6px) scale(.96)}}
+.m-menu button{display:block;width:100%;padding:8px 10px;border:0;border-radius:8px;background:none;color:#f2eefc;font:inherit;text-align:left;cursor:pointer}
+.m-menu button:hover{background:#2e2642}` },
+
+  { name: '바텀시트',
+    kw: 'bottom sheet · drawer · slide up · dialog',
+    prompt: `버튼을 누르면 화면 아래에서 바텀시트가 0.35초 동안 미끄러져 올라오고 뒤 배경이 어두워지게 해줘. 빠르게 출발해 부드럽게 멈추는 이징. 닫을 땐 다시 아래로 내려가게. 네이티브 dialog 요소로, Esc와 배경 클릭으로도 닫히게.`,
+    cat: '컴포넌트', desc: '모달과 같은 dialog를 화면 아래에 붙이고 translateY(100%)에서 올립니다. 옆에서 나오는 드로어는 방향만 바꾸면 돼요.',
+    html: `<button class="m-sheet-open">시트 열기</button>
+<dialog class="m-sheet" closedby="any"><h4>공유하기</h4><p>링크를 복사하거나 앱으로 보낼 수 있어요.</p><form method="dialog"><button>닫기</button></form></dialog>`,
+    css: `.m-sheet-open{padding:12px 22px;border:0;border-radius:12px;background:#b39cff;color:#14101f;font:inherit;font-weight:700;cursor:pointer}
+.m-sheet{inset:auto 0 0;width:min(420px,100%);max-width:100%;margin:0 auto;padding:10px 20px 24px;border:0;border-radius:20px 20px 0 0;background:#1d1729;color:#f2eefc;transform:translateY(100%);transition:transform .35s cubic-bezier(.16,1,.3,1),overlay .35s allow-discrete,display .35s allow-discrete}
+.m-sheet[open]{transform:none}
+.m-sheet::backdrop{background:rgba(10,8,16,.6);opacity:0;transition:opacity .35s,overlay .35s allow-discrete,display .35s allow-discrete}
+.m-sheet[open]::backdrop{opacity:1}
+@starting-style{.m-sheet[open]{transform:translateY(100%)}.m-sheet[open]::backdrop{opacity:0}}
+.m-sheet::before{content:"";display:block;width:36px;height:4px;margin:0 auto 14px;border-radius:2px;background:#3b3258}
+.m-sheet h4{margin:0 0 6px;font-size:18px}
+.m-sheet p{margin:0 0 16px;color:#a59bc2}
+.m-sheet button{width:100%;padding:10px;border:0;border-radius:10px;background:#241d33;color:#f2eefc;font:inherit;font-weight:700;cursor:pointer}`,
+    js: root => root.querySelector('.m-sheet-open').onclick = () => root.querySelector('.m-sheet').showModal() },
+
+  { name: '캐러셀',
+    kw: 'carousel · scroll-snap · slider · animation-timeline: view(inline)',
+    prompt: `카드 5장을 가로로 넘기는 캐러셀을 만들어줘. 넘기면 카드가 가운데에 딱 멈추고(scroll snap), 가운데 카드만 크고 또렷하게, 옆 카드는 80% 크기에 반투명하게. 이전·다음 버튼 포함, 라이브러리 없이.`,
+    cat: '컴포넌트', desc: '멈춤은 scroll-snap, 가운데 강조는 view(inline) 타임라인. JS는 이전·다음 버튼뿐이에요. 터치·트랙패드로도 넘어갑니다.',
+    html: `<div class="m-car"><button aria-label="이전">‹</button><div class="m-car-track"><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div></div><button aria-label="다음">›</button></div>`,
+    css: `.m-car{position:relative;width:100%;min-width:0}
+.m-car-track{display:flex;gap:12px;padding:10px calc(50% - 80px);overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.m-car-track div{flex:none;width:160px;height:110px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,#8fe3d0,#b39cff);color:#14101f;font-size:28px;font-weight:800;scroll-snap-align:center}
+@supports (animation-timeline:view()){.m-car-track div{animation:m-snap linear both;animation-timeline:view(inline)}}
+@keyframes m-snap{0%,100%{transform:scale(.8);opacity:.5}50%{transform:none;opacity:1}}
+.m-car button{position:absolute;z-index:1;top:50%;width:32px;height:32px;margin-top:-16px;border:0;border-radius:50%;background:rgba(20,16,31,.75);color:#f2eefc;font-size:18px;line-height:1;cursor:pointer}
+.m-car button:first-child{left:8px}
+.m-car button:last-child{right:8px}`,
+    js: root => root.querySelectorAll('.m-car button').forEach((b, i) => b.addEventListener('click', () =>
+      root.querySelector('.m-car-track').scrollBy({ left: i ? 172 : -172, behavior: 'smooth' }))) },
 
   // ── 배경 ──
   { name: '오로라',
